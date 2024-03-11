@@ -1,81 +1,132 @@
 <template>
-    <v-container fluid>
-       
-        <div class="panel" v-if="panelOpt===0">  
-    
-            <v-select
-                v-model="monetize"
-                :items="monetizeOptions"
-                label="How do you plan to monetize your idea?"
-                outlined
-                class="mt-3"
-            ></v-select>
-            
-            <div v-if="monetize==='Accept donations'">
-                As the reasons why people donate are almost entirely subjective in many cases, it's hard to provide an answer as to whether or not people will donate to your cause.
-                While we cannot vet your idea, we encourage you proceed with causes that you're passionate about. 
-            </div>
+    <v-container class="wizard" :class="{'wizard-mobile': !($vuetify.display.lg||$vuetify.display.xl||$vuetify.display.xxl)}" fluid>
+          
+      <h1 class='text-center mt-15'>Coming April 9th, 2024!</h1>
 
-            <div v-if="monetize==='I do not plan to monetize my idea'">
-                Implementing your idea probably won't be free. You should strongly consider monetizing your idea to cover the costs.
-            </div>
+      <h2 class="mt-10 mb-5 text-center">Get <b>free</b> information about your business idea</h2>
 
-            <v-btn v-if="monetize==='Sell a product or service'" @click="advancePanel">
-                Next -&gt;
-            </v-btn>
-     
-        </div>
+      <p class="text-center mt-10" style='font-size:1.2em;'>Evaluate it <em>before</em> you start. Save time and money! Get a <span style='color:#a32d26;font-weight:bold;'>Vet My Idea Report</span>:</p>
 
-        <div class="panel" v-if="panelOpt===1">
-            <v-text-field label="Describe the product or service you're selling in five words or less" />
-            <p>
-                Give us only the product or service (e.g. 'golf club' or 'email marketing'). Don't add the features that make your product or service unique here (we'll get to that in the next step). 
-            </p>
-            <v-btn @click="advancePanel">
-                Next -&gt;
-            </v-btn>
-        </div>
+      <div class='mt-5 mb-15' style='text-align:center;'>
+         <ul class='market-list' :class="{'ml-7': $vuetify.display.xs}">
+            <li>Report based on targeted location (city, region, country, or international)</li>
+            <li>Expected growth in your industry</li>
+            <li>Potential competitors</li>
+            <li>Potential risks</li>
+            <li>Validation of unique feature/value-proposition</li>
+            <li>Validation of cost-cutting measures</li>
+            <li>Favorability score</li>    
+            <li>Keep your report private or share it publically</li>
+            <li>Run a report in under 5 minutes</li>
+            <li>No waitlist! Vet My Idea will be fully-functional on launch day</li>
+         </ul>
+      </div>
 
+      <p class='text-center' style='font-size:1.2em;'><b>Want all the latest updates?</b> Join us on <a href='https://discord.gg/4ABJy6n4'>Discord</a> or <a href='/contact'>Contact Us</a></p>
 
-        <div class="panel" v-if="panelOpt===2">
-            Check any of the boxes below that describe how your idea will sell the product or service better than the competition
+       <!-- 
+       <div class="panel" v-if="panelOpt==0">
+        <h2 class="mt-15 mb-15 text-center">Get <b>free</b> information about your business idea</h2>
+        <monetize v-on:advancePanel="advancePanel" />
+       </div>
+       <div class="panel" v-if="panelOpt==1" >
+        <locality v-on:advancePanel="advancePanel" v-on:backPanel="backPanel" />
+       </div>
+       <div class="panel" v-if="panelOpt==2" >
+        <differentiators v-on:advancePanel="advancePanel" v-on:backPanel="backPanel" /> 
+       </div>
+       <div class="panel" v-if="panelOpt==3" >
+          <div v-if="store.state.isLoggedIn===true">
+            <summarycomp v-on:backPanel="backPanel" />
+          </div>
+          <div v-else>
+            <login v-on:backPanel="backPanel"  />
+          </div>
+       </div>
+      //-->
 
-            My production or service costs are cheaper than my competitors
-            My product or service has feature(s) customers want but competitors don't have (or do poorly)
-            My product or service isn't unique, I just want to see if it would be a good idea to start a business right now
-            My idea is totally novel and there is no competition
-            
-        
-        </div>
+       <hr class="bottom-border mt-15" />
 
-        <!--
-        <div>Get a summary report on your idea for free. Pay $9.99 for a full report or purchase a subscription to get multiple reports on a monthly basis</div>
+       <div class="mt-7 text-center">
+          <div v-if="panelOpt<3">
+            Vet My Idea will not sell any data about your idea to third parties<!--, in accordance with our <a href='/privacy' rel="noopener noreferrer" target='_blank'>Privacy Policy</a>//-->    
+          </div>
+          <!--
+          <div v-else>
+            By creating an account, logging in, or creating a report you agree to our 
+            <a href='/privacy' rel="noopener noreferrer" target='_blank'>Privacy Policy</a> and 
+            <a href='/terms' rel="noopener noreferrer" target='_blank'>Terms of Service</a>
+          </div>//-->
+          <div class='mt-2'>This tool is for information purposes only. Its output is not advice of <em>any kind</em>. Use at your own risk</div>
+       </div>
 
-        <div>What you get in the full report:<br />
-             Score and rank for your idea
-             List of competitors
-             List of potential risks/threats
-             Growth trend in the industry
-             Features that customers are looking for in similar products/services      
-         </div>
-         //-->
   </v-container>
 </template>
 
-<script>
-export default {
-  name: 'VetMyIdeaHome',
-  data() {
-    return {
-      panelOpt: 0,
-      monetize: null,
-      monetizeOptions: ["Sell a product or service","Accept donations","I do not plan to monetize my idea"]
-    };
-  },
-  methods: {
-     advancePanel() {
-         this.panelOpt++;
-     }
+<script setup>
+import login from '../components/login.vue'
+import monetize from '../components/monetize.vue'
+import locality from '../components/locality.vue'
+import differentiators from '../components/differentiators.vue'
+import summarycomp from '../components/summary.vue'
+import { ref, watch, defineEmits } from 'vue'
+import { useStore } from 'vuex'
+
+const store = useStore();
+let panelOpt=ref(0);
+
+watch(panelOpt, async (newValue) => {
+    localStorage.setItem("panelOpt", newValue)
+});
+
+function advancePanel() {
+   panelOpt.value++;
+   if (panelOpt>0) {
+      this.$store.state.showLogo=true;
+   }
+}
+
+function backPanel() {
+   panelOpt.value--;
+   if (panelOpt===0) {
+      this.$store.state.showLogo=false;
+   }
+}
+
+onMounted(() => {
+  let stored_panel = localStorage.getItem("panelOpt");
+  if (stored_panel!==null) {
+      panelOpt.value=stored_panel;
   }
-};
+})
 </script>
+
+<style>
+  .bottom-border {
+     border-top:1px dashed #0c1d36;
+  }
+  .market-list {
+     font-size:1.2em;
+     display: inline-block;
+    text-align: left;
+  }
+  .wizard {
+      width:60%;
+      margin-left:20%;
+  }
+  .wizard-mobile {
+      width:95%;
+      margin-left:2.5%;
+  }
+  .wizard button {
+      background-color: #0c1d36;
+      color:#FFF;
+  }
+  .wizard .field {
+      border: 1px solid #0c1d36;
+      background: #FFF;
+  }
+  .wizard .field-select {
+      border-radius: 10px;
+  }
+</style>

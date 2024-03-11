@@ -6,7 +6,12 @@ export default defineNuxtConfig({
   ssr: false,
   app: {
     head: {
-      title: 'Moll-E'
+      script: [
+        {src: "https://www.google.com/recaptcha/api.js?render=explicit", defer: true, async: true}/*,
+        {src: "https://accounts.google.com/gsi/client", async:true},
+        {src: "https://www.googletagmanager.com/gtag/js?id=G-Z4T5SBW4ZS", async:true}*/
+      ],
+      title: 'Vet My Idea'
     },
   },
   build: {
@@ -20,6 +25,25 @@ export default defineNuxtConfig({
       })
     }
   ],
+  runtimeConfig: {
+    public: {
+       googleClient: "",
+       envUrl: "",
+       oauthClient: "",
+       oauthRedirect: "",
+       oauthScopes: "",
+       oauthUri: "",
+       recaptchaSitekey: ""
+    },
+
+    awsClient: "",
+    awsSecret: "",
+    googleSecret: "",
+    oauthSecret: "",
+    oauthToken: "",
+    oauthUserinfo: "",
+    recaptchaSecret: ""
+  },
   vite: {
     vue: {
       template: {

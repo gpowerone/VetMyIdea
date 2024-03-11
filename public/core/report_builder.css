@@ -1,0 +1,156 @@
+body {
+    font-family: Roboto;
+    background: #faf3de;
+    padding:0px;
+    margin:0px;
+}
+
+h1 {
+    font-size:1.5em;
+}
+
+#report {
+    padding:10px;
+}
+
+header, footer {
+    background-color: #0c1d36;
+}
+
+footer {
+    min-height: 15%;
+    text-align:center;
+    color:#FFF;
+}
+
+footer a {
+    color:#FFF;
+}
+
+.header-left, .header-right {
+    float:left;
+    width:49%;
+}
+
+.header-right {
+    color: #FFF;
+    text-align:right;
+    padding-top:10px;
+    padding-right:2%;
+    font-size:2em;
+}
+
+.tabbank {
+    margin-top:25px;
+}
+
+.summaryLeft, .summaryRight, .tableLeft, .tableRight {
+    float:left;
+}
+
+.summaryLeft {
+    width:59%;
+}
+
+.summaryRight {
+    width:40%;
+}
+
+.tab {
+    display:block;
+    cursor:pointer;
+    float:left; 
+    text-align:center;
+    height:35px;
+    border-top:1px solid #0c1d36;
+    border-left:1px solid #0c1d36;
+    border-right:1px solid #0c1d36;
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
+    border-bottom:none;
+    padding:10px;
+    margin-right:5px;
+    margin-top:10px;
+    font-size:1em;
+    background: #a32d26;;
+    color: #FFF;
+}
+
+.tab.selected {
+    font-weight:bold;
+    font-size:1em;
+    margin-top:0px;
+    padding-top:20px;
+    height: 45px;
+}
+
+.tabcontents section {
+    border:1px solid #0c1d36;
+    background: #EEE;
+    height:70%;
+}
+
+div.section {
+    margin:20px;
+}
+
+.tabcontents h3 {
+    margin-top:0px;
+}
+
+.tableLeft {
+    margin-bottom:10px;
+}
+
+.tableRight {
+    margin-bottom:10px;
+}
+
+.circle-score {
+    position: relative;
+    display: inline-block;
+    width: 10rem;
+    height: 10rem;
+    border-radius: 9rem;
+    margin: 1.5rem;
+    border: 1.2rem solid palegreen;
+    box-shadow: inset 0 0 7px grey;
+    border-left-color: palegreen;
+    border-top-color: chartreuse;
+    border-right-color: darkgreen;
+    border-bottom-color: white;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.circle-score .values {
+    font-weight: 700;
+    font-size: 2.0rem;
+    top: 40px;
+    position: absolute;
+    left: 10px;
+    right: 0;
+
+}
+
+.circle-score .labels {
+
+    left: 0;
+    bottom: -16px;
+    text-shadow: 0 0 4px grey;
+    color: black;
+    position: absolute;
+    width: 100%;
+    font-size: 16px;
+}
+
+.circle-score:nth-child(2) {
+    border-top-color: chartreuse;
+    border-right-color: white;
+    border-left-color: palegreen;
+    border-bottom-color: white;
+}
+
+.clear {
+    clear:both;
+}

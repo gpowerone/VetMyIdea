@@ -1,0 +1,29 @@
+
+resource "aws_route53_zone" "vet_my_idea_zone" {
+  name = "vetmyidea.biz"
+}
+
+# Create a Route 53 A record
+resource "aws_route53_record" "www" {
+  zone_id = aws_route53_zone.vet_my_idea_zone.zone_id
+  name    = "vetmyidea.biz" 
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.vetmyidea_lb.dns_name
+    zone_id                = aws_lb.vetmyidea_lb.zone_id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "root" {
+  zone_id = aws_route53_zone.vet_my_idea_zone.zone_id
+  name    = "www.vetmyidea.biz"
+  type    = "A"
+
+  alias {
+    name                   = aws_s3_bucket_website_configuration.redirect_bucket_site.website_endpoint
+    zone_id                = aws_s3_bucket.redirect_bucket.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
