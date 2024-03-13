@@ -216,7 +216,15 @@ export default {
                 else {
 
                     const responseData = await response.json();
-                    console.log(responseData);
+                    if (responseData.success) {
+                        var state = localStorage.getItem('lgstate');
+                        localStorage.clear();
+                        localStorage.setItem('lgstate',state);
+                        navigateTo("/dashboard");
+                    }
+                    else {
+                        this.$store.state.errorText=responseData.message;
+                    }
                 }
             }
         } catch (error) {

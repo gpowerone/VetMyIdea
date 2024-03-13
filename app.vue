@@ -33,6 +33,9 @@
   .inset {
      font-size:0.8em;
   }
+  .fullwidth {
+     width:100%;
+  }
   .next-btn {
      border-radius:50%;
      height:60px!important;

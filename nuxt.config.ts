@@ -7,9 +7,9 @@ export default defineNuxtConfig({
   app: {
     head: {
       script: [
-        {src: "https://www.google.com/recaptcha/api.js?render=explicit", defer: true, async: true}/*,
+        {src: "https://www.google.com/recaptcha/api.js?render=explicit", defer: true, async: true},
         {src: "https://accounts.google.com/gsi/client", async:true},
-        {src: "https://www.googletagmanager.com/gtag/js?id=G-Z4T5SBW4ZS", async:true}*/
+        /*{src: "https://www.googletagmanager.com/gtag/js?id=G-Z4T5SBW4ZS", async:true}*/
       ],
       title: 'Vet My Idea'
     },

@@ -30,6 +30,8 @@
                 <v-list>
                     <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/">Home</NuxtLink></v-list-item> 
                     <v-divider />
+                    <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/about">About</NuxtLink></v-list-item>            
+                    <v-divider />
                     <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/contact">Contact</NuxtLink></v-list-item>            
                     <v-divider />
                     <v-list-item class="menuitem"><NuxtLink role="menuitem" to="https://vetmyidea.blogspot.com/">Blog</NuxtLink></v-list-item>
@@ -44,7 +46,7 @@
 
             <div class="footer stdlink mt-3">
               <div class="text-center pt-7 pb-10 force-white-text">
-                  <!--<NuxtLink to="/about">About</NuxtLink> |//--> <NuxtLink to="/contact">Contact</NuxtLink> | <NuxtLink to="https://vetmyidea.blogspot.com/">Blog</NuxtLink><br /><br />
+                  <NuxtLink to="/about">About</NuxtLink> | <NuxtLink to="/contact">Contact</NuxtLink> | <NuxtLink to="https://vetmyidea.blogspot.com/">Blog</NuxtLink><br /><br />
                   [Company Pending]
               </div>
             </div>

@@ -102,9 +102,10 @@ export default {
 
                 let score=0; 
                 if (unique_feature_risk.answer.trim().toLowerCase()=='yes') {
-                    score-=25;
-                    this.reportText+='"risk": "'+unique_feature_risk.explanation+'",';
-                }
+                    this.reportText+='risk: {"score": "'+score+'", "explanation": "'+unique_feature_risk.explanation+'"}';
+                } 
+                this.score+=score;
+                score=0;
 
                 let unique_feature_benefits =  JSON.parse(await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional business that sell or offer "+this.productType+". You do not reference yourself in your answer.",
                 ["Given your knowledge of "+this.productType+" in "+this.targetLocation +"? How does "+field.FieldValue+" align with what customers want in "+this.productType+
@@ -122,7 +123,7 @@ export default {
                 this.reportText+='"benefits":"'+unique_feature_benefits.explanation+'",';
 
                 this.score+=score;
-                this.reportText+='"score":'+score+',"viable":"yes"},';
+                this.reportText+='"score":'+score+',evaluatedString:"'+field.FieldValue+'","viable":"yes"},';
             }
             else {
                 this.reportText+='"uniqueFeature": {viable:"no"},'
@@ -150,9 +151,11 @@ export default {
                 
                 let score=0; 
                 if (raw_materials_risk.answer.trim().toLowerCase()=='yes') {
-                    score=-25;
-                    this.reportText+='risk: "'+raw_materials_risk.explanation+'"';
+                    score=-15;
+                    this.reportText+='risk: {"score": "'+score+'", "explanation": "'+raw_materials_risk.explanation+'"}';
                 } 
+                this.score+=score;
+                score=0;
 
                 let raw_materials_benefits =  JSON.parse(await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional business that sell or offer "+this.productType+". You do not reference yourself in your answer.",
                 ["Given your knowledge of "+this.productType+" in "+this.targetLocation +"? How well could '"+field.FieldValue+"' reduce the cost of making or providing "+this.productType+
@@ -166,7 +169,7 @@ export default {
                 this.reportText+='benefits:"'+raw_materials_benefits.explanation+'",';
                 
                 this.score+=score;
-                this.reportText+='score:'+score+',viable:"yes"},';
+                this.reportText+='score:'+score+',evaluatedString:"'+field.FieldValue+'",viable:"yes"},';
             }
             else {
                 this.reportText+='rawMaterials: {viable:"no"}'

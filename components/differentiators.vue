@@ -2,7 +2,7 @@
        <v-form>
 
             <h2 class="mt-7">Differentiation</h2>
-            <p class="mt-5">Choose one:</p>
+            <p class="mt-5"><b>Choose one</b>:</p>
 
             <v-radio-group v-model="selectedDifferentiation">
                 <v-radio label="My product or service offers better value than competitors or has unique features" :value="'unique'"></v-radio> 

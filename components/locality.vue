@@ -1,6 +1,6 @@
  <template>
 
-    <h2 class="mt-15">Location</h2>
+    <h2 class="mt-7">Location</h2>
     <v-select
         v-model="locality"
         :items="localityOptions"
@@ -47,8 +47,8 @@
             </v-btn>
          </v-col>
          <v-col cols="6">
-            <div class="text-right" :disabled="optionsHandled()">
-                <v-btn class="next-btn"  @click="handleAdvance">
+            <div class="text-right" >
+                <v-btn class="next-btn"  @click="handleAdvance" :disabled="optionsHandled()">
                     <v-icon :icon="mdiArrowRight"></v-icon>
                 </v-btn>
             </div>
