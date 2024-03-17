@@ -8,7 +8,7 @@
                 Effective Date: March 1st, 2024
             </p>
             <p>
-                [Company Name] ("we," "us," or "our") is committed to protecting the privacy of our users ("user" or "you"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website www.vetmyidea.biz, including any other media form, media channel, mobile website, or mobile application related or connected thereto (collectively, the "Site"). Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the Site.
+                Techfalos, LLC ("we," "us," or "our") is committed to protecting the privacy of our users ("user" or "you"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website www.vetmyidea.biz, including any other media form, media channel, mobile website, or mobile application related or connected thereto (collectively, the "Site"). Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the Site.
             </p>
             <p>
                 We reserve the right to make changes to this Privacy Policy at any time and for any reason. We will alert you about any changes by updating the "Effective Date" of this Privacy Policy. Any changes or modifications will be effective immediately upon posting the updated Privacy Policy on the Site, and you waive the right to receive specific notice of each such change or modification.
@@ -189,9 +189,9 @@
                 If you have questions or comments about this Privacy Policy, please contact us at:
             </p>
             <p>
-                [Your Company Name]
-                [Your Company Address]
-                [Your Company Email Address]
+                Techfalos, LLC<br />
+                503 Devonshire Lane<br />
+                Severna Park, MD 21146
             </p>
             </v-col>
         </v-row>

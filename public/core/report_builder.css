@@ -1,11 +1,11 @@
-body {
+body.report {
     font-family: Roboto, sans-serif;
     background: #faf3de;
     padding:0px;
     margin:0px;
 }
 
-h1 {
+h1.report  {
     font-size:1.5em;
     background:#FFF;
     display:block;
@@ -24,13 +24,13 @@ header, footer {
     background-color: #0c1d36;
 }
 
-footer {
+footer.report {
     min-height: 15%;
     text-align:center;
     color:#FFF;
 }
 
-footer a {
+footer.report a {
     color:#FFF;
 }
 

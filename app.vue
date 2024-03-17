@@ -27,6 +27,9 @@
   hr {
     border-top:1px solid #0c1d36;
   }
+  .v-data-table-header__content span {
+    font-weight:bold;
+  }
   .field-error .v-input__control {
      border:1px solid #a32d26;
   }

@@ -12,7 +12,7 @@ export default {
     reportText: "",
 
     evaluateCompetitors: async function() {
-        let results = await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional businesses that sell or offer "+this.productType+". You do not reference yourself in your answer.",
+        let results = await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional businesses that sell or offer "+this.productType+". You do not reference yourself in your answer. You only return an array as an answer",
         ["What are all the businesses you know of that sell or offer "+this.productType+" in "+this.targetLocation+", including national or regional chains that sell or offer "+ this.productType+". "+
         "Return your answer as an array of [&quot;companyname&quot;], or an empty array if there are none"]);
 
@@ -181,6 +181,100 @@ export default {
     
 
     },
+    evaluatelaborCosts: async function(field) {
+    
+        // viability test
+        try {
+            let labor_costs_viability = await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional business that sell or offer "+this.productType+". You do not reference yourself in your answer.", 
+            ["If someone told you that they could reduce the cost of labor to make or provide "+this.productType+" by '"+field.FieldValue+"', do you believe this is a comprehensible, sensical idea? Give 'yes', 'no', or 'incomprehensible' only as an answer"])[0];
+        
+            if (labor_costs_viability.trim().toLowerCase()=='yes') {
+
+                this.reportText+='"laborCostsCost": {'
+
+                let labor_costs_risk = JSON.parse(await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional business that sell or offer "+this.productType+". You do not reference yourself in your answer.",
+                ["Does reducing the cost of labor to make or provide "+this.productType+" by '"+field.FieldValue+"' create a risk that the business doing so would suffer reputation loss, legal penalties, or be forced to close? "+
+                "Give your answer as an object: { answer: &quot;yes|no&quot;, explanation: &quot;explanation&quot; }"])[0]); 
+                
+                let score=0; 
+                if (labor_costs_risk.answer.trim().toLowerCase()=='yes') {
+                    score=-15;
+                    this.reportText+='risk: {"score": "'+score+'", "explanation": "'+labor_costs_risk.explanation+'"}';
+                } 
+                this.score+=score;
+                score=0;
+
+                let labor_costs_benefits =  JSON.parse(await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional business that sell or offer "+this.productType+". You do not reference yourself in your answer.",
+                ["Given your knowledge of "+this.productType+" in "+this.targetLocation +"? How well could '"+field.FieldValue+"' reduce the cost of making or providing "+this.productType+
+                " Give your answer as an object: { align: &quot;strongly|minor|not at all&quot;, explanation: &quot;explanation&quot; }"])[0]);
+                if (labor_costs_benefits.align.trim().toLowerCase()=='strongly') {
+                    score+=20;
+                }
+                if (labor_costs_benefits.align.trim().toLowerCase()=='minor') {
+                    score+=10;
+                }
+                this.reportText+='benefits:"'+labor_costs_benefits.explanation+'",';
+                
+                this.score+=score;
+                this.reportText+='score:'+score+',evaluatedString:"'+field.FieldValue+'",viable:"yes"},';
+            }
+            else {
+                this.reportText+='laborCosts: {viable:"no"}'
+            } 
+        }
+        catch(e) {
+            return false;
+        }
+    
+
+    },
+    evaluateShippingCosts: async function(field) {
+    
+        // viability test
+        try {
+            let shipping_costs_viability = await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional business that sell or offer "+this.productType+". You do not reference yourself in your answer.", 
+            ["If someone told you that they could reduce the shipping cost to make or provide "+this.productType+" by '"+field.FieldValue+"', do you believe this is a comprehensible, sensical idea? Give 'yes', 'no', or 'incomprehensible' only as an answer"])[0];
+        
+            if (shipping_costs_viability.trim().toLowerCase()=='yes') {
+
+                this.reportText+='"shippingCostsCost": {'
+
+                let shipping_costs_risk = JSON.parse(await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional business that sell or offer "+this.productType+". You do not reference yourself in your answer.",
+                ["Does reducing the cost of shipping to make or provide "+this.productType+" by '"+field.FieldValue+"' create a risk that the business doing so would suffer reputation loss, legal penalties, or be forced to close? "+
+                "Give your answer as an object: { answer: &quot;yes|no&quot;, explanation: &quot;explanation&quot; }"])[0]); 
+                
+                let score=0; 
+                if (shipping_costs_risk.answer.trim().toLowerCase()=='yes') {
+                    score=-15;
+                    this.reportText+='risk: {"score": "'+score+'", "explanation": "'+shipping_costs_risk.explanation+'"}';
+                } 
+                this.score+=score;
+                score=0;
+
+                let shipping_costs_benefits =  JSON.parse(await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional business that sell or offer "+this.productType+". You do not reference yourself in your answer.",
+                ["Given your knowledge of "+this.productType+" in "+this.targetLocation +"? How well could '"+field.FieldValue+"' reduce the cost of making or providing "+this.productType+
+                " Give your answer as an object: { align: &quot;strongly|minor|not at all&quot;, explanation: &quot;explanation&quot; }"])[0]);
+                if (shipping_costs_benefits.align.trim().toLowerCase()=='strongly') {
+                    score+=20;
+                }
+                if (shipping_costs_benefits.align.trim().toLowerCase()=='minor') {
+                    score+=10;
+                }
+                this.reportText+='benefits:"'+shipping_costs_benefits.explanation+'",';
+                
+                this.score+=score;
+                this.reportText+='score:'+score+',evaluatedString:"'+field.FieldValue+'",viable:"yes"},';
+            }
+            else {
+                this.reportText+='shippingCosts: {viable:"no"}'
+            } 
+        }
+        catch(e) {
+            return false;
+        }
+    
+
+    },
     evaluateRisksRewards: async function(field) {
 
         if (field.FieldType == "Unique Feature") {
@@ -188,6 +282,12 @@ export default {
         }
         if (field.FieldType == "Reduced Raw Materials Cost") {
            await this.evaluateRawMaterials(field);
+        }
+        if (field.FieldType == "Reduced Labor Cost") {
+            await this.evaluateLaborCost(field);
+        }
+        if (field.FieldType == "Reduced Shipping Cost") {
+            await this.evaluateShippingCost(field);
         }
 
     },
@@ -209,12 +309,12 @@ export default {
 
                 await this.evaluateGrowth();
                 if (Gpt.flagged) {
-                    return await flagReport(report);
+                    return await this.flagReport(report);
                  }
 
                 await this.evaluateRegulatoryRisk();
                 if (Gpt.flagged) {
-                    return await flagReport(report);
+                    return await this.flagReport(report);
                  }
 
                 for (field in await ReportFields.findAll({
@@ -224,7 +324,7 @@ export default {
                 })) {
                     await this.evaluateRisksRewards(report.ProductType, report.TargetLocation, field);
                     if (Gpt.flagged) {
-                        return await flagReport(report);
+                        return await this.flagReport(report);
                      }
                 }
 
@@ -267,7 +367,7 @@ export default {
            }
            else {
               if (Gpt.flagged) {
-                 return await flagReport(report);
+                 return await this.flagReport(report);
               }    
               report.Novel=true; 
               report.IsPublic=false;
@@ -291,7 +391,7 @@ export default {
 
         if (requestData.product && requestData.product.length>0) {
             data.ProductType = requestData.product.trim();
-            if (data.ProductType.length<=100 && /^[A-Za-z0-9\.\s]+$/.test(data.ProductType)) {
+            if (data.ProductType.length<=100 && /^[A-Za-z0-9\.\'\s]+$/.test(data.ProductType)) {
                 if (requestData.targetedLocation && requestData.targetedLocation.length>0 && requestData.targetedLocation.length<200 && /^[A-Za-z0-9\,\s]+$/.test(requestData.targetedLocation)) {
                     data.TargetLocation=requestData.targetedLocation; 
                     data.IsValid=true;

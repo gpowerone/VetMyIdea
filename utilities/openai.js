@@ -35,17 +35,10 @@ export default {
 
     checkContentForModeration: async function (ctxt,request) {
         try {
-            const response = await openai.createModeration({
-                model: "text-moderation-latest", 
-                input: ctxt+". "+request,
-            });
+            const response = await openai.moderations.create({input:ctxt+". "+request});
 
-            if (response.data.results && response.data.results.length > 0) {
-                response.data.results.forEach(result => {
-                    if (result.flagged) {
-                        this.flagged=true;
-                    }
-                });
+            if (response.results.flagged) {
+                 this.flagged=true;       
             } else {
                 return await this.makeRequest(ctxt,request);
             }
@@ -60,11 +53,13 @@ export default {
 
     makeRequest: async function(ctxt,request) {
         // Send request to OpenAI API
+        console.log(request);
         try {
             return openai.chat.completions.create({
                 model: "gpt-4", 
                 messages: [{role: "system", content: ctxt}, {role: "user", content: request}]
             }).then((response)=> {
+                console.log(response.choices[0].message.content);
                 return response.choices[0].message.content;
             });
         } 

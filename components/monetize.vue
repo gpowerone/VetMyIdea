@@ -12,7 +12,7 @@
     </div>
 
     <div class="mt-5" v-if="monetize==='Start a business to sell a product or service'" >
-        <v-text-field v-model="product" class="field" label="Describe the product or service you're selling in 100 characters or less (alphanumeric and periods only)"></v-text-field>
+        <v-text-field v-model="product" class="field" label="Describe the product or service you're selling (up to 100 alphanumeric characters)"></v-text-field>
         <v-container class="mt-1" fluid>
           <v-row>
             <v-col class="tips text-center mt-8" cols="2">
@@ -58,7 +58,7 @@ function handleAdvance() {
 function optionsHandled() {
     if (monetize.value!==null) {
         if (product.value!==null) {
-          if (product.value.length>0 && product.value.length<=100 && /^[A-Za-z0-9\.\s]+$/.test(product.value)) {
+          if (product.value.length>0 && product.value.length<=100 && /^[A-Za-z0-9\'\.\s]+$/.test(product.value)) {
               return false;
           }
         }  

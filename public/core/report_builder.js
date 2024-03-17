@@ -16,7 +16,7 @@ function build_report(report_string) {
 
     let dt = new Date(report.created);
 
-    return "<h1>"+sanitize(report.summary.title)+"</h1>"+
+    return "<h1 class='report'>"+sanitize(report.summary.title)+"</h1>"+
                 "<div class='tabbank'>"+this.report_tabs+"<div class='clear'></div></div>"+
                 "<div class='tabcontents'>"+this.report_tab_contents+"<div class='clear'></div></div>"+
                 "<div class='run'><span style='font-style:italic;'>Report Created "+dt.getFullYear()+"-"+dt.getMonth()+"-"+dt.getDay()+"</span> [If that was a long time ago, then this report is probably out-of-date]</div>";

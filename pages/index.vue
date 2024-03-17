@@ -1,7 +1,7 @@
 <template>
     <v-container class="wizard"  fluid>
       <v-row>
-         <v-col cols="12" lg="6" xs="12" xm="12">
+         <v-col cols="12" lg="7" xs="12" xm="12">
             <h1 class='text-center mt-15'>Coming April 9th, 2024!</h1>
 
             <h2 class="mt-10 mb-5 text-center">Get a <b>free</b> evaluation of your business idea</h2>
@@ -25,12 +25,18 @@
 
             <p class='text-center' style='font-size:1.2em;'><b>Want all the latest updates?</b> Join us on <a href='https://discord.gg/4ABJy6n4'>Discord</a> or <a href='/contact'>Contact Us</a></p>
 
-            <p class='text-center mt-15'><a href="https://www.producthunt.com/products/vet-my-idea?utm_source=badge-follow&utm_medium=badge&utm_souce=badge-vet&#0045;my&#0045;idea" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/follow.svg?product_id=574290&theme=neutral" alt="Vet&#0032;My&#0032;Idea - Get&#0032;a&#0032;free&#0032;evaluation&#0032;of&#0032;your&#0032;business&#0032;idea | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a></p>
+            <p class='text-center mt-15'>
+              <a href="https://www.producthunt.com/products/vet-my-idea?utm_source=badge-follow&utm_medium=badge&utm_souce=badge-vet&#0045;my&#0045;idea" target="_blank">
+                <img src="/images/ph.svg" 
+                alt="Vet&#0032;My&#0032;Idea - Get&#0032;a&#0032;free&#0032;evaluation&#0032;of&#0032;your&#0032;business&#0032;idea | Product Hunt" 
+                style="width: 250px; height: 54px;" width="250" height="54" />
+              </a>
+            </p>
 
       
       </v-col>
-      <v-col cols="12" lg="6" xs="12" sm="12" class='mt-15'>
-         <div id='banner' class="mt-15 d-none d-xs-none d-sm-flex">
+      <v-col cols="12" lg="5" xs="12" sm="12" class='mt-15'>
+         <div id='banner' class="mt-15 d-none d-md-none d-lg-flex">
            <img src='/images/screenshot3.png' width='100%' alt='product screenshot 3'  />
            <img src='/images/screenshot2.png' width='100%' alt='product screenshot 2'  />
            <img src='/images/screenshot1.png' width='100%' alt='product screenshot 1'  />
@@ -43,7 +49,7 @@
 
             <div class="mt-7 text-center">
                <div>
-                  Vet My Idea will not sell any data about your idea to third parties<!--, in accordance with our <a href='/privacy' rel="noopener noreferrer" target='_blank'>Privacy Policy</a>//-->    
+                   Vet My Idea will not sell any data about your idea to third parties in accordance with our <a href='/privacy' rel="noopener noreferrer" target='_blank'>Privacy Policy</a>
                </div>
        
                <div class='mt-2'>This tool is for information purposes only. Its output is not advice of <em>any kind</em>. Use at your own risk</div>

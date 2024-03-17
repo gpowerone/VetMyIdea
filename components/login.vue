@@ -50,7 +50,6 @@ export default {
   },
   computed: {
     googleclientid() {
-      console.log(useRuntimeConfig().public.googleClient);
       return useRuntimeConfig().public.googleClient
     },
     oauthclientid() {
@@ -177,12 +176,7 @@ export default {
 
         // Redirect the user to the OAuth2 URL
         window.location.href = oauth2Url;
-    },
-
-  },
-};
+    }
+  }
+}
 </script>
-
-<style scoped>
-
-</style>

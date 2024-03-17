@@ -1,5 +1,6 @@
 import Report from '../models/report.js'
-import { failMail } from '../utilities/email.js'
+import Eml from '../utilities/email.js'
+import { spawn } from 'node:child_process'
 
 // Processes
 let processes=[];
@@ -7,13 +8,14 @@ let processes=[];
 // Function to query the database and execute another script
 async function queryAndExecute() {
   try {
-    if (processes.len()<7) {
-        await Report.findAll({
+    if (processes.length<7) {
+        let reports = await Report.findAll({
           where: {
-            IsReady: false
+            IsReady: false,
+            Flagged: false
           }
-        }).forEach(job => {
-
+        });
+        for (var job in reports) {
             if (processes.indexOf(job.ReportID)===-1) {
                 processes.push(job.ReportID);
 
@@ -23,10 +25,11 @@ async function queryAndExecute() {
                     processes= processes.filter(e => e !== job.ReportID)
                 });
             }
-        });
+        };
     }
   } catch (error) {
-     await failMail('Taskmaster Failed:'+ error);
+     console.log(error);
+     await Eml.failMail('Taskmaster Failed:'+ error);
   }
 }
 

@@ -47,7 +47,7 @@
             <div class="footer stdlink mt-3">
               <div class="text-center pt-7 pb-10 force-white-text">
                   <NuxtLink to="/about">About</NuxtLink> | <NuxtLink to="/contact">Contact</NuxtLink> | <NuxtLink to="https://vetmyidea.blogspot.com/">Blog</NuxtLink><br /><br />
-                  [Company Pending]
+                  &copy; 2024 Techfalos, LLC
               </div>
             </div>
         </v-main>
@@ -149,5 +149,11 @@ export default defineComponent({
   .menuitem a {
      color: #0c1d36;
   }
+  .top_pos {
+      position:fixed;
+      top:0;
+      width:100%;
+      z-index:10000;
+ }
 </style>
           

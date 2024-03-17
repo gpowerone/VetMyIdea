@@ -24,3 +24,11 @@ resource "aws_acm_certificate_validation" "vet_my_idea_validation" {
   certificate_arn         = aws_acm_certificate.vet_my_idea_certificate.arn
   validation_record_fqdns = [for record in aws_route53_record.vet_my_idea_validation : record.fqdn]
 }
+
+
+
+data "aws_acm_certificate" "reports_vet_my_idea_certificate" {
+  domain   = "reports.vetmyidea.biz"
+  statuses = ["ISSUED"]
+  provider=aws.us-east-1
+}

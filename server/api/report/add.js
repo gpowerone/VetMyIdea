@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
                 if (data.IsValid) {
 
                     // Uppercase first letter of product type name
-                    data.ProductType[0]=data.ProductType[0].toUpperCase();
+                    data.ProductType=data.ProductType[0].toUpperCase()+data.ProductType.slice(1);
 
                     let report_id = uuidv4();
 
@@ -42,6 +42,8 @@ export default defineEventHandler(async (event) => {
                         UserID: session.UserID,
                         ProductType: data.ProductType,
                         Score: null,
+                        Flagged: false,
+                        Novel: false,
                         TargetLocation: data.TargetLocation,
                         IsPublic: requestData.publicReport,
                         ShowEmail: requestData.includeEmail,
@@ -65,11 +67,13 @@ export default defineEventHandler(async (event) => {
                 
         
             }
+            return { success: false, message: "Invalid Session" }
             
         }
     } catch (error) {
-        await emailtools.failMail(error.message)
+        await emailtools.failMail(error.message);
+        return { success: false, message: "An error occurred, our team has been notified" };
     }
 
-    return { success: false }
+    return { success: false, message: "Invalid Request Method" }
 });

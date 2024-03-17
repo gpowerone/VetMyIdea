@@ -223,7 +223,12 @@ export default {
                         navigateTo("/dashboard");
                     }
                     else {
-                        this.$store.state.errorText=responseData.message;
+                        if (responseData.message) {
+                            this.$store.state.errorText=responseData.message;
+                        }
+                        else {
+                            this.$store.state.errorText="An unspecified error occurred";
+                        }
                     }
                 }
             }
