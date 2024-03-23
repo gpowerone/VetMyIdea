@@ -19,7 +19,7 @@ async function queryAndExecute() {
             if (processes.indexOf(job.ReportID)===-1) {
                 processes.push(job.ReportID);
 
-                let childProcess=spawn('node', ['./report.js', job.ReportID]);
+                let childProcess=spawn('node', ['./jobs/report.js', job.ReportID]);
             
                 childProcess.on('close', () => {
                     processes= processes.filter(e => e !== job.ReportID)

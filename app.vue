@@ -47,6 +47,17 @@
      background: #0c1d36;
      font-size:1.3em;
   }
+  .tooltip {
+     height: 25px;
+     width: 25px;
+     background-color: #0c1d36;
+     color:#FFF;
+     text-align:center;
+     font-weight:bold;
+     border:2px solid #FFF;
+     border-radius: 50%;
+     display: inline-block;
+  }
   .v-field__outline {
       display:none;
   }

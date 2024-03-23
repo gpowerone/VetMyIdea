@@ -22,6 +22,7 @@ export default defineNuxtConfig({
     transpile: ['vuetify'],
   },
   modules: [
+    "floating-vue/nuxt",
     "nuxt-security",
     (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) => {
@@ -78,7 +79,9 @@ export default defineNuxtConfig({
         'form-action': ["'self'"],
         'frame-ancestors': ["'self'"],
         'upgrade-insecure-requests': true
-      }
+      },
+      referrerPolicy: 'strict-origin-when-cross-origin',
+      crossOriginOpenerPolicy: 'same-origin-allow-popups'
     },
     sri: true
   },

@@ -4,11 +4,41 @@
         <meta name="description" content="{META_DESCRIPTION}"></meta>
         <meta name="keywords" content="{META_KEYWORDS}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:url" content="{META_URL}" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="{REPORT_NAME}" />
+        <meta property="og:description" content="{META_DESCRIPTION}" />
+        <meta property="og:image" content="https://reports.vetmyidea.biz/core/vetmyidea.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">   
         <link href="./core/report_builder.css" rel="stylesheet" />
         <script src="./core/report_builder.js" type="text/javascript"></script>
+        <script src="https://platform.linkedin.com/in.js" type="text/javascript">lang: en_US</script>
+        <script type="text/javascript">(function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+            fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        </script>
+        <script>window.twttr = (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0],
+              t = window.twttr || {};
+            if (d.getElementById(id)) return t;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "https://platform.twitter.com/widgets.js";
+            fjs.parentNode.insertBefore(js, fjs);
+          
+            t._e = [];
+            t.ready = function(f) {
+              t._e.push(f);
+            };
+          
+            return t;
+         }(document, "script", "twitter-wjs"));</script>
         <title>{REPORT_NAME}</title>
     </head>
     <body class="report">
@@ -28,10 +58,10 @@
     </body>
     <script language="javascript">
         
-        report_contents='{"summary": {"title":"Golf club business targeting Severna Park, Maryland, United States of America","score":65,"scoremeaning":"Favorable"}, "features":["Loft and MOI suitable for skill level","Club type and design for playability","Adjustability for shot tendencies and preferences","Shaft flex based on swing speed"], "competitors": ["Dick\'s Sporting Goods", "Golf Galaxy", "The Golf Club at South River", "Chartwell Golf & Country Club", "Severna Park Golf Center", "Sports Authority", "Eagle\'s Nest Country Club", "Walmart"],"expectedGrowth": {"growth":"good","explanation":"There is a consistent increase in golf enthusiasts in the region, and the presence of reputable golf courses, like Severna Park Golf Center, Chartwell Golf and Country Club, and Compass Pointe, supports this trend. Additionally, companies like DICK\’s Sporting Goods and Golf Galaxy in neighboring regions have offered steady sales in golfing equipment. Despite periodic fluctuations, the golf club market in Severna Park, Maryland is expected to experience steady growth due to the region\'s love for the sport and its affluent population who can afford golf as a pastime.","score":15},"regulatoryRisk": {"risk":"low","explanation":"In the United States, there is generally low risk of increased regulation specifically targeting the sale of golf clubs, including in Maryland. Most products are subject to standard consumer safety regulations which are fairly stable and do not regularly change radically. It is broadly a free market for selling items like sports equipment. Additionally, golf is a popular sport with a significant consumer base, making severe regulatory changes unlikely. High-impact legal changes would likely face pushback from consumer and industry groups, as well as potentially infringing on established principles of free trade and commerce. Therefore, the risk of negative impacts on companies selling golf clubs due to regulatory changes can be considered low.","score":0},"created":1709747969147}'
+        report_contents='{"summary": {"url":"https://vetymyidea.biz","title":"Golf club business targeting Severna Park, Maryland, United States of America","score":65,"scoremeaning":"Favorable"}, "features":["Loft and MOI suitable for skill level","Club type and design for playability","Adjustability for shot tendencies and preferences","Shaft flex based on swing speed"], "competitors": ["Dick\'s Sporting Goods", "Golf Galaxy", "The Golf Club at South River", "Chartwell Golf & Country Club", "Severna Park Golf Center", "Sports Authority", "Eagle\'s Nest Country Club", "Walmart"],"expectedGrowth": {"growth":"good","explanation":"There is a consistent increase in golf enthusiasts in the region, and the presence of reputable golf courses, like Severna Park Golf Center, Chartwell Golf and Country Club, and Compass Pointe, supports this trend. Additionally, companies like DICK\’s Sporting Goods and Golf Galaxy in neighboring regions have offered steady sales in golfing equipment. Despite periodic fluctuations, the golf club market in Severna Park, Maryland is expected to experience steady growth due to the region\'s love for the sport and its affluent population who can afford golf as a pastime.","score":15},"regulatoryRisk": {"risk":"low","explanation":"In the United States, there is generally low risk of increased regulation specifically targeting the sale of golf clubs, including in Maryland. Most products are subject to standard consumer safety regulations which are fairly stable and do not regularly change radically. It is broadly a free market for selling items like sports equipment. Additionally, golf is a popular sport with a significant consumer base, making severe regulatory changes unlikely. High-impact legal changes would likely face pushback from consumer and industry groups, as well as potentially infringing on established principles of free trade and commerce. Therefore, the risk of negative impacts on companies selling golf clubs due to regulatory changes can be considered low.","score":0},"created":1709747969147}'
 
         window.onload=function() {
-            document.getElementById("report").innerHTML=build_report(report_contents);
+            document.getElementById("report").innerHTML=build_report(report_contents,true);
         }
     </script>
 </html>

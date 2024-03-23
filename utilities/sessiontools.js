@@ -21,6 +21,9 @@ export default {
                     Username: username,
                     IsAdmin: false,
                     AuthSource: authsource,
+                    Remaining: 3,
+                    IsAdmin: false,
+                    IsUnlimited: false,
                     ProjectCredits: 0
                 })
         }

@@ -17,7 +17,7 @@
                   <li>Evaluation of unique feature/value-proposition</li>
                   <li>Evaluation of cost-cutting measures</li>
                   <li>Favorability score</li>    
-                  <li>Keep your report private or share it publically</li>
+                  <li>Optionally share your report</li>
                   <li>Run a report in under 5 minutes</li>
                   <li>No waitlist! Vet My Idea will be fully-functional on launch day</li>
                </ul>

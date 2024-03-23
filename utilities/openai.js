@@ -10,9 +10,14 @@ const openai = new OpenAI({
 export default { 
 
     flagged: false,
+    debug: false,
 
     chatGPT: async function (ctxt,requests) {
         try {
+            if (this.flagged) {
+                return [];
+            }
+
             let promises=[];
 
             for (const request of requests) {
@@ -37,7 +42,11 @@ export default {
         try {
             const response = await openai.moderations.create({input:ctxt+". "+request});
 
-            if (response.results.flagged) {
+            if (this.debug) {
+                console.log("MODERATION: "+response.results[0].flagged);
+            }
+
+            if (response.results[0].flagged) {
                  this.flagged=true;       
             } else {
                 return await this.makeRequest(ctxt,request);
@@ -52,20 +61,30 @@ export default {
     },
 
     makeRequest: async function(ctxt,request) {
-        // Send request to OpenAI API
-        console.log(request);
+
         try {
+            if (this.debug) {
+                console.log("REQUEST MADE");
+            }
+
             return openai.chat.completions.create({
                 model: "gpt-4", 
-                messages: [{role: "system", content: ctxt}, {role: "user", content: request}]
+                messages: [{role: "system", content: ctxt}, {role: "user", content: request}],
+                temperature: 0.1,
+                seed: 512 // it's a power of 2. This probably doesn't matter?
             }).then((response)=> {
-                console.log(response.choices[0].message.content);
+                if (this.debug) {
+                    console.log("AGENT: "+ctxt+" | REQUEST: " +request+" | RESPONSE: "+response.choices[0].message.content);
+                }
                 return response.choices[0].message.content;
             });
         } 
         catch(error) { 
 
+            console.log("ERROR: "+error.response);
+
             if (error.response && error.response.status === 429) {
+                console.log("RATE LIMIT RETRY");
                 // in the event of a rate limit error, repeat this request in a minute
                 let promiseGPT = new Promise(function (resolve, reject) {
                     setTimeout(function () {
@@ -73,13 +92,17 @@ export default {
                     resolve(true);
                     }, 60000);
                 });
-                await promiseGPT;
+                return await promiseGPT;
             }
             else {
                 Eml.failMail("Open AI error:"+ error.message);
             }
             return ""; 
         }   
-    }      
+    },
+    
+    setDebug: function(mode) {
+        this.debug=mode;
+    }
 }
 

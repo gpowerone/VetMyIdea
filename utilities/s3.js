@@ -22,6 +22,18 @@ export default {
       } 
     });
   },
+  deleteS3Object: async function(bucketName, destinationKey, Eml) {
+    const deleteObjectParams = {
+       Bucket: bucketName,
+       Key: destinationKey
+    };
+    
+    S3.deleteObject(deleteObjectParams, function(err, data) {
+      if (err) {
+        Eml.failMail('AWS S3 - An error occurred:'+ err)
+      } 
+    });
+  },
   getS3Object: async function(bucketName, keyName, Eml) {
     try {
 
@@ -42,8 +54,9 @@ export default {
     const params = {
       Bucket: bucketName,
       Key: keyName,
-      Body: JSON.stringify(body),
-      ContentType: contentType
+      Body: body,
+      ContentType: contentType,
+      ACL: 'public-read'
     };
   
     S3.putObject(params, function(err, data) {

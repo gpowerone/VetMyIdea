@@ -16,6 +16,7 @@
     "aws-sdk": "^2.1571.0",
     "country-state-city": "^3.2.1",
     "crypto": "^1.0.1",
+    "floating-vue": "^5.2.2",
     "forever": "^0.14.2",
     "google-auth-library": "^9.6.3",
     "h3": "^1.10.1",

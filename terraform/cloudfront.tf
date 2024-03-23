@@ -6,7 +6,7 @@ resource "aws_cloudfront_origin_access_identity" "oai" {
 # CloudFront Distribution with ACM Certificate
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
-    domain_name = aws_s3_bucket.vetmyideareports.bucket_regional_domain_name
+    domain_name = "vetmyideareports.s3.us-east-2.amazonaws.com"
     origin_id   = "S3-reports.vetmyidea.biz"
 
     s3_origin_config {

@@ -34,6 +34,18 @@ User.init({
     AuthSource: {
         allowNull: false,
         type: DataTypes.STRING(16)
+    },
+    Remaining: {
+        allowNull: false,
+        type: DataTypes.SMALLINT
+    },
+    IsAdmin: {
+        allowNull: false,
+        type: DataTypes.BOOLEAN
+    },
+    IsUnlimited: {
+        allowNull: false,
+        type: DataTypes.BOOLEAN
     }
 }, {
   sequelize,

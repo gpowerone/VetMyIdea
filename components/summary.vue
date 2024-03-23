@@ -43,15 +43,6 @@
                 </v-col>
             </v-row>
         </v-container>
-        <div class="mt-10">
-            <hr />
-        </div>
-        <div class="mt-3">
-            <v-checkbox v-model="publicReport" class="pa-0" density="compact" label="Make this report public? (you'll be able to share it with others using a link)" />
-        </div>
-        <div v-if="publicReport">
-            <v-checkbox v-model="includeEmail" density="compact" label="Include your email address on the report? (It will be publically visible)" />  
-        </div>
         <div class="mt-3 mb-5">
             <hr />
         </div>
@@ -108,8 +99,6 @@ export default {
         uniqueFeaturesEntry: null,
         targetedLocation: null,
         product: null,
-        publicReport: false,
-        includeEmail: false,
     }
   },
   mounted() {
@@ -165,9 +154,10 @@ export default {
         }    
         else {
             
+            this.targetedLocation=""; 
             let stored_city = localStorage.getItem("city");
             if (stored_city!==null) {
-                this.targetedLocation=stored_city+", "
+                this.targetedLocation+=stored_city+", "
             }
             let stored_state = localStorage.getItem("state");
             if (stored_state!==null) {
@@ -204,8 +194,6 @@ export default {
                         uniqueFeaturesEntry: this.uniqueFeaturesEntry,
                         targetedLocation: this.targetedLocation,
                         product: this.product,
-                        publicReport: this.publicReport,
-                        includeEmail: this.includeEmail,
                         token: token
                     }),
                 });
@@ -225,6 +213,11 @@ export default {
                     else {
                         if (responseData.message) {
                             this.$store.state.errorText=responseData.message;
+                            if (this.$store.state.errorText=="Invalid Session") {
+                                localStorage.removeItem("lgstate");
+                                this.$store.state.isLoggedIn=false;
+                                this.$store.state.name=null;
+                            }
                         }
                         else {
                             this.$store.state.errorText="An unspecified error occurred";

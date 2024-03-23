@@ -6,20 +6,46 @@ var current_tab=0;
 function build_report(report_string) {
     var report = JSON.parse(report_string);
 
-    buildTab(buildSummary(report.summary,buildScoreBreakdown(report)));
-    buildTab(buildGrowthCompetitors(report.expectedGrowth, report.competitors));
-    buildTab(buildFeatures(report));
-    buildTab(buildCosts(report));
-    buildTab(buildRisks(report));
-    buildTab(questions());
-    doAffiliateCode();
+    if (report.hasOwnProperty("novel")) {
+        buildTab(buildNovelReport());
+    }
+    else if (report.viable=="no") {
+        if (report.hasOwnProperty("rawMaterialsCost")) {
+            buildTab(buildNonViableReport(report.rawMaterialsCost.evaluatedString, report.rawMaterialsCost.explanation));
+        }
+        else if (report.hasOwnProperty("shippingCost")) {
+            buildTab(buildNonViableReport(report.shippingCost.evaluatedString, report.shippingCost.explanation));
+        }
+        else if (report.hasOwnProperty("laborCost")) {
+            buildTab(buildNonViableReport(report.laborCost.evaluatedString, report.laborCost.explanation));
+        }
+        else if (report.hasOwnProperty("uniqueFeature")) {
+            buildTab(buildNonViableReport(report.uniqueFeature.evaluatedString, report.uniqueFeature.explanation));
+        }
+        else {
+            buildTab(buildNonViableReport("Product: "+report.summary.product, report.explanation));
+        }
+    }
+    else {
 
-    let dt = new Date(report.created);
+        buildTab(buildSummary(report.summary,buildScoreBreakdown(report)));
+        buildTab(buildGrowthCompetitors(report.expectedGrowth, report.competitors));
+        buildTab(buildFeatures(report));
+        buildTab(buildCosts(report));
+        buildTab(buildRisks(report));
+        doAffiliateCode();
 
-    return "<h1 class='report'>"+sanitize(report.summary.title)+"</h1>"+
+        let dt = new Date(report.created);
+
+        return "<h1 class='report'>"+sanitize(report.summary.title)+"</h1>"+
+                "<div class='socials'>"+generateSocials(report.summary.url)+"</div>"+
+                "<div class='clear'></div>" +
                 "<div class='tabbank'>"+this.report_tabs+"<div class='clear'></div></div>"+
                 "<div class='tabcontents'>"+this.report_tab_contents+"<div class='clear'></div></div>"+
-                "<div class='run'><span style='font-style:italic;'>Report Created "+dt.getFullYear()+"-"+dt.getMonth()+"-"+dt.getDay()+"</span> [If that was a long time ago, then this report is probably out-of-date]</div>";
+                "<div class='run'><span style='font-style:italic;'>Report Created: "+dt.getFullYear()+"-"+dt.getMonth()+"-"+dt.getDay()+"</span> [If that was a long time ago, then this report is probably out-of-date]</div>"+
+                "<div class='run'>Vet My Idea reports are not advice and may be factually incorrect. Use at your own risk. Please see the <a href='https://vetmyidea.biz/terms'>Terms of Service</a> for further detail</div>";
+
+    }
 }
 
 function buildTab(tab_input) {
@@ -75,6 +101,53 @@ function buildCosts(report) {
     }
 }
 
+function buildNonViableReport(strategy,explanation) {
+    let contents =   
+    "<section id='tab"+tab_id+"' style='float:left;width:78vw;'>" +
+      "<div class='section'>"+
+        "<h2>Potentially Non-Viable Idea</h2>"+
+        "<p>We found one or more arguments that your stated strategy: '"+strategy+"' is non-viable. These are in the paragraph below this one:</p>"+
+        "<p>&quot;"+explanation+"&quot;</p>"+
+        "<p><b>Warning</b>: <em>You should independently verify the correctness of these arguments</em></p>"+
+        "<p>Potentially non-viable ideas are not scored because if they are non-viable they would automatically receive a score of zero</p>"
+      "</div>"; 
+
+    let nonviable_result={
+        name: "Summary",
+        contents: contents,
+        id: tab_id,
+        width: "150px"
+    };
+
+    tab_id++;
+
+    return nonviable_result;
+}
+
+function buildNovelReport() {
+    let contents =   
+    "<section id='tab"+tab_id+"' style='float:left;width:78vw;'>" +
+      "<div class='section'>"+
+        "<h2>Potentially Novel Idea / No Competition</h2>"+
+        "<p>Our tool did not find any potential competitors for this product or service. It could be that the product/service does not exist in the location you specified, or that this is a novel idea. "+
+        "This might be a good thing, as being first to market with a novel product or service that is sought-after could be lucrative. It could also be a bad thing, "+
+        "for the reason that the product or service doesn't exist yet (in this location or at all) could be because it is not sought-after (in this location or at all). "+
+        "Our tool cannot help you determine which of these statements is more truthy for your idea. Additional research is necessary to determine if this idea is a valid one</p>"+
+        "<p>Ideas with this classification do not receive a score because we have insufficient data to process a report</p>"
+      "</div>"; 
+
+    let novel_result={
+        name: "Summary",
+        contents: contents,
+        id: tab_id,
+        width: "150px"
+    };
+
+    tab_id++;
+
+    return novel_result;
+}
+
 function buildRisks(report) {
     let contents =   
     "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>" +
@@ -98,7 +171,7 @@ function buildRisks(report) {
 
     if (report.shippingCost && report.shippingCost.risk) {
         "<h3>Risk of Shipping Cost Strategy "+scoreStyle(report.shippingCost.risk.score)+"</h3>"+
-        "<p>"+sanitize(report.shippingost.risk.explanation)+"</p>";
+        "<p>"+sanitize(report.shippingCost.risk.explanation)+"</p>";
     }
 
     contents += "</div></section>";
@@ -168,7 +241,7 @@ function buildGrowthCompetitors(growth, competitors) {
 
     let growth_result={
         name: "Growth and Competition",
-        contents: "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'><div class='section'><h3>Expected Growth: "+sanitize(growth.growth.toUpperCase()) + " "+scoreStyle(growth.score)+"</h3>"+
+        contents: "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'><div class='section'><h3>Growth Potential: "+sanitize(growth.growth.toUpperCase()) + " "+scoreStyle(growth.score)+"</h3>"+
             "<p>"+sanitize(growth.explanation)+"</p><p>&nbsp;</p>"+competition+"</div></section>",
         id: tab_id,
         width:"250px"
@@ -181,32 +254,29 @@ function buildGrowthCompetitors(growth, competitors) {
 
 function buildFeatures(report) {
 
-    let contents = "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'><div class='section'><h3>Features</h3><p>These are some features customers typically want in this product or service</p><p><em>This list may be incomplete!</em></p><p>";
-
-    for (n=0; n<report.features.length; n++) {
-        contents+=(n+1)+". "+sanitize(report.features[n])+"<br />";
-    }
-
-    contents+="</p>";
-    
     if (report.uniqueFeature) {
+        let contents = "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>";
+   
         contents+="<h3>Evaluation of Feature Unique To Your Product or Service "+scoreStyle(report.uniqueFeature.score)+"</h3>";
         contents+="<p><b>Feature</b>: "+report.uniqueFeature.evaluatedString+"</p>"
         contents+="<p>"+report.uniqueFeature.benefits+"</p>";
+    
+        contents +="</div></section>";
+
+        let features_result={
+            name: "Features",
+            contents: contents,
+            id: tab_id,
+            width:"150px"
+        };
+
+        tab_id++;
+
+        return features_result;
     }
-
-    contents +="</div></section>";
-
-    let features_result={
-        name: "Features",
-        contents: contents,
-        id: tab_id,
-        width:"150px"
-    };
-
-    tab_id++;
-
-    return features_result;
+    else {
+        return null;
+    }
 }
 
 function buildScoreBreakdown(report) {
@@ -251,29 +321,15 @@ function doAffiliateCode() {
     this.report_tab_contents+= "<section id='tab"+tab_id+"' style='float:right;text-center;width:19vw;'><div style='text-align:center;margin-top:25px;'>Links To Our Affiliates</div><br /></section>";
 }
 
-function questions() {
-
-    let contents="<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'><div class='section'><h3>Additional Questions to Consider Before Starting a Business</h3>";
-
-    contents+="<ol>"+
-        "<li><strong>What is my business model?</strong><br />Understanding how your business will generate revenue is key to sustainable operations</li>"+
-        "<li style='margin-top:10px;'><strong>How will I finance my startup costs?</strong><br />Securing adequate funding is critical to cover initial costs and maintain operations until the business becomes profitable.</li>"+
-        "<li style='margin-top:10px;'><strong>What is my marketing and sales strategy?</strong><br />A solid marketing strategy will enable you to attract and retain customers"+
-        "<li style='margin-top:10px;'><strong>What team do I need to be successful?</strong><br />Determining the roles and skills needed can help you build a team that complements your strengths and weaknesses</li>"+
-        "<li style='margin-top:10px;'><strong>How will I measure success?</strong><br />Setting clear, measurable goals helps you track progress and make informed decisions.</li>"+
-        "<li style='margin-top:10px;'><strong>What is my exit strategy?</strong><br />Understanding your long-term goals for the business can influence many decisions you make early on.</li>"+
-        "</ol></div></section>";
-
-    let question_results= {
-        name: "Questions",
-        contents: contents,
-        id: tab_id,
-        width:"150px"
-    };
-
-    tab_id++;
-
-    return question_results;
+function generateSocials(url) {
+    return  '<script type="IN/Share" data-url="'+url+'"></script>' +
+            '<div id="fb-root"></div>'+
+            '<div class="fb-share-button"'+ 
+            'data-href="'+url+'"'+
+            'data-layout="button_count">'+
+            '</div>'+
+            '<a class="twitter-share-button" href="https://twitter.com/intent/tweet">Tweet</a>'
+          
 }
 
 function sanitize(content) {

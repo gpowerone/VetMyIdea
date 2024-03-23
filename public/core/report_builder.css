@@ -9,11 +9,17 @@ h1.report  {
     font-size:1.5em;
     background:#FFF;
     display:block;
+    float:left;
     border:1px solid #0c1d36;
     border-radius:5px;
     margin-left:5px;
-    width:50%;
+    width:80%;
     padding:10px;
+}
+
+.socials {
+    float:right;
+    margin-top:15px;
 }
 
 #report {
@@ -55,7 +61,7 @@ footer.report a {
 }
 
 .tabbank {
-    margin-top:25px;
+    margin-top:5px;
     margin-left:5px;
 }
 

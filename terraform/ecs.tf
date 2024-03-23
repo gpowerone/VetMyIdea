@@ -22,7 +22,8 @@ resource "aws_ecs_task_definition" "vetmyidea" {
        LogDriver: "awslogs",
        Options: {
          "awslogs-group": aws_cloudwatch_log_group.vetmyidea_logs.name,
-         "awslogs-region": "us-east-2", "awslogs-stream-prefix": "vetmyidea"
+         "awslogs-region": "us-east-2", 
+         "awslogs-stream-prefix": "vetmyidea"
        }
     },
     environment = [
@@ -45,6 +46,38 @@ resource "aws_ecs_task_definition" "vetmyidea" {
     },{
        Name="NUXT_AWS_SECRET",
        ValueFrom= aws_secretsmanager_secret.aws_secret.arn
+    },
+    {
+       Name="NUXT_PUBLIC_GOOGLE_CLIENT",
+       ValueFrom = aws_secretsmanager_secret.google_client.arn
+    },
+    {
+       Name="NUXT_GOOGLE_SECRET",
+       ValueFrom = aws_secretsmanager_secret.google_secret.arn
+    },
+    {
+       Name="NUXT_OAUTH_SECRET",
+       ValueFrom = aws_secretsmanager_secret.oauth_secret.arn
+    },
+    {
+       Name="NUXT_OAUTH_TOKEN",
+       ValueFrom = aws_secretsmanager_secret.oauth_token.arn
+    },
+    {
+       Name="NUXT_OAUTH_USERINFO",
+       ValueFrom = aws_secretsmanager_secret.oauth_userinfo.arn
+    },
+    {
+       Name="NUXT_PUBLIC_OAUTH_SCOPES",
+       ValueFrom = aws_secretsmanager_secret.oauth_scopes.arn
+    },
+    {
+       Name="NUXT_PUBLIC_OAUTH_URI",
+       ValueFrom = aws_secretsmanager_secret.oauth_uri.arn
+    },
+    {
+       Name="NUXT_PUBLIC_OAUTH_REDIRECT",
+       ValueFrom = aws_secretsmanager_secret.oauth_redirect.arn
     },
     {
        Name="NUXT_PUBLIC_RECAPTCHA_SITEKEY",

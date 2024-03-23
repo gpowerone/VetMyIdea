@@ -34,30 +34,33 @@ Report.init({
             }
         }
     },
+    PublicURL: {
+        allowNull: true,
+        type: DataTypes.STRING(255)
+    },
     Score: {
         allowNull: true,
+        type: DataTypes.SMALLINT,
+    },
+    Processor: {
+        allowNull: false,
         type: DataTypes.SMALLINT,
     },
     TargetLocation: {
         allowNull: false,
         type: DataTypes.STRING(255),
     },
-    IsPublic: {
-        allowNull: false,
-        type: DataTypes.BOOLEAN
-    },
     Flagged: {
         allowNull: false,
         default: false,
         type: DataTypes.BOOLEAN
     },
-    Novel: {
-        allowNull: false,
-        default: false,
+    IsDebug: {
+        allowNull: true,
         type: DataTypes.BOOLEAN
     },
-    ShowEmail: {
-        allowNull: false,
+    IsViable: {
+        allowNull: true,
         type: DataTypes.BOOLEAN
     },
     IsReady: {

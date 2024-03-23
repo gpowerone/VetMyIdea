@@ -28,3 +28,44 @@ resource "aws_secretsmanager_secret" "recaptcha_sitekey" {
 resource "aws_secretsmanager_secret" "recaptcha_secret" {
   name = "recaptcha_secret_vmi"
 }
+
+resource "aws_secretsmanager_secret" "google_client" {
+  name = "google_client_vmi"
+}
+
+resource "aws_secretsmanager_secret" "google_secret" {
+  name = "google_secret_vmi"
+}
+
+resource "aws_secretsmanager_secret" "oauth_token" {
+  name = "oauth_token_vmi"
+}
+
+resource "aws_secretsmanager_secret" "oauth_secret" {
+  name = "oauth_secret_vmi"
+}
+
+resource "aws_secretsmanager_secret" "oauth_userinfo" {
+  name = "oauth_userinfo_vmi"
+}
+
+resource "aws_secretsmanager_secret" "oauth_scopes" {
+  name = "oauth_scopes_vmi"
+}
+
+resource "aws_secretsmanager_secret" "oauth_uri" {
+  name = "oath_uri_vmi"
+}
+
+resource "aws_secretsmanager_secret" "oauth_redirect" {
+  name = "oauth_redirect_vmi"
+}
+
+resource "aws_secretsmanager_secret" "openai" {
+  name = "openai_vmi"
+}
+
+resource "aws_secretsmanager_secret" "pgadminpass" {
+  name = "pgadminpass_vmi"
+}
+

@@ -35,22 +35,20 @@ resource "aws_s3_bucket_public_access_block" "redirect_bucket_pa" {
   restrict_public_buckets = false
 }
 
-resource "aws_s3_bucket" "vetmyideacore" {
-  bucket="vetmyideacore"
-}
-
+/*
 resource "aws_s3_bucket" "vetmyideareports" {
   bucket="vetmyideareports"
 }
 
-resource "aws_s3_bucket_cors_configuration" "example" {
+
+resource "aws_s3_bucket_cors_configuration" "vetmyideacors" {
   bucket = aws_s3_bucket.vetmyideareports.id
 
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET","HEAD"]
     allowed_origins = ["https://vetmyidea.biz"]
-    expose_headers  = ["ETag"]
+    expose_headers  = [ "Access-Control-Allow-Origin", "ETag"]
     max_age_seconds = 3000
   }
 }
@@ -89,4 +87,4 @@ resource "aws_s3_bucket_public_access_block" "vetmyideareports_pa" {
   ignore_public_acls      = false
   restrict_public_buckets = false
 }
-
+*/

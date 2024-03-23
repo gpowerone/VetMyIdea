@@ -43,10 +43,10 @@ export default defineEventHandler(async (event) => {
                         ProductType: data.ProductType,
                         Score: null,
                         Flagged: false,
-                        Novel: false,
                         TargetLocation: data.TargetLocation,
-                        IsPublic: requestData.publicReport,
-                        ShowEmail: requestData.includeEmail,
+                        ProductURL: null,
+                        IsDebug: true,
+                        Processor: 1,
                         IsReady: false
                     });
 
