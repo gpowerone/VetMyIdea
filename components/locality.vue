@@ -4,7 +4,7 @@
     <v-select
         v-model="locality"
         :items="localityOptions"
-        label="Which best describes the target location for your business?"
+        label="Where will you target your business?"
         outlined
         class="mt-7 field field-select"
     ></v-select>
@@ -13,7 +13,7 @@
         v-if="locality!==null&&locality!=='International'"
         v-model="country"
         :items="countryOptions"
-        label="Which country will your business be located in?"
+        label="Which country?"
         @update:modelValue="fillStateOptions"
         outlined
         class="mt-3 field field-select"
@@ -23,7 +23,7 @@
         v-if="locality!==null&&locality!=='International'&&locality!=='National'"
         v-model="state"
         :items="stateOptions"
-        label="Which region/state/province will your business be located in?"
+        label="Which region/state/province?"
          @update:modelValue="fillCityOptions"
         outlined
         :disabled="country===null||stateOptions.length===0"
@@ -34,7 +34,7 @@
         v-if="locality!==null&&locality!=='International'&&locality!=='National'&&locality!=='Regional'"
         v-model="city"
         :items="cityOptions"
-        label="In which city/town will you open your business (or the closest one in the list)?"
+        label="In which city/town (or the closest one in the list)?"
         outlined
         :disabled="state===null||cityOptions.length===0"
         class="mt-3 field field-select"

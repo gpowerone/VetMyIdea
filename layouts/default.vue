@@ -35,8 +35,8 @@
                     <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/contact">Contact</NuxtLink></v-list-item>            
                     <v-divider />
                     <v-list-item class="menuitem"><NuxtLink role="menuitem" to="https://vetmyidea.blogspot.com/">Blog</NuxtLink></v-list-item>
-                    <!--<v-divider />
-                    <v-list-item class=" menuitem"><NuxtLink role="menuitem" class="cursor" @click="doLogout">Logout</NuxtLink></v-list-item>//-->
+                    <v-divider />
+                    <v-list-item class=" menuitem"><NuxtLink role="menuitem" class="cursor" @click="doLogout">Logout</NuxtLink></v-list-item>
                 </v-list>
             </v-navigation-drawer>
 
@@ -143,7 +143,7 @@ export default defineComponent({
      color:#FFF;
   }
   .navdrawer {
-     width:150px !important;
+     width:200px !important;
      border-left: 1px solid #0c1d36;
   }
   .menuitem a {

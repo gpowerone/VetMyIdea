@@ -5,7 +5,7 @@
             <p class="mt-5"><b>Choose one</b>:</p>
 
             <v-radio-group v-model="selectedDifferentiation">
-                <v-radio label="My product or service offers better value than competitors or has unique features" :value="'unique'"></v-radio> 
+                <v-radio class="mt-5" label="My product or service offers better value than competitors or has unique features" :value="'unique'"></v-radio> 
                 <v-card class="popout" v-if="selectedDifferentiation === 'unique'">
                     
                     <v-selection-control-group v-model="productionCosts"> 
@@ -30,33 +30,26 @@
                     </div>
                    
 
-                     <v-selection-control-group  v-model="uniqueFeatures" > 
+                     <v-selection-control-group class="mt-5" v-model="uniqueFeatures" > 
                         <v-checkbox density="compact" label="My product or service has feature(s) customers want but competitors don't have (or do poorly)"></v-checkbox>          
                      </v-selection-control-group>
                      <v-text-field v-if="uniqueFeatures===true" class="field" v-model="uniqueFeaturesEntry" label="What feature will have the greatest customer draw?" outlined dense></v-text-field>
 
                      <div class="mt-5 mb-2">
-                        <b>Other Differentiators</b>
-                        <p>
-                            There are some additional differentiators that could put your product or service above the competition. We do not evaluate these because it would
-                            be difficult to provide a fair evaluation without having source materials to analyze, or because these are more of a company strategy than a product-specific one:
-                        </p>
-                        <p class="mt-3">
-                            1. Marketing/Advertising Strategy<br />
-                            2. User Experience<br />
-                            3. Customer Service/Support
-                        </p>
-                     </div> 
+                        <b>Other Differentiators</b> 
+                        <span class="tooltip tips" v-tooltip.bottom="{ content: `<p>There are some additional differentiators that could put your product or service above the competition. We do not evaluate these because it would be difficult to provide a fair evaluation without having source materials to analyze, or because these are more of a company strategy than a product-specific one:</p><p class='mt-5'>1. Marketing/Advertising Strategy<br />2. User Experience<br />3. Customer Service and Support</p>`}">?</span>
+                     </div>
+                    
 
                 
                 </v-card>             
-                <v-radio label="My product or service is equivalent to what competitors offer" :value="'notunique'"></v-radio>
+                <v-radio class="mt-5" label="My product or service is equivalent to what competitors offer" :value="'notunique'"></v-radio>
                 <v-card class="popout" v-if="selectedDifferentiation === 'notunique'">
                     It doesn't need to be different to be a good idea!
                 </v-card>
-                <v-radio label="My product or service is novel and there is no competition" :value="'novel'"></v-radio>
+                <v-radio class="mt-5" label="My product or service is novel and there is no competition" :value="'novel'"></v-radio>
                 <v-card class="popout" v-if="selectedDifferentiation === 'novel'">
-                    If the product or service is truly novel (meaning the world has never seen it), then we cannot vet your idea as we have no data to base our report on. However, you can still run this report 
+                    If the product or service is truly novel (meaning the world has never seen it), then we cannot evaluate your idea as we have no data to base our report on. You can still run this report 
                     and we will search to see if we can find an existing market or potential competitors for your idea. 
                 </v-card>
             </v-radio-group>
@@ -137,13 +130,13 @@ function handleBack() {
 }
 
 function optionsHandled() {
-     if (laborCostsEntry.value.length>0 && (laborCostsEntry.value.length>300 || !/^[A-Za-z0-9\.\s]+$/.test(laborCostsEntry.value))) {
+     if (laborCostsEntry.value.length>0 && (laborCostsEntry.value.length>300 || !/^[A-Za-z0-9\.\'\s]+$/.test(laborCostsEntry.value))) {
         return true;
     }
-    if (rawMaterialsEntry.value.length>0 && (rawMaterialsEntry.value.length>300 || !/^[A-Za-z0-9\.\s]+$/.test(rawMaterialsEntry.value))) {
+    if (rawMaterialsEntry.value.length>0 && (rawMaterialsEntry.value.length>300 || !/^[A-Za-z0-9\.\'\s]+$/.test(rawMaterialsEntry.value))) {
         return true;
     }
-     if (shippingCostsEntry.value.length>0 && (shippingCostsEntry.value.length>300 || !/^[A-Za-z0-9\.\s]+$/.test(shippingCostsEntry.value))) {
+     if (shippingCostsEntry.value.length>0 && (shippingCostsEntry.value.length>300 || !/^[A-Za-z0-9\.\'\s]+$/.test(shippingCostsEntry.value))) {
         return true;
     }
     if (selectedDifferentiation.value!=="") {

@@ -36,7 +36,6 @@ export default defineEventHandler(async (event) => {
                     data.ProductType=data.ProductType[0].toUpperCase()+data.ProductType.slice(1);
 
                     let report_id = uuidv4();
-
                     await Report.create({
                         ReportID: report_id,
                         UserID: session.UserID,
@@ -44,20 +43,21 @@ export default defineEventHandler(async (event) => {
                         Score: null,
                         Flagged: false,
                         TargetLocation: data.TargetLocation,
+                        IsProcessing: false,
                         ProductURL: null,
                         IsDebug: true,
                         Processor: 1,
                         IsReady: false
                     });
 
-                    for (item of data.FillFields) {
+                    data.FillFields.forEach(async (item)=>{
                         await ReportField.create({
                             ReportFieldID: uuidv4(),
                             ReportID: report_id,
                             FieldType: item.FieldType,
                             FieldValue: item.FieldValue
                         })
-                    }
+                    })
 
                     return { success: true };
                 }

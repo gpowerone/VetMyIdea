@@ -36,16 +36,22 @@
   .inset {
      font-size:0.8em;
   }
+  .fullheight {
+     height:100%;
+  }
   .fullwidth {
      width:100%;
   }
   .next-btn {
-     border-radius:50%;
-     height:60px!important;
-     width:60px!important;
+     border-radius:50%!important;
+     height:52px!important;
+     width:52px!important;
+     max-width:52px!important;
+     min-width:52px!important;
+     display:inline-block;
      border:2px solid #FFF;
      background: #0c1d36;
-     font-size:1.3em;
+     font-size:1.1em;
   }
   .tooltip {
      height: 25px;
@@ -58,6 +64,7 @@
      border-radius: 50%;
      display: inline-block;
   }
+  .v-popper__inner { max-width: 360px !important; }
   .v-field__outline {
       display:none;
   }

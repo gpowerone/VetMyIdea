@@ -91,16 +91,16 @@ export default {
 
     },
 
-    evaluateField: async function(demarcator,targetStatement,conjunction,nonePenalty,field) {
+    evaluateField: async function(demarcator,targetStatement,conjunction,nonePenalty,benefitStatement,field) {
     
         try {
 
             this.reportText+='"'+demarcator+'": {'
 
-            let legality = this.evaluateLegality(targetStatement+" for "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'");
+            let legality = await this.evaluateLegality(targetStatement+" "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'");
             if (legality.answer=='no') {
                
-                let risk = this.evaluateRisk(targetStatement+" for "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'")
+                let risk = await this.evaluateRisk(targetStatement+" "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'")
                 if (risk.inability_to_find_talent<100) {
                     if (risk.employee_injury<100) {
                         let score=0; 
@@ -116,7 +116,7 @@ export default {
                         this.score+=score;
                         score=0;
 
-                        let benefits = this.evaluateBenefit("'"+field.FieldValue+"'", targetStatement);
+                        let benefits = await this.evaluateBenefit("'"+field.FieldValue+"'", benefitStatement);
 
                         if (benefits.answer.trim().toLowerCase()=='well') {
                             score+=20;
@@ -199,17 +199,25 @@ export default {
 
         if (field.FieldType == "Unique Feature") {
            this.hadUniqueFeature=true;
-           await this.evaluateField("uniqueFeature","introduce a feature for","that",this.competitorsNum>6?-15:0,"appeal to users of "+this.productType+" in "+this.targetLocation+"? "+
-           "Base your answer off of how popular '"+field.FieldValue+"' will be for users '"+this.productType+"'");
+           return await this.evaluateField(
+            "uniqueFeature",
+            "introduce a feature for",
+            "that",
+            this.competitorsNum>6?-15:0,
+            "appeal to users of "+this.productType+" in "+this.targetLocation+"? Base your answer off of how popular '"+field.FieldValue+"' will be for users '"+this.productType+"'",
+            field);
         }
         if (field.FieldType == "Reduced Raw Materials Cost") {
-           await this.evaluateField("rawMaterialsCost","reduce raw materials costs","by",0,"reduce raw materials costs for "+this.productType+" in "+this.targetLocation,field);
+            this.hadUniqueFeature=true;
+            return await this.evaluateField("rawMaterialsCost","reduce raw materials costs","by",0,"reduce raw materials costs for "+this.productType+" in "+this.targetLocation,field);
         }
         if (field.FieldType == "Reduced Labor Cost") {
-            await this.evaluateField("laborCost","reduce labor costs","by",0,"reduce raw materials costs for "+this.productType+" in "+this.targetLocation,field);
+            this.hadUniqueFeature=true;
+            return await this.evaluateField("laborCost","reduce labor costs","by",0,"reduce raw materials costs for "+this.productType+" in "+this.targetLocation,field);
         }
         if (field.FieldType == "Reduced Shipping Cost") {
-            await this.evaluateField("shippingCost","reduce shipping costs","by",0,"reduce shipping costs for "+this.productType+" in "+this.targetLocation,field);
+            this.hadUniqueFeature=true;
+            return await this.evaluateField("shippingCost","reduce shipping costs","by",0,"reduce shipping costs for "+this.productType+" in "+this.targetLocation,field);
         }
 
     },
@@ -239,18 +247,21 @@ export default {
 
                     viability=true;
 
-                    for (field in await ReportFields.findAll({
+                    let fields = await ReportFields.findAll({
                         where: {
                         ReportID: reportId
                         }
-                    })) {
+                    }) 
+                    
+                    for (const field of fields) {
                         if (viability) {
-                            let new_viability = await this.evaluateFields(report.ProductType, report.TargetLocation, field);
+                            let new_viability = await this.evaluateFields(field);
                             if (Gpt.flagged) {
                                 return await this.flagReport(report);
                             }
                             if (!new_viability) {
                                 viability=false;
+                                this.reportText+='"viable":"no", ';
                             }
                         }
                     }
@@ -279,16 +290,19 @@ export default {
 
                     if (this.score<0) this.score=0;
                     if (this.score>100) this.score=100;
-                    report.Score=this.score;
                 }
                 else {
                     this.score=0;
+                    report.IsViable=false;
                 }
-                 
+                
+                report.Score=this.score;
+
                 // summary
                 this.reportText+='"summary": {'
-                this.reportText+='"score":'+report.Score+",";
-                this.reportText+='"product":'+report.ProductType+",";
+                this.reportText+='"score":'+report.Score+',';
+                this.reportText+='"product":"'+report.ProductType+'",';
+                this.reportText+='"hadUniqueFeature":'+this.hadUniqueFeature+',';
 
                 if (report.Score>=85) {
                     this.reportText+='"scoremeaning":"Highly Favorable",'
@@ -318,8 +332,9 @@ export default {
               this.reportText+='"novel":"true", "created":'+Date.now()+'}';
            }
 
-           await Page.createPublicPage(report.ProductType+" in "+report.TargetLocation, Page.generatePublicPageURL(report.ProductType, report.ReportID),  this.reportText);
+           await Page.createPublicPage(report.ProductType+" business in "+report.TargetLocation, Page.generatePublicPageURL(report.ProductType, report.ReportID),  this.reportText);
 
+           report.IsProcessing=false;
            report.IsReady=true;
 
            await report.save();
@@ -341,22 +356,22 @@ export default {
             data.ProductType = requestData.product.replace(/[^\x00-\x7F]/g, "").trim();
             if (data.ProductType.length<=100 && /^[A-Za-z0-9\.\'\s]+$/.test(data.ProductType)) {
                 if (requestData.targetedLocation && requestData.targetedLocation.length>0 && requestData.targetedLocation.length<200 && /^[A-Za-z0-9\,\s]+$/.test(requestData.targetedLocation)) {
-                    data.TargetLocation=requestData.replace(/[^\x00-\x7F]/g, "").targetedLocation; 
+                    data.TargetLocation=requestData.targetedLocation.replace(/[^\x00-\x7F]/g, ""); 
                     data.IsValid=true;
 
-                    if (requestData.rawMaterialsEntry && requestData.rawMaterialsEntry.length>0 && requestData.rawMaterialsEntry.length<=300 && /^[A-Za-z0-9\.\s]+$/.test(requestData.rawMaterialsEntry)) {
+                    if (requestData.rawMaterialsEntry && requestData.rawMaterialsEntry.length>0 && requestData.rawMaterialsEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.rawMaterialsEntry)) {
                         data.FillFields.push({"FieldType": "Reduced Raw Materials Cost", "FieldValue": requestData.rawMaterialsEntry.replace(/[^\x00-\x7F]/g, "").trim()});
                     }
 
-                    if (requestData.laborCostsEntry && requestData.laborCostsEntry.length>0 && requestData.laborCostsEntry.length<=300 && /^[A-Za-z0-9\.\s]+$/.test(requestData.laborCostsEntry)) {
+                    if (requestData.laborCostsEntry && requestData.laborCostsEntry.length>0 && requestData.laborCostsEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.laborCostsEntry)) {
                         data.FillFields.push({"FieldType": "Reduced Labor Cost", "FieldValue": requestData.laborCostsEntry.replace(/[^\x00-\x7F]/g, "").trim()});
                     }
 
-                    if (requestData.shippingCostsEntry && requestData.shippingCostsEntry.length>0 && requestData.shippingCostsEntry.length<=300 && /^[A-Za-z0-9\.\s]+$/.test(requestData.shippingCostsEntry)) {
+                    if (requestData.shippingCostsEntry && requestData.shippingCostsEntry.length>0 && requestData.shippingCostsEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.shippingCostsEntry)) {
                         data.FillFields.push({"FieldType": "Reduced Shipping Cost", "FieldValue": requestData.shippingCostsEntry.replace(/[^\x00-\x7F]/g, "").trim()});
                     }
 
-                    if (requestData.uniqueFeaturesEntry && requestData.uniqueFeaturesEntry.length>0 && requestData.uniqueFeaturesEntry.length<=300 && /^[A-Za-z0-9\.\s]+$/.test(requestData.uniqueFeaturesEntry)) {
+                    if (requestData.uniqueFeaturesEntry && requestData.uniqueFeaturesEntry.length>0 && requestData.uniqueFeaturesEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.uniqueFeaturesEntry)) {
                         data.FillFields.push({"FieldType": "Unique Feature", "FieldValue": requestData.uniqueFeaturesEntry.replace(/[^\x00-\x7F]/g, "").trim()});
                     }
 

@@ -12,20 +12,26 @@ async function queryAndExecute() {
         let reports = await Report.findAll({
           where: {
             IsReady: false,
-            Flagged: false
+            Flagged: false,
+            IsProcessing: false
           }
         });
-        for (var job in reports) {
-            if (processes.indexOf(job.ReportID)===-1) {
-                processes.push(job.ReportID);
+        reports.forEach((job)=>{
+          if (processes.indexOf(job.ReportID)===-1) {
+            job.IsProcessing=true;
+            job.save();
 
-                let childProcess=spawn('node', ['./jobs/report.js', job.ReportID]);
-            
-                childProcess.on('close', () => {
-                    processes= processes.filter(e => e !== job.ReportID)
-                });
-            }
-        };
+            processes.push(job.ReportID);
+
+            let childProcess=spawn('node', ['./jobs/report.js', job.ReportID], {
+              stdio: "inherit"
+            });
+        
+            childProcess.on('close', () => {
+                processes= processes.filter(e => e !== job.ReportID)
+            });
+        }
+        })
     }
   } catch (error) {
      console.log(error);
@@ -33,7 +39,7 @@ async function queryAndExecute() {
   }
 }
 
-// Run the query and execute function every 5 seconds
-setInterval(queryAndExecute, 5000);
+// Run the query and execute function every 30 seconds
+setInterval(queryAndExecute, 30000);
 
 console.log("Taskmaster Started");

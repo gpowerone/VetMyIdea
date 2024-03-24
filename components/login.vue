@@ -1,7 +1,7 @@
 <template>
-  <v-container class="pa-0 pt-10">
+  <v-container class="pa-0 pt-5" :class="{'mt-10':$vuetify.display.lg||$vuetify.display.xl||$vuetify.display.xxl}" >
     <v-row>
-      <v-col cols="5">
+      <v-col cols="12" lg="5">
         <h2 class="mb-5">Login</h2>
         <v-card>
           <v-card-text>
@@ -15,14 +15,18 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols="2">
+      <v-col cols="12" lg="2" class="d-md-none d-lg-block">
          &nbsp;
       </v-col>
-      <v-col cols="5">
-          <h2>Create An Account</h2><br />
+      <v-col cols="12" lg="5">
+        <div :class="{'mt-15':$vuetify.display.lg||$vuetify.display.xl||$vuetify.display.xxl}">
+          <h3>Create An Account</h3>
+          <p class="mt-5">
           &bull; Get Your Free Report<br />
           &bull; Create Additional  Free Reports<br />
           &bull; Optionally Share Your Reports<br />
+          </p>
+        </div>
       </v-col>
     </v-row>
     <v-row>

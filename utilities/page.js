@@ -15,13 +15,13 @@ export default {
         return "<html>"+
             "<head>"+
             "<meta name='author' content='Vet My Idea'></meta>"+
-            "<meta name='description' content='Information about starting a business "+title.replace(/'/g,"&apos;")+"'></meta>"+
+            "<meta name='description' content='Information about starting a "+title.replace(/'/g,"&apos;")+"'></meta>"+
             "<meta name='viewport' content='width=device-width, initial-scale=1.0'>"+
             "<meta name='robots' content='noindex'>"+
             "<meta property='og:url' content='https://reports.vetmyidea.biz/"+url+"' />"+
             "<meta property='og:type' content='website' />"+
             "<meta property='og:title' content='${title}' />"+
-            "<meta property='og:description' content='Information about starting a business "+title.replace(/'/g,"&apos;")+"' />"+
+            "<meta property='og:description' content='Information about starting a "+title.replace(/'/g,"&apos;")+"' />"+
             "<meta property='og:image' content='https://reports.vetmyidea.biz/core/vetmyidea.png' />"+
             "<link rel='preconnect' href='https://fonts.googleapis.com'>"+
             "<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>"+
@@ -53,7 +53,7 @@ export default {
                 "return t;"+
                 "}(document, 'script', 'twitter-wjs'));"+
             "</script>"+
-                "<title>"+title+"</title>"+
+                "<title>"+title.replace(/'/g,"&apos;")+"</title>"+
                 "</head>"+
                 "<body class='report'>"+
                 "<header class='report'>"+

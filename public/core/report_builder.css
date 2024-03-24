@@ -22,6 +22,12 @@ h1.report  {
     margin-top:15px;
 }
 
+.fb-share-button {
+    margin-left:5px;
+    margin-right:5px;
+}
+
+
 #report {
     padding:10px;
 }
@@ -170,3 +176,80 @@ div.section {
 .clear {
     clear:both;
 }
+
+/* Phones and Tablets */
+@media only screen and (max-width: 1200px) {
+   h1.report {
+       width:87.5vw;
+       float:none;
+       text-align:center;
+       font-size:1em;
+   } 
+
+   .header-right {
+       font-size:1em;
+       margin-top:10px;
+   }
+
+   .socials {
+       float:none;
+       text-align:right;
+       margin-bottom:15px;
+   }
+
+   .tabbank {
+       display:none;
+   }
+
+
+   .summaryLeft {
+      float:none;
+      width:100%;
+   }
+
+   .summaryRight {
+      float:none;
+      display:none;
+   }
+
+   .circle-score {
+      height: 240px;
+      width: 240px;
+      margin-top:0.5rem;
+      margin-bottom:0.5rem;
+   }
+
+   .circle-score .values {
+      top:40px;
+      font-size:2.0rem;
+   }
+}
+
+@media only screen and (max-width: 1480px) {
+
+    .tabcontents > section {
+        float:none!important;
+        display:block!important;
+        width:95.8vw!important;
+        margin-bottom:15px;
+        height:auto;
+     }
+}
+
+/* Tablets */
+@media only screen and (min-width: 601px) and (max-width:1480px) {
+
+    h1.report {
+        width:92.5vw;
+    }
+
+   .tabcontents > section {
+    float:none!important;
+    display:block!important;
+    width:95.8vw!important;
+    margin-bottom:15px;
+    height:auto;
+ }
+}
+
+

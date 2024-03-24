@@ -11,7 +11,7 @@
             <div class='mt-5 mb-15' style='text-align:center;'>
                <ul class='market-list' :class="{'ml-7': $vuetify.display.xs}">
                   <li>Report based on targeted location (city, region, country, or international)</li>
-                  <li>Expected growth in your industry</li>
+                  <li>Potential growth in your industry</li>
                   <li>Potential competitors</li>
                   <li>Potential risks</li>
                   <li>Evaluation of unique feature/value-proposition</li>

@@ -68,15 +68,15 @@ export default {
             }
 
             return openai.chat.completions.create({
-                model: "gpt-4", 
+                model: "gpt-4-turbo-preview", 
                 messages: [{role: "system", content: ctxt}, {role: "user", content: request}],
-                temperature: 0.1,
-                seed: 512 // it's a power of 2. This probably doesn't matter?
+                temperature: 0,
+                seed: 512
             }).then((response)=> {
                 if (this.debug) {
                     console.log("AGENT: "+ctxt+" | REQUEST: " +request+" | RESPONSE: "+response.choices[0].message.content);
                 }
-                return response.choices[0].message.content;
+                return response.choices[0].message.content.replace("```json","").replace("```","");
             });
         } 
         catch(error) { 

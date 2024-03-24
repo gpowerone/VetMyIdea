@@ -34,10 +34,6 @@ Report.init({
             }
         }
     },
-    PublicURL: {
-        allowNull: true,
-        type: DataTypes.STRING(255)
-    },
     Score: {
         allowNull: true,
         type: DataTypes.SMALLINT,
@@ -64,6 +60,11 @@ Report.init({
         type: DataTypes.BOOLEAN
     },
     IsReady: {
+        allowNull: false,
+        default: false,
+        type: DataTypes.BOOLEAN
+    },
+    IsProcessing: {
         allowNull: false,
         default: false,
         type: DataTypes.BOOLEAN

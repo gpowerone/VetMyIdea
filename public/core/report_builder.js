@@ -5,26 +5,28 @@ var current_tab=0;
 
 function build_report(report_string) {
     var report = JSON.parse(report_string);
+    var report_output = "";
 
     if (report.hasOwnProperty("novel")) {
         buildTab(buildNovelReport());
     }
     else if (report.viable=="no") {
         if (report.hasOwnProperty("rawMaterialsCost")) {
-            buildTab(buildNonViableReport(report.rawMaterialsCost.evaluatedString, report.rawMaterialsCost.explanation));
+            buildTab(buildNonViableReport(report.rawMaterialsCost.viable.evaluatedString, report.rawMaterialsCost.viable.explanation));
         }
         else if (report.hasOwnProperty("shippingCost")) {
-            buildTab(buildNonViableReport(report.shippingCost.evaluatedString, report.shippingCost.explanation));
+            buildTab(buildNonViableReport(report.shippingCost.viable.evaluatedString, report.shippingCost.viable.explanation));
         }
         else if (report.hasOwnProperty("laborCost")) {
-            buildTab(buildNonViableReport(report.laborCost.evaluatedString, report.laborCost.explanation));
+            buildTab(buildNonViableReport(report.laborCost.viable.evaluatedString, report.laborCost.viable.explanation));
         }
         else if (report.hasOwnProperty("uniqueFeature")) {
-            buildTab(buildNonViableReport(report.uniqueFeature.evaluatedString, report.uniqueFeature.explanation));
+            buildTab(buildNonViableReport(report.uniqueFeature.viable.evaluatedString, report.uniqueFeature.viable.explanation));
         }
         else {
             buildTab(buildNonViableReport("Product: "+report.summary.product, report.explanation));
         }
+
     }
     else {
 
@@ -33,19 +35,20 @@ function build_report(report_string) {
         buildTab(buildFeatures(report));
         buildTab(buildCosts(report));
         buildTab(buildRisks(report));
-        doAffiliateCode();
 
-        let dt = new Date(report.created);
-
-        return "<h1 class='report'>"+sanitize(report.summary.title)+"</h1>"+
-                "<div class='socials'>"+generateSocials(report.summary.url)+"</div>"+
-                "<div class='clear'></div>" +
-                "<div class='tabbank'>"+this.report_tabs+"<div class='clear'></div></div>"+
-                "<div class='tabcontents'>"+this.report_tab_contents+"<div class='clear'></div></div>"+
-                "<div class='run'><span style='font-style:italic;'>Report Created: "+dt.getFullYear()+"-"+dt.getMonth()+"-"+dt.getDay()+"</span> [If that was a long time ago, then this report is probably out-of-date]</div>"+
-                "<div class='run'>Vet My Idea reports are not advice and may be factually incorrect. Use at your own risk. Please see the <a href='https://vetmyidea.biz/terms'>Terms of Service</a> for further detail</div>";
-
+        report_output += "<div class='socials'>"+generateSocials(report.summary.url)+"</div>"+
+                "<h1 class='report'>"+sanitize(report.summary.title)+"</h1>"+
+                "<div class='clear'></div>";
+            
     }
+
+    let dt = new Date(report.created);
+    doAffiliateCode();
+
+    return  "<div class='tabbank'>"+this.report_tabs+"<div class='clear'></div></div>"+
+            "<div class='tabcontents'>"+this.report_tab_contents+"<div class='clear'></div></div>"+
+            "<div class='run'><span style='font-style:italic;'>Report Created: "+dt.getFullYear()+"-"+dt.getMonth()+"-"+dt.getDay()+"</span> [If that was a long time ago, then this report is probably out-of-date]</div>"+
+            "<div class='run'>Vet My Idea reports are not advice and may be factually incorrect. Use at your own risk. Please see the <a href='https://vetmyidea.biz/terms'>Terms of Service</a> for further detail</div>";
 }
 
 function buildTab(tab_input) {
@@ -109,8 +112,9 @@ function buildNonViableReport(strategy,explanation) {
         "<p>We found one or more arguments that your stated strategy: '"+strategy+"' is non-viable. These are in the paragraph below this one:</p>"+
         "<p>&quot;"+explanation+"&quot;</p>"+
         "<p><b>Warning</b>: <em>You should independently verify the correctness of these arguments</em></p>"+
-        "<p>Potentially non-viable ideas are not scored because if they are non-viable they would automatically receive a score of zero</p>"
-      "</div>"; 
+        "<p>Potentially non-viable ideas are not scored because if they are non-viable they would automatically receive a score of zero</p>"+
+      "</div>"+
+      "</section>"; 
 
     let nonviable_result={
         name: "Summary",
@@ -133,8 +137,9 @@ function buildNovelReport() {
         "This might be a good thing, as being first to market with a novel product or service that is sought-after could be lucrative. It could also be a bad thing, "+
         "for the reason that the product or service doesn't exist yet (in this location or at all) could be because it is not sought-after (in this location or at all). "+
         "Our tool cannot help you determine which of these statements is more truthy for your idea. Additional research is necessary to determine if this idea is a valid one</p>"+
-        "<p>Ideas with this classification do not receive a score because we have insufficient data to process a report</p>"
-      "</div>"; 
+        "<p>Ideas with this classification do not receive a score because we have insufficient data to process a report</p>"+
+      "</div>"+
+      "</section>"; 
 
     let novel_result={
         name: "Summary",
@@ -254,38 +259,59 @@ function buildGrowthCompetitors(growth, competitors) {
 
 function buildFeatures(report) {
 
+    let contents = "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'><div class='section'>";
+
     if (report.uniqueFeature) {
-        let contents = "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>";
-   
+     
         contents+="<h3>Evaluation of Feature Unique To Your Product or Service "+scoreStyle(report.uniqueFeature.score)+"</h3>";
         contents+="<p><b>Feature</b>: "+report.uniqueFeature.evaluatedString+"</p>"
         contents+="<p>"+report.uniqueFeature.benefits+"</p>";
     
-        contents +="</div></section>";
-
-        let features_result={
-            name: "Features",
-            contents: contents,
-            id: tab_id,
-            width:"150px"
-        };
-
-        tab_id++;
-
-        return features_result;
     }
-    else {
-        return null;
+    else if (!report.hadUniqueFeature) {
+        
+        let lackUniqueInfraction=0;
+        if (report.competitors>6) {
+            lackUniqueInfraction=-15;
+        }
+
+        contents+="<h3>No Unique Feature or Cost Cutting Differentiation "+scoreStyle(lackUniqueInfraction)+"</h3>";
+        contents+="<p>You didn't indicate a unique feature differentiator or any cost-cutting differentiation. "+
+        "While this doesn't make an idea non-viable, in a saturated market, it will be hard to win customers without a draw that the competition can't provide. Therefore, we assess a score penalty if there are a lot of competitors.</p>"+
+        "<p>It is possible that your business will differentiate itself in a manner that this tool doesn't evaluate (e.g. marketing), in which case you may be able to ignore this, although it is encouraged for you to consider how you"+
+        " could differentiate your idea</p>";
     }
+
+    contents +="</div></section>";
+
+    let features_result={
+        name: "Features",
+        contents: contents,
+        id: tab_id,
+        width:"150px"
+    };
+
+    tab_id++;
+
+    return features_result;
 }
 
 function buildScoreBreakdown(report) {
+
+    let lackUniqueInfraction=0;
+    if (report.competitors>6) {
+        lackUniqueInfraction=-15;
+    }
+
     let breakdown="<div style='width:150px;float:left;font-size:1.5em;'><b>Base Score</b>:</div><div style='float:right;font-size:1.5em;'>50</div><div class='clear'></div>";
     if (report.expectedGrowth.score!==0) {
         breakdown+="<div style='width:150px;float:left;font-size:1.5em;margin-top:5px;'>Expected Growth:</div><div style='float:right;font-size:1.5em;margin-top:5px;'>"+scoreStyle(report.expectedGrowth.score)+"</div><div class='clear'></div>";
     }
     if (report.uniqueFeature && report.uniqueFeature.score!==0) {
         breakdown+="<div style='width:150px;float:left;font-size:1.5em;margin-top:5px;'>Unique Feature:</div><div style='float:right;font-size:1.5em;margin-top:5px;'>"+scoreStyle(report.uniqueFeature.score)+"</div><div class='clear'></div>";
+    }
+    if (lackUniqueInfraction<0) {
+        breakdown+="<div style='width:150px;float:left;font-size:1.5em;margin-top:5px;'>Lack of Differentiation:</div><div style='float:right;font-size:1.5em;margin-top:5px;'>"+scoreStyle(lackUniqueInfraction)+"</div><div class='clear'></div>";
     }
     if (report.rawMaterialsCost && report.rawMaterialsCost.score!==0) {
         breakdown+="<div style='width:150px;float:left;font-size:1.5em;margin-top:5px;'>Raw Material Cost:</div><div style='float:right;font-size:1.5em;margin-top:5px;'>"+scoreStyle(report.rawMaterialsCost.score)+"</div><div class='clear'></div>";
