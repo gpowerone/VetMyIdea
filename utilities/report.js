@@ -101,8 +101,8 @@ export default {
             if (legality.answer=='no') {
                
                 let risk = await this.evaluateRisk(targetStatement+" "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'")
-                if (risk.inability_to_find_talent<100) {
-                    if (risk.employee_injury<100) {
+                if (risk.inability_to_find_talent<80) {
+                    if (risk.employee_injury<80) {
                         let score=0; 
 
                         let explanation=""; 
@@ -120,7 +120,7 @@ export default {
                       
                         explanation+=benefits.explanation;
   
-                        if (risk.total>=150) {
+                        if (risk.total>=130) {
                              score-=20;
                              explanation+="<br /><br /><em>Risks</em><br />"+risk.explanation;
                         }

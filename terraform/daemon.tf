@@ -19,11 +19,15 @@ resource "aws_ecs_task_definition" "vetmyidea_daemon_task" {
       cpu       = 1024
       memory    = 2048
       essential = true
-      command   = ["node", "./jobs/forever.js"],
+      command   = ["/bin/bash", "-c", "npx sequelize-cli db:migrate --env production && node ./jobs/forever.js"],
       environment = [
         {
             name = "NUXT_DB_HOST"
             value = aws_db_instance.postgres_db.address
+        },
+        {
+            name = "NODE_ENV"
+            value = "production"
         }
       ],
       secrets = [

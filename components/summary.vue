@@ -56,16 +56,20 @@
         <v-container class="mt-5 pa-0" fluid>
             <v-row>
                 <v-col cols="6">
-                    <v-btn class="next-btn" @click="handleBack">
+                    <v-btn class="next-btn" @click="handleBack" :disabled="isSubmitted">
                          <v-icon :icon="mdiArrowLeft"></v-icon>
                     </v-btn>
                 </v-col>
                 <v-col cols="6">
                     <div class="text-right mt-3" >
-                        <v-btn @click="doCompleteReport">
+                        <v-btn @click="doCompleteReport" :disabled="isSubmitted">
                             Create Report!
                         </v-btn>
-                            <div ref="root" />
+                        <div class="text-right">
+                            <spinner class="mt-5" :isLoading="isSubmitted" />
+                        </div>
+                        <div ref="root" />
+                           
                     </div>
                 </v-col>
             </v-row>
@@ -75,6 +79,7 @@
 
 <script setup>
 import { mdiArrowLeft } from '@mdi/js'
+import Spinner from '../components/spinner.vue';
 </script>
 
 <script>
@@ -99,6 +104,7 @@ export default {
         uniqueFeaturesEntry: null,
         targetedLocation: null,
         product: null,
+        isSubmitted:false,
     }
   },
   mounted() {
@@ -180,6 +186,7 @@ export default {
   methods: {
     async doCompleteReport() {
         try {
+            this.isSubmitted=true;
             const token = window.grecaptcha.getResponse();
             if (token.length>0) {
                 const response = await fetch('/api/report/add', {
@@ -197,6 +204,8 @@ export default {
                         token: token
                     }),
                 });
+
+                this.isSubmitted=false;
 
                 if (!response.ok) {
                     this.$store.state.errorText="Failed to contact the backend, check your internet connection"

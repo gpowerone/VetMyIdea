@@ -92,6 +92,7 @@ const store = useStore();
 let panelOpt=ref(0);
 
 watch(panelOpt, async (newValue) => {
+   console.log("hi");
     localStorage.setItem("panelOpt", newValue)
 });
 
