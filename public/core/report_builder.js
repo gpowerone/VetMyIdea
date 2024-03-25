@@ -5,7 +5,6 @@ var current_tab=0;
 
 function build_report(report_string) {
     var report = JSON.parse(report_string);
-    var report_output = "";
 
     if (report.hasOwnProperty("novel")) {
         buildTab(buildNovelReport());
@@ -30,24 +29,21 @@ function build_report(report_string) {
     }
     else {
 
-        buildTab(buildSummary(report.summary,buildScoreBreakdown(report)));
+        buildTab(buildSummary(report));
         buildTab(buildGrowthCompetitors(report.expectedGrowth, report.competitors));
-        buildTab(buildFeatures(report));
-        buildTab(buildCosts(report));
+        buildTab(buildRawMaterialsCosts(report));
+        buildTab(buildLaborCosts(report));
+        buildTab(buildShippingCosts(report));
         buildTab(buildRisks(report));
 
-        report_output += "<div class='socials'>"+generateSocials(report.summary.url)+"</div>"+
-                "<h1 class='report'>"+sanitize(report.summary.title)+"</h1>"+
-                "<div class='clear'></div>";
-            
     }
 
     let dt = new Date(report.created);
     doAffiliateCode();
 
-    return  "<div class='tabbank'>"+this.report_tabs+"<div class='clear'></div></div>"+
+    return  "<div class='tabbank'>"+this.report_tabs+"<div class='socials'>"+generateSocials(report.summary.url)+"</div><div class='clear'></div></div>"+
             "<div class='tabcontents'>"+this.report_tab_contents+"<div class='clear'></div></div>"+
-            "<div class='run'><span style='font-style:italic;'>Report Created: "+dt.getFullYear()+"-"+dt.getMonth()+"-"+dt.getDay()+"</span> [If that was a long time ago, then this report is probably out-of-date]</div>"+
+            "<div class='run'><span style='font-style:italic;'>Report Created: "+dt.getFullYear()+"-"+(dt.getMonth()+1)+"-"+dt.getDate()+"</span> [Reports are time-sensitive!]</div>"+
             "<div class='run'>Vet My Idea reports are not advice and may be factually incorrect. Use at your own risk. Please see the <a href='https://vetmyidea.biz/terms'>Terms of Service</a> for further detail</div>";
 }
 
@@ -63,22 +59,43 @@ function buildTab(tab_input) {
     }
 }
 
-function buildCosts(report) {
-    if (report.rawMaterialsCost || report.laborCost || report.shippingCost) {
+function buildLaborCosts(report) {
+    if (report.laborCost) {
         let contents =   
             "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>" +
                 "<div class='section'>";
         
-        if (report.rawMaterialsCost) {
-            contents+="<h3>Reduced Raw Materials Cost "+scoreStyle(report.rawMaterialsCost.score)+"</h3>";
-            contents+="<p><b>Plan</b>: "+report.rawMaterialsCost.evaluatedString+"</p>"
-            contents+="<p>"+report.rawMaterialsCost.benefits+"</p>";
-        }
         if (report.laborCost) {
             contents+="<h3>Reduced Labor Cost "+scoreStyle(report.laborCost.score)+"</h3>";
             contents+="<p><b>Plan</b>: "+report.laborCost.evaluatedString+"</p>"
             contents+="<p>"+report.laborCost.benefits+"</p>";
         }
+
+        contents += "</div></section>";
+
+        let cost_result={
+            name: "Labor Cost",
+            contents: contents,
+            id: tab_id,
+            width: "150px"
+        };
+    
+        tab_id++;
+    
+        return cost_result;
+
+    }
+    else {
+        return null;
+    }
+}
+
+function buildShippingCosts(report) {
+    if (report.shippingCost) {
+        let contents =   
+            "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>" +
+                "<div class='section'>";
+        
         if (report.shippingCost) {
             contents+="<h3>Reduced Shipping Cost "+scoreStyle(report.shippingCost.score)+"</h3>";
             contents+="<p><b>Plan</b>: "+report.shippingCost.evaluatedString+"</p>"
@@ -88,10 +105,41 @@ function buildCosts(report) {
         contents += "</div></section>";
 
         let cost_result={
-            name: "Costs",
+            name: "Shipping Cost",
             contents: contents,
             id: tab_id,
-            width: "100px"
+            width: "200px"
+        };
+    
+        tab_id++;
+    
+        return cost_result;
+
+    }
+    else {
+        return null;
+    }
+}
+
+function buildRawMaterialsCosts(report) {
+    if (report.rawMaterialsCost) {
+        let contents =   
+            "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>" +
+                "<div class='section'>";
+        
+        if (report.rawMaterialsCost) {
+            contents+="<h3>Reduced Raw Materials Cost "+scoreStyle(report.rawMaterialsCost.score)+"</h3>";
+            contents+="<p><b>Plan</b>: "+report.rawMaterialsCost.evaluatedString+"</p>"
+            contents+="<p>"+report.rawMaterialsCost.benefits+"</p>";
+        }
+
+        contents += "</div></section>";
+
+        let cost_result={
+            name: "Raw Materials Cost",
+            contents: contents,
+            id: tab_id,
+            width: "250px"
         };
     
         tab_id++;
@@ -159,33 +207,13 @@ function buildRisks(report) {
         "<div class='section'><h3>Regulatory Risk: "+sanitize(report.regulatoryRisk.risk.toUpperCase())+" "+scoreStyle(report.regulatoryRisk.score)+"</h3>"+
         "<p>"+sanitize(report.regulatoryRisk.explanation)+"</p>";
 
-    if (report.uniqueFeature && report.uniqueFeature.risk) {
-        "<h3>Risk of Feature Unique to Your Product or Service "+scoreStyle(report.uniqueFeature.risk.score)+"</h3>"+
-        "<p>"+sanitize(report.uniqueFeature.risk.explanation)+"</p>";
-    }
-
-    if (report.rawMaterialsCost && report.rawMaterialsCost.risk) {
-        "<h3>Risk of Raw Materials Cost Strategy "+scoreStyle(report.rawMaterialsCost.risk.score)+"</h3>"+
-        "<p>"+sanitize(report.rawMaterialsCost.risk.explanation)+"</p>";
-    }
-
-    if (report.laborCost && report.laborCost.risk) {
-        "<h3>Risk of Labor Cost Strategy "+scoreStyle(report.laborCost.risk.score)+"</h3>"+
-        "<p>"+sanitize(report.laborCost.risk.explanation)+"</p>";
-    }
-
-    if (report.shippingCost && report.shippingCost.risk) {
-        "<h3>Risk of Shipping Cost Strategy "+scoreStyle(report.shippingCost.risk.score)+"</h3>"+
-        "<p>"+sanitize(report.shippingCost.risk.explanation)+"</p>";
-    }
-
     contents += "</div></section>";
 
     let risk_result={
-        name: "Risks",
+        name: "Regulatory Risk",
         contents: contents,
         id: tab_id,
-        width: "100px"
+        width: "200px"
     };
 
     tab_id++;
@@ -193,20 +221,19 @@ function buildRisks(report) {
     return risk_result;   
 }
 
-function buildSummary(summary,scorebreakdown) {
-
+function buildSummary(report) {
 
     let bordercolor="#444";
-    if (summary.score>64) {
+    if (report.summary.score>64) {
         bordercolor="green";
     }
-    if (summary.score>80) {
-        summary.bordercolor="darkgreen";
+    if (report.summary.score>80) {
+        bordercolor="darkgreen";
     }
-    if (summary.score<36) {
+    if (report.summary.score<36) {
         bordercolor="red";
     }
-    if (summary.score<20) {
+    if (report.summary.score<20) {
         bordercolor="#8B0000";
     }
 
@@ -215,15 +242,41 @@ function buildSummary(summary,scorebreakdown) {
         "<div class='section'>"; 
 
     contents += "<div class='summaryLeft'>";
-    contents += "<div class='circle-score' style='border: 3.6rem solid "+bordercolor+";'><div class='values'>"+summary.score+"</div><div class='labels'>"+sanitize(summary.scoremeaning)+"</div></div>";
+
+    contents += "<h3 class='productTitle' style='margin-top:4.5rem;'>Product/Service &amp; Targeted Location</h3><p><em>"+this.sanitize(report.summary.title)+"</em></p>";
+
+    if (report.uniqueFeature) {
+     
+        contents+="<h3 class='uniqueFeatureHeader' style='margin-top:50px;'>Unique Feature "+scoreStyle(report.uniqueFeature.score)+"</h3>";
+        contents+="<p><em>"+report.uniqueFeature.evaluatedString+"</em></p>"
+        contents+="<p>"+report.uniqueFeature.benefits+"</p>";
+    
+    }
+    else if (!report.hadUniqueFeature) {
+        
+        let lackUniqueInfraction=0;
+        if (report.competitors>6) {
+            lackUniqueInfraction=-15;
+        }
+
+        contents+="<h3>No Differentiation "+scoreStyle(lackUniqueInfraction)+"</h3>";
+        contents+="<p>You didn't indicate any differentiation. "+
+        "While this doesn't make an idea non-viable, in a saturated market, it will be hard to win customers without a draw that the competition can't provide. Therefore, we assess a score penalty if there are a lot of competitors.</p>"+
+        "<p>It is possible that your business will differentiate itself in a manner that this tool doesn't evaluate (e.g. marketing), in which case you may be able to ignore this, although we encourage you to consider how you"+
+        " could differentiate your idea</p>";
+    }
+
+    contents += "</div>"
+    contents += "<div class='summaryRight'>";
+    contents += "<h3 class='scoreHeader' style='margin-top:4.5rem;'>Score</h3><div class='circle-score' style='border: 3.6rem solid "+bordercolor+";'><div class='values'>"+report.summary.score+"</div><div class='labels'>"+sanitize(report.summary.scoremeaning)+"</div></div>";
     contents += "<div class='score-text'>A favorable score does not mean that the evaluated business idea is good or vice-versa, and should not be construed as advice either way. ";
     contents += "There are many factors that influence whether or not a business will be successful, of which only some are measured by this tool</div>"
-    contents += "</div><div class='summaryRight'><h3 style='text-align:center;margin-top:100px;'>Score Breakdown</h3><div style='width:550px;margin:0 auto;margin-top:25px;'>"+scorebreakdown+"</div>";
-    contents += scoreMatrix()+"</div><div class='clear'></div>";
+    contents += "</div>";
+    contents += "<div class='clear'></div>";
     contents += "</div></section>";
 
     let summary_result={
-        name: "Score",
+        name: "Summary",
         contents: contents,
         id: tab_id,
         width: "150px"
@@ -257,92 +310,6 @@ function buildGrowthCompetitors(growth, competitors) {
     return growth_result;
 }
 
-function buildFeatures(report) {
-
-    let contents = "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'><div class='section'>";
-
-    if (report.uniqueFeature) {
-     
-        contents+="<h3>Evaluation of Feature Unique To Your Product or Service "+scoreStyle(report.uniqueFeature.score)+"</h3>";
-        contents+="<p><b>Feature</b>: "+report.uniqueFeature.evaluatedString+"</p>"
-        contents+="<p>"+report.uniqueFeature.benefits+"</p>";
-    
-    }
-    else if (!report.hadUniqueFeature) {
-        
-        let lackUniqueInfraction=0;
-        if (report.competitors>6) {
-            lackUniqueInfraction=-15;
-        }
-
-        contents+="<h3>No Unique Feature or Cost Cutting Differentiation "+scoreStyle(lackUniqueInfraction)+"</h3>";
-        contents+="<p>You didn't indicate a unique feature differentiator or any cost-cutting differentiation. "+
-        "While this doesn't make an idea non-viable, in a saturated market, it will be hard to win customers without a draw that the competition can't provide. Therefore, we assess a score penalty if there are a lot of competitors.</p>"+
-        "<p>It is possible that your business will differentiate itself in a manner that this tool doesn't evaluate (e.g. marketing), in which case you may be able to ignore this, although it is encouraged for you to consider how you"+
-        " could differentiate your idea</p>";
-    }
-
-    contents +="</div></section>";
-
-    let features_result={
-        name: "Features",
-        contents: contents,
-        id: tab_id,
-        width:"150px"
-    };
-
-    tab_id++;
-
-    return features_result;
-}
-
-function buildScoreBreakdown(report) {
-
-    let lackUniqueInfraction=0;
-    if (report.competitors>6) {
-        lackUniqueInfraction=-15;
-    }
-
-    let breakdown="<div style='width:150px;float:left;font-size:1.5em;'><b>Base Score</b>:</div><div style='float:right;font-size:1.5em;'>50</div><div class='clear'></div>";
-    if (report.expectedGrowth.score!==0) {
-        breakdown+="<div style='width:150px;float:left;font-size:1.5em;margin-top:5px;'>Expected Growth:</div><div style='float:right;font-size:1.5em;margin-top:5px;'>"+scoreStyle(report.expectedGrowth.score)+"</div><div class='clear'></div>";
-    }
-    if (report.uniqueFeature && report.uniqueFeature.score!==0) {
-        breakdown+="<div style='width:150px;float:left;font-size:1.5em;margin-top:5px;'>Unique Feature:</div><div style='float:right;font-size:1.5em;margin-top:5px;'>"+scoreStyle(report.uniqueFeature.score)+"</div><div class='clear'></div>";
-    }
-    if (lackUniqueInfraction<0) {
-        breakdown+="<div style='width:150px;float:left;font-size:1.5em;margin-top:5px;'>Lack of Differentiation:</div><div style='float:right;font-size:1.5em;margin-top:5px;'>"+scoreStyle(lackUniqueInfraction)+"</div><div class='clear'></div>";
-    }
-    if (report.rawMaterialsCost && report.rawMaterialsCost.score!==0) {
-        breakdown+="<div style='width:150px;float:left;font-size:1.5em;margin-top:5px;'>Raw Material Cost:</div><div style='float:right;font-size:1.5em;margin-top:5px;'>"+scoreStyle(report.rawMaterialsCost.score)+"</div><div class='clear'></div>";
-    }
-    if (report.laborCost && report.laborCost.score!==0) {
-        breakdown+="<div style='width:150px;float:left;font-size:1.5em;margin-top:5px;'>Labor Cost:</div><div style='float:right;font-size:1.5em;margin-top:5px;'>"+scoreStyle(report.laborCost.score)+"</div><div class='clear'></div>";
-    }
-    if (report.shippingCost && report.shippingCost.score!==0) {
-        breakdown+="<div style='width:150px;float:left;font-size:1.5em;margin-top:5px;'>Shipping Cost:</div><div style='float:right;font-size:1.5em;margin-top:5px;'>"+scoreStyle(report.shippingCost.score)+"</div><div class='clear'></div>";
-    }
-    if (report.regulatoryRisk.score!==0) {
-        breakdown+="<div style='width:150px;float:left;font-size:1.5em;margin-top:5px;'>Regulatory Risk:</div><div style='float:right;font-size:1.5em;margin-top:5px;'>"+scoreStyle(report.regulatoryRisk.score)+"</div><div class='clear'></div>";
-    }
-    if (report.uniqueFeature && report.uniqueFeature.risk && report.uniqueFeature.risk.score!==0) {
-        breakdown+="<div style='width:150px;float:left;font-size:1.5em;margin-top:5px;'>Unique Feature Risk:</div><div style='float:right;font-size:1.5em;margin-top:5px;'>"+scoreStyle(report.uniqueFeature.risk.score)+"</div><div class='clear'></div>";
-    }
-    if (report.rawMaterialsCost && report.rawMaterialsCost.risk && report.rawMaterialsCost.risk.score!==0) {
-        breakdown+="<div style='width:150px;float:left;font-size:1.5em;margin-top:5px;'>Raw Materials Cost Risk:</div><div style='float:right;font-size:1.5em;margin-top:5px;'>"+scoreStyle(report.rawMaterialsCost.risk.score)+"</div><div class='clear'></div>";
-    }
-    if (report.laborCost && report.laborCost.risk && report.laborCost.risk.score!==0) {
-        breakdown+="<div style='width:150px;float:left;font-size:1.5em;margin-top:5px;'>Labor Cost Risk:</div><div style='float:right;font-size:1.5em;margin-top:5px;'>"+scoreStyle(report.laborCost.risk.score)+"</div><div class='clear'></div>";
-    }
-    if (report.shippingCost && report.shippingCost.risk && report.shippingCost.risk.score!==0) {
-        breakdown+="<div style='width:150px;float:left;font-size:1.5em;margin-top:5px;'>Shipping Cost Risk:</div><div style='float:right;font-size:1.5em;margin-top:5px;'>"+scoreStyle(report.shippingCost.risk.score)+"</div><div class='clear'></div>";
-    }
-    breakdown += "<hr />";
-    breakdown+="<div style='width:150px;float:left;font-size:1.5em;'>Total Score:</div><div style='float:right;font-size:1.5em;'><b>"+report.summary.score+"</b></div><div class='clear'></div>";
-
-    return breakdown;
-}
-
 function doAffiliateCode() {
     this.report_tab_contents+= "<section id='tab"+tab_id+"' style='float:right;text-center;width:19vw;'><div style='text-align:center;margin-top:25px;'>Links To Our Affiliates</div><br /></section>";
 }
@@ -360,30 +327,9 @@ function generateSocials(url) {
 
 function sanitize(content) {
     if (typeof(content)==="string") {
-        return content.replace(/[^A-Za-z0-9\.,'\s]/g,"");
+        return content.replace(/[^A-Za-z0-9\.&,;'\s]/g,"");
     }
     return content;
-}
-
-function scoreMatrix() {
-     return "<h3 style='text-align:center;margin-top:75px;'>Score Matrix</h3>"+
-            "<div><table border='1' style='width:550px;font-size:1.5em;text-align:center;margin-left:auto;margin-right:auto;'>"+
-                "<tr>"+
-                    "<td style='color:darkgreen'>Highly Favorable</td><td>81-100</td>"+
-                "</tr>"+
-                "<tr>"+
-                    "<td style='color:green;'>Favorable</td><td>65-80</td>"+
-                "</tr>"+
-                "<tr>"+
-                    "<td style='color:#444;'>Fair</td><td>36-64</td>"+
-                "</tr>"+
-                "<tr>"+
-                    "<td style='color:red;'>Unfavorable</td><td>20-35</td>"+
-                "</tr>"+
-                "<tr>"+
-                    "<td style='color:#8B0000;'>Highly Unfavorable</td><td>0-19</td>"+
-                "</tr>"+
-            "</table></div>";
 }
 
 function scoreStyle(score) {

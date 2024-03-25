@@ -140,7 +140,7 @@ export default {
     }
     let stored_shipping_costs_e  = localStorage.getItem("shippingCostsEntry");
     if (stored_shipping_costs_e!==null) {
-        this.shippingCostsEntry=stored_labor_costs_e;
+        this.shippingCostsEntry=stored_shipping_costs_e;
     }
     let stored_unique_features_e  = localStorage.getItem("uniqueFeaturesEntry");
     if (stored_unique_features_e!==null) {

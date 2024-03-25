@@ -84,6 +84,10 @@ resource "aws_ecs_task_definition" "vetmyidea" {
        ValueFrom= aws_secretsmanager_secret.recaptcha_sitekey.arn
     },
     {
+        Name="NUXT_PUBLIC_OAUTH_CLIENT",
+        ValueFrom= aws_secretsmanager_secret.oauth_client.arn
+    },
+    {
        Name="NUXT_RECAPTCHA_SECRET",
        ValueFrom= aws_secretsmanager_secret.recaptcha_secret.arn
     }]

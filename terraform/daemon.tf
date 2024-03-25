@@ -21,6 +21,16 @@ resource "aws_ecs_task_definition" "vetmyidea_daemon_task" {
       essential = true
       command   = ["node", "./jobs/forever.js"],
       environment = [
+        {
+            name = "NUXT_DB_HOST"
+            value = aws_db_instance.postgres_db.address
+        }
+      ],
+      secrets = [
+          {
+            Name = "NUXT_DB_PASSWORD",
+            ValueFrom = aws_secretsmanager_secret.db_password.arn
+          },
           {
             Name="NUXT_AWS_CLIENT"
             ValueFrom= aws_secretsmanager_secret.aws_client.arn

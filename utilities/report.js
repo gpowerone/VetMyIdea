@@ -104,18 +104,8 @@ export default {
                 if (risk.inability_to_find_talent<100) {
                     if (risk.employee_injury<100) {
                         let score=0; 
-                        if (risk.total>=50) {
-                            score-=10;
-                            this.reportText+='"risk": {"score": "'+score+'", "explanation": "'+risk.explanation+'"}';
-                        }
-                        if (risk.total>=150) {
-                             score-=20;
-                            this.reportText+='"risk": {"score": "'+score+'", "explanation": "'+risk.explanation+'"}';
-                        }
 
-                        this.score+=score;
-                        score=0;
-
+                        let explanation=""; 
                         let benefits = await this.evaluateBenefit("'"+field.FieldValue+"'", benefitStatement);
 
                         if (benefits.answer.trim().toLowerCase()=='well') {
@@ -127,8 +117,20 @@ export default {
                         else {
                             score+=nonePenalty;
                         }
-                        this.reportText+='"benefits":"'+benefits.explanation+'",';
-                        
+                      
+                        explanation+=benefits.explanation;
+  
+                        if (risk.total>=150) {
+                             score-=20;
+                             explanation+="<br /><br /><em>Risks</em><br />"+risk.explanation;
+                        }
+                        else if (risk.total>=50) {
+                            score-=10;
+                            explanation+="<br /><br /><em>Risks</em><br />"+risk.explanation;
+                        }
+
+                        this.reportText+='"benefits":"'+explanation+'",';
+
                         this.score+=score;
                         this.reportText+='"score":'+score+',"evaluatedString":"'+field.FieldValue+'","viable":"yes"},';
                         
@@ -149,6 +151,7 @@ export default {
         }
         catch(e) {
             console.log("ERROR: "+e);
+            this.reportText+='"viable":{"evaluatedString":"'+field.FieldValue+'","explanation":"An error occurred during report processing. This is normally due to an answer that the processor couldn\'t understand. Please ensure that all answers are reasonable and comprehensible, then try again"}},';
         }
 
         return false;
@@ -157,41 +160,57 @@ export default {
 
     evaluateLegality: async function(evaluateString) {
 
-        let result = await Gpt.chatGPT(
-            "You are a lawyer with great knowledge of "+this.productType+". You practice in "+this.targetLocation + ". "+
-            "You provide answers with respect to legal facts only. " + 
-            "You write as if you are a 9th grade teacher teaching a novice student. " +
-            "You do not refer to yourself. ",
-            ["To the best of your knowledge as of today, is it illegal to "+evaluateString+"? "+
-            "Give your answer as an object of {\"answer\":\"yes|no\", \"explanation\":\"if answer==yes then explanation else null\"}"]);
+        try {
+            let result = await Gpt.chatGPT(
+                "You are a lawyer with great knowledge of "+this.productType+". You practice in "+this.targetLocation + ". "+
+                "You provide answers with respect to legal facts only. " + 
+                "You write as if you are a 9th grade teacher teaching a novice student. " +
+                "You do not refer to yourself. ",
+                ["To the best of your knowledge as of today, is it illegal to "+evaluateString+"? "+
+                "Give your answer as an object of {\"answer\":\"yes|no\", \"explanation\":\"if answer==yes then explanation else null\"}"]);
 
-        return JSON.parse(result[0].trim());
-
+            return JSON.parse(result[0].trim());
+        }
+        catch(e) {
+            console.log(e);
+            return null;
+        }
     },
 
     evaluateRisk: async function(evaluateString) {
-        let result = await Gpt.chatGPT(
-            "You are a risk analyst with great knowledge of "+this.productType+". You work in "+this.targetLocation + ". "+
-            "You provide answers with respect to objective data only. "+
-            "You write as if you are a 9th grade teacher teaching a novice student. " +
-            "You do not refer to yourself.",
-            ["Evaluate '"+evaluateString+"' for the following risks, with higher scores meaning most risky. Return only the JSON object with exactly the provided fields as your answer. "+
-            "{\"cyber_attacks\":\"score 0 to 10\", \"insider_threats\":\"score 0 to 10\", \"supply_chain_disruptions\":\"score 0 to 50\", \"employee_injury\": \"score 0 to 100\", "+
-            "\"inability_to_find_talent\": \"score 0 to 100\", \"reputation_loss\": \"0 to 50\", \"total\":\"total of all scores\", \"explanation\":\"if total>=50 then an explanation of why the idea is risky, focusing on the highest score else null\"}"]);
+        try {
+            let result = await Gpt.chatGPT(
+                "You are a risk analyst with great knowledge of "+this.productType+". You work in "+this.targetLocation + ". "+
+                "You provide answers with respect to objective data only. "+
+                "You write as if you are a 9th grade teacher teaching a novice student. " +
+                "You do not refer to yourself.",
+                ["Evaluate '"+evaluateString+"' for the following risks, with higher scores meaning most risky. Return only the JSON object with exactly the provided fields as your answer. "+
+                "{\"cyber_attacks\":\"score 0 to 10\", \"insider_threats\":\"score 0 to 10\", \"supply_chain_disruptions\":\"score 0 to 50\", \"employee_injury\": \"score 0 to 100\", "+
+                "\"inability_to_find_talent\": \"score 0 to 100\", \"reputation_loss\": \"0 to 50\", \"total\":\"total of all scores\", \"explanation\":\"if total>=50 then an explanation of why the idea is risky, focusing on the highest score else null\"}"]);
 
-            return JSON.parse(result[0].trim());
-
+                return JSON.parse(result[0].trim());
+        }
+        catch(e) {
+            console.log(e);
+            return null;
+        }
     },
 
     evaluateBenefit: async function(evaluateString,evaluateTarget) {
-        let result = await Gpt.chatGPT(
-            "You are an expert on "+this.prodouctType+" in "+this.targetLocation+". "+
-            "You provide answers with respect to objective data only. "+
-            "You write as if you are a 9th grade teacher teaching a novice student. " +
-            "You do not refer to yourself. ",
-            ["How well does "+evaluateString+" "+evaluateTarget+"? Give your answer as an object: { \"answer\":\"well|a little bit well|not at all\", \"explanation\":\"explanation\" }"]);
+        try {
+            let result = await Gpt.chatGPT(
+                "You are an expert on "+this.productType+" in "+this.targetLocation+". "+
+                "You provide answers with respect to objective data only. "+
+                "You write as if you are a 9th grade teacher teaching a novice student. " +
+                "You do not refer to yourself. ",
+                ["How well does "+evaluateString+" "+evaluateTarget+"? Give your answer as an object: { \"answer\":\"well|a little bit well|not at all\", \"explanation\":\"explanation\" }"]);
 
-        return JSON.parse(result[0].trim());
+            return JSON.parse(result[0].trim());
+        }
+        catch(e) {
+            console.log(e);
+            return null;
+        }
 
     },
 
@@ -213,7 +232,7 @@ export default {
         }
         if (field.FieldType == "Reduced Labor Cost") {
             this.hadUniqueFeature=true;
-            return await this.evaluateField("laborCost","reduce labor costs","by",0,"reduce raw materials costs for "+this.productType+" in "+this.targetLocation,field);
+            return await this.evaluateField("laborCost","reduce labor costs","by",0,"reduce labor costs for "+this.productType+" in "+this.targetLocation,field);
         }
         if (field.FieldType == "Reduced Shipping Cost") {
             this.hadUniqueFeature=true;
@@ -345,40 +364,5 @@ export default {
             return [];
         }
 
-    },
-    verifyReportInput: function(requestData) {
-        let data = {
-            IsValid: false,
-            FillFields: []
-        }
-
-        if (requestData.product && requestData.product.length>0) {
-            data.ProductType = requestData.product.replace(/[^\x00-\x7F]/g, "").trim();
-            if (data.ProductType.length<=100 && /^[A-Za-z0-9\.\'\s]+$/.test(data.ProductType)) {
-                if (requestData.targetedLocation && requestData.targetedLocation.length>0 && requestData.targetedLocation.length<200 && /^[A-Za-z0-9\,\s]+$/.test(requestData.targetedLocation)) {
-                    data.TargetLocation=requestData.targetedLocation.replace(/[^\x00-\x7F]/g, ""); 
-                    data.IsValid=true;
-
-                    if (requestData.rawMaterialsEntry && requestData.rawMaterialsEntry.length>0 && requestData.rawMaterialsEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.rawMaterialsEntry)) {
-                        data.FillFields.push({"FieldType": "Reduced Raw Materials Cost", "FieldValue": requestData.rawMaterialsEntry.replace(/[^\x00-\x7F]/g, "").trim()});
-                    }
-
-                    if (requestData.laborCostsEntry && requestData.laborCostsEntry.length>0 && requestData.laborCostsEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.laborCostsEntry)) {
-                        data.FillFields.push({"FieldType": "Reduced Labor Cost", "FieldValue": requestData.laborCostsEntry.replace(/[^\x00-\x7F]/g, "").trim()});
-                    }
-
-                    if (requestData.shippingCostsEntry && requestData.shippingCostsEntry.length>0 && requestData.shippingCostsEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.shippingCostsEntry)) {
-                        data.FillFields.push({"FieldType": "Reduced Shipping Cost", "FieldValue": requestData.shippingCostsEntry.replace(/[^\x00-\x7F]/g, "").trim()});
-                    }
-
-                    if (requestData.uniqueFeaturesEntry && requestData.uniqueFeaturesEntry.length>0 && requestData.uniqueFeaturesEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.uniqueFeaturesEntry)) {
-                        data.FillFields.push({"FieldType": "Unique Feature", "FieldValue": requestData.uniqueFeaturesEntry.replace(/[^\x00-\x7F]/g, "").trim()});
-                    }
-
-                }
-            }
-        }
-
-        return data;
     }
 }

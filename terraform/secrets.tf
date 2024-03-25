@@ -61,6 +61,11 @@ resource "aws_secretsmanager_secret" "oauth_redirect" {
   name = "oauth_redirect_vmi"
 }
 
+resource "aws_secretsmanager_secret" "oauth_client" {
+  name = "oauth_client_vmi"
+}
+
+
 resource "aws_secretsmanager_secret" "openai" {
   name = "openai_vmi"
 }
