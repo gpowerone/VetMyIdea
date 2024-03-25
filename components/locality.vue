@@ -57,7 +57,7 @@
     </v-container>
 </template>
 <script setup>
-import { Country, State, City }  from 'country-state-city';
+import csc  from 'countrycitystatejson';
 import { ref, watch, onMounted } from 'vue'
 import { mdiArrowRight, mdiArrowLeft } from '@mdi/js'
 
@@ -88,9 +88,9 @@ watch(state, async (newValue) => {
 function fillCityOptions() {
     city.value=null;
     if (country.value!==null && state.value!==null) {
-        let ccode = Country.getAllCountries().filter(p=>p.name===country.value)[0].isoCode;
-        let scode = State.getStatesOfCountry(ccode).filter(p=>p.name===state.value)[0].isoCode;
-        cityOptions.value = City.getCitiesOfState(ccode,scode).map(p=>p.name);
+        let ccode = csc.getCountries().filter(p=>p.name===country.value)[0].shortName;
+        console.log(csc.getCities(ccode,state.value));
+        cityOptions.value = csc.getCities(ccode,state.value);
     }
 }
 
@@ -99,8 +99,8 @@ function fillStateOptions() {
     city.value=null;
     cityOptions.value=[];
     if (country.value!==null) {
-        let code = Country.getAllCountries().filter(p=>p.name===country.value)[0].isoCode;
-        stateOptions.value = State.getStatesOfCountry(code).map(p=>p.name);
+        let code = csc.getCountries().filter(p=>p.name===country.value)[0].shortName;
+        stateOptions.value = csc.getStatesByShort(code);
     }
 }
 
@@ -129,7 +129,7 @@ function optionsHandled() {
 }
 
 onMounted(()=>{
-    countryOptions.value=Country.getAllCountries().map(p=>p.name);
+    countryOptions.value=csc.getCountries().map(p=>p.name);
 
     let stored_locality = localStorage.getItem("locality");
     if (stored_locality!==null) {

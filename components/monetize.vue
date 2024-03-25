@@ -35,18 +35,22 @@
 import { ref, watch, onMounted } from 'vue'
 import { mdiArrowRight } from '@mdi/js'
 
-let monetize=ref(null);
-let product=ref(null);
+let monetize=ref("");
+let product=ref("");
 let emit = defineEmits(['advancePanel']);
 let monetizeOptions=ref(["Start a business to sell a product or service","Accept donations","I do not plan to monetize my idea"])
 
-watch(monetize, async (newValue) => {
-    localStorage.setItem("monetize", newValue)
+watch(monetize, async (newValue, oldValue) => {
+    if (newValue!==oldValue && newValue.length<=50) {
+        localStorage.setItem("monetize", newValue)
+    }
     
 });
 
-watch(product, async (newValue) => {
-    localStorage.setItem("product", newValue)
+watch(product, async (newValue, oldValue) => {
+    if (newValue!==oldValue && newValue.length<=100) {
+        localStorage.setItem("product", newValue)
+    }
 });
 
 function handleAdvance() {

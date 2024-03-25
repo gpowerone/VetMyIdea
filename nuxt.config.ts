@@ -1,4 +1,6 @@
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import path from 'path'
+import fs from 'fs'
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
@@ -9,17 +11,23 @@ export default defineNuxtConfig({
       script: [
         {src: "https://www.google.com/recaptcha/api.js?render=explicit", defer: true, async: true},
         {src: "https://accounts.google.com/gsi/client", async:true},
-        {src: "https://reports.vetmyidea.biz/core/report_builder.js", crossorigin:"anonymous"},
+        /*{src: "https://reports.vetmyidea.biz/core/report_builder.js", crossorigin:"anonymous"},*/
         {src: "https://www.googletagmanager.com/gtag/js?id=G-Z4T5SBW4ZS", async:true}
       ],
-      link: [
+      /*link: [
         {href: "https://reports.vetmyidea.biz/core/report_builder.css", rel:"stylesheet", type:"text/css", crossorigin:"anonymous"}
-      ],
+      ],*/
       title: 'Vet My Idea'
     },
   },
   build: {
     transpile: ['vuetify'],
+  },
+  devServer: {
+    https: {
+      key: 'server.key',
+      cert: 'server.crt'
+    }
   },
   modules: [
     "floating-vue/nuxt",

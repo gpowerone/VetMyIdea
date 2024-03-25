@@ -58,7 +58,7 @@ export default {
       try {
         const token = window.grecaptcha.getResponse();
         if (token.length>0) {
-          const response = await fetch(useRuntimeConfig().public.envUrl+'/api/contact', {
+          const response = await fetch(useRuntimeConfig().public.envUrl+'/api/contact/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

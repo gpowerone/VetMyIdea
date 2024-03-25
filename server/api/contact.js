@@ -28,9 +28,8 @@ export default defineEventHandler(async (event) => {
 
     return { success: true, message: 'OK', data: {} };
   } catch (error) {
-    return createError({
-      statusCode: error.statusCode || 500,
-      statusMessage: error.message,
-    });
+
+    return { success: false, message: error.message, data: {} };
+
   }
 });

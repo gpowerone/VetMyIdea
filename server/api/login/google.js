@@ -22,7 +22,6 @@ export default defineEventHandler(async (event) => {
         return { success: true, data: session.UserFirstName }
 
     } catch (error) {
-        console.log(error);
         return { success: false }
     }
   });

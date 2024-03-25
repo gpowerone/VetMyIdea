@@ -89,7 +89,7 @@
 
   async function doDelete(reportID) {
     if (window.confirm("Are you sure you wish to delete this report? You will not be able to retrieve it later")) {
-        const response = await fetch('/api/report/delete', {
+        const response = await fetch('/api/report/delete/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -117,7 +117,7 @@
   }
 
   async function fetchTable() {
-     await fetch("/api/report/list")
+     await fetch("/api/report/list/")
         .then(response => response.json())
         .then(data => {
            

@@ -189,7 +189,7 @@ export default {
             this.isSubmitted=true;
             const token = window.grecaptcha.getResponse();
             if (token.length>0) {
-                const response = await fetch('/api/report/add', {
+                const response = await fetch('/api/report/add/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -235,7 +235,7 @@ export default {
                 }
             }
         } catch (error) {
-            console.log(error);
+           this.$store.state.errorText=error;
         }
     },
     execute () {

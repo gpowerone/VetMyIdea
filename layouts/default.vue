@@ -89,7 +89,7 @@ export default defineComponent({
   },
   methods: {
     doLogout() {
-        fetch("/api/login/logout", {
+        fetch("/api/login/logout/", {
             method: "GET",
         })
         .then(async (response)=>await response.json())

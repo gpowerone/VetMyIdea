@@ -14,7 +14,7 @@
                <h3 class="text-center">Start Here</h3>
                <monetize v-on:advancePanel="advancePanel" />
             </div>
-   
+             
             <div class="panel" v-if="panelOpt==1"  >
             <locality v-on:advancePanel="advancePanel" v-on:backPanel="backPanel" />
             </div>
@@ -29,7 +29,6 @@
                   <login v-on:backPanel="backPanel"  />
                </div>
             </div>
- 
 
         </v-col>
         <v-col cols="12" lg="5" xs="12" v-if="panelOpt==0" >
@@ -80,9 +79,9 @@
 </template>
 
 <script setup>
-import login from '../components/login.vue'
 import monetize from '../components/monetize.vue'
 import locality from '../components/locality.vue'
+import login from '../components/login.vue'
 import differentiators from '../components/differentiators.vue'
 import summarycomp from '../components/summary.vue'
 import { ref, watch, defineEmits } from 'vue'
@@ -91,9 +90,10 @@ import { useStore } from 'vuex'
 const store = useStore();
 let panelOpt=ref(0);
 
-watch(panelOpt, async (newValue) => {
-   console.log("hi");
-    localStorage.setItem("panelOpt", newValue)
+watch(panelOpt, async (newValue, oldValue) => {
+    if (newValue!==oldValue) {
+      localStorage.setItem("panelOpt", newValue)
+    }
 });
 
 function advancePanel() {
@@ -115,7 +115,6 @@ onMounted(() => {
   if (stored_panel!==null) {
       panelOpt.value=stored_panel;
   }
-  console.log(panelOpt.value);
 })
 </script>
 

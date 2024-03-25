@@ -74,7 +74,7 @@ export default {
     if (this.isStateValid(this.$route.query.state)) {
         localStorage.removeItem('pestate');
 
-        fetch("/api/login/oauth", {
+        fetch("/api/login/oauth/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ code: this.$route.query.code }),
@@ -103,7 +103,7 @@ export default {
       google.accounts.id.initialize({
         client_id: this.googleclientid,
         callback: (response) => {
-          fetch("/api/login/google", {
+          fetch("/api/login/google/", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ credential: response.credential }),
@@ -154,7 +154,6 @@ export default {
                 return (pestate.value === state && Date.now() - (new Date(pestate.expiry).getTime()) < 600000);
             } 
             catch (e) {
-                console.log(e);
                 return false;
             }
         }

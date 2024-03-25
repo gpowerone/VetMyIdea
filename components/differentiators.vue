@@ -90,35 +90,55 @@ let uniqueFeaturesEntry = ref("");
 
 let emit = defineEmits(['advancePanel','backPanel']);
 
-watch(selectedDifferentiation, async (newValue) => {
-    localStorage.setItem("selectedDifferentiation", newValue)
+watch(selectedDifferentiation, async (newValue, oldValue) => {
+    if (newValue!==oldValue && newValue.length<20) {
+        localStorage.setItem("selectedDifferentiation", newValue)
+    }
 });
-watch(productionCosts, async (newValue) => {
-    localStorage.setItem("productionCosts", newValue)
+watch(productionCosts, async (newValue, oldValue) => {
+    if (newValue!==oldValue) {
+        localStorage.setItem("productionCosts", newValue)
+    }
 });
-watch(rawMaterialsCheaper, async (newValue) => {
-    localStorage.setItem("rawMaterialsCheaper", newValue)
+watch(rawMaterialsCheaper, async (newValue, oldValue) => {
+    if (newValue!==oldValue) {
+        localStorage.setItem("rawMaterialsCheaper", newValue)
+    }
 });
-watch(laborCostsCheaper, async (newValue) => {
-    localStorage.setItem("laborCostsCheaper", newValue)
+watch(laborCostsCheaper, async (newValue, oldValue) => {
+    if (newValue!==oldValue) {
+        localStorage.setItem("laborCostsCheaper", newValue)
+    }
 });
-watch(shippingCostsCheaper, async (newValue) => {
-    localStorage.setItem("shippingCostsCheaper", newValue)
+watch(shippingCostsCheaper, async (newValue, oldValue) => {
+    if (newValue!==oldValue) {
+        localStorage.setItem("shippingCostsCheaper", newValue)
+    }
 });
-watch(uniqueFeatures, async (newValue) => {
-    localStorage.setItem("uniqueFeatures", newValue)
+watch(uniqueFeatures, async (newValue, oldValue) => {
+    if (newValue!==oldValue) {
+        localStorage.setItem("uniqueFeatures", newValue)
+    }
 });
-watch(rawMaterialsEntry, async (newValue) => {
-    localStorage.setItem("rawMaterialsEntry", newValue)
+watch(rawMaterialsEntry, async (newValue, oldValue) => {
+    if (newValue!==oldValue && newValue.length<=300) {
+        localStorage.setItem("rawMaterialsEntry", newValue)
+    }
 });
-watch(laborCostsEntry, async (newValue) => {
-    localStorage.setItem("laborCostsEntry", newValue)
+watch(laborCostsEntry, async (newValue, oldValue) => {
+    if (newValue!==oldValue && newValue.length<=300) {
+        localStorage.setItem("laborCostsEntry", newValue)
+    }
 });
-watch(shippingCostsEntry, async (newValue) => {
-    localStorage.setItem("shippingCostsEntry", newValue)
+watch(shippingCostsEntry, async (newValue, oldValue) => {
+    if (newValue!==oldValue && newValue.length<=300) {
+        localStorage.setItem("shippingCostsEntry", newValue)
+    }
 });
-watch(uniqueFeaturesEntry, async (newValue) => {
-    localStorage.setItem("uniqueFeaturesEntry", newValue)
+watch(uniqueFeaturesEntry, async (newValue, oldValue) => {
+    if (newValue!==oldValue && newValue.length<=300) {
+        localStorage.setItem("uniqueFeaturesEntry", newValue)
+    }
 });
 
 function handleAdvance() {
