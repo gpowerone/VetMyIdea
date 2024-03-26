@@ -30,13 +30,9 @@
                 <v-list>
                     <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/">Home</NuxtLink></v-list-item> 
                     <v-divider />
-                    <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/about">About</NuxtLink></v-list-item>            
-                    <v-divider />
-                    <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/contact">Contact</NuxtLink></v-list-item>            
-                    <v-divider />
-                    <v-list-item class="menuitem"><NuxtLink role="menuitem" to="https://vetmyidea.blogspot.com/">Blog</NuxtLink></v-list-item>
-                    <v-divider />
-                    <v-list-item class=" menuitem"><NuxtLink role="menuitem" class="cursor" @click="doLogout">Logout</NuxtLink></v-list-item>
+                     <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/dashboard">My Reports</NuxtLink></v-list-item> 
+                    <v-divider v-if="$store.state.isLoggedIn" />
+                    <v-list-item v-if="$store.state.isLoggedIn" class=" menuitem"><NuxtLink role="menuitem" class="cursor" @click="doLogout">Logout</NuxtLink></v-list-item>
                 </v-list>
             </v-navigation-drawer>
 

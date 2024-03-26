@@ -26,7 +26,7 @@
                   <summarycomp v-on:backPanel="backPanel" />
                </div>
                <div v-else>
-                  <login v-on:backPanel="backPanel"  />
+                  <login v-on:backPanel="backPanel" :loadBack="true"  />
                </div>
             </div>
 

@@ -17,7 +17,8 @@ export default defineEventHandler(async (event) => {
                 const result = await Report.findOne({
                     where: {
                         ReportID: requestData.reportId,
-                        UserID: session.UserID
+                        UserID: session.UserID,
+                        IsProcessing: false
                     },
                 });
             
@@ -35,9 +36,12 @@ export default defineEventHandler(async (event) => {
     
                     return { success: true, message: `Report has been successfully deleted.` };
                 }
+                else {
+                    return { success: false, message: "Could not delete report" };
+                }
             }
             else {
-
+                return { success: false, message: "Invalid session" };
             }
         }
     } catch (error) {

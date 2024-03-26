@@ -23,12 +23,6 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vuetify'],
   },
-  devServer: {
-    https: {
-      key: 'server.key',
-      cert: 'server.crt'
-    }
-  },
   modules: [
     "floating-vue/nuxt",
     "nuxt-security",

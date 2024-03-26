@@ -29,7 +29,7 @@
         </div>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="loadBack">
         <v-col cols="12">
             <v-btn @click="handleBack" class="next-btn">
                <v-icon :icon="mdiArrowLeft" />
@@ -51,6 +51,9 @@ export default {
       password: '',
       showPassword: false,
     };
+  },
+  props: {
+    loadBack: Boolean,
   },
   computed: {
     googleclientid() {

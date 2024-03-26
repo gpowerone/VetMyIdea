@@ -8,7 +8,7 @@
 
             <p class="text-center mt-10" style='font-size:1.2em;'>Evaluate it <em>before</em> you start. Save time and money! Get a <span style='color:#a32d26;font-weight:bold;'>Vet My Idea Report</span>:</p>
 
-            <div class='mt-5 mb-15' style='text-align:center;'>
+            <div class='mt-5 mb-7' style='text-align:center;'>
                <ul class='market-list' :class="{'ml-7': $vuetify.display.xs}">
                   <li>Report based on targeted location (city, region, country, or international)</li>
                   <li>Potential growth in your industry</li>
@@ -22,6 +22,8 @@
                   <li>No waitlist! Vet My Idea will be fully-functional on launch day</li>
                </ul>
             </div>
+
+            <p class='text-center mb-7' style='font-size:1.2em'><b>Sample report</b>: we threw the <a href='https://reports.vetmyidea.biz/kitchen_sink_bbb3dcb0-324f-4256-9c8a-e46c14540132.html' target='_blank' rel='noopener noreferrer'>kitchen sink</a> at it!</p>
 
             <p class='text-center' style='font-size:1.2em;'><b>Want all the latest updates?</b> Join us on <a href='https://discord.gg/4ABJy6n4'>Discord</a> or <a href='/contact'>Contact Us</a></p>
 
