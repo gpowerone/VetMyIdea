@@ -1,7 +1,7 @@
 <template>
        <v-form>
 
-            <h2 class="mt-7">Differentiation</h2>
+            <h2 class="mt-7" v-if="showButtons">Differentiation</h2>
             <p class="mt-5"><b>Choose one</b>:</p>
 
             <v-radio-group v-model="selectedDifferentiation">
@@ -45,7 +45,7 @@
                 </v-card>             
                 <v-radio class="mt-5" label="My product or service is equivalent to what competitors offer" :value="'notunique'"></v-radio>
                 <v-card class="popout" v-if="selectedDifferentiation === 'notunique'">
-                    It doesn't need to be different to be a good idea!
+                    Differentiating your product or service from the competition may lead to a greater chance of success
                 </v-card>
                 <v-radio class="mt-5" label="My product or service is novel and there is no competition" :value="'novel'"></v-radio>
                 <v-card class="popout" v-if="selectedDifferentiation === 'novel'">
@@ -54,7 +54,7 @@
                 </v-card>
             </v-radio-group>
            
-            <v-container class="mt-5 pa-0" fluid>
+            <v-container class="mt-5 pa-0" fluid v-if="showButtons">
                 <v-row>
                     <v-col cols="6">
                         <v-btn class="next-btn" @click="handleBack">
@@ -88,6 +88,7 @@ let laborCostsEntry = ref("");
 let shippingCostsEntry = ref("");
 let uniqueFeaturesEntry = ref("");
 
+const props = defineProps(['showButtons'])
 let emit = defineEmits(['advancePanel','backPanel']);
 
 watch(selectedDifferentiation, async (newValue, oldValue) => {
@@ -200,7 +201,7 @@ onMounted(() => {
   }
   let stored_shipping_costs_e  = localStorage.getItem("shippingCostsEntry");
   if (stored_shipping_costs_e!==null) {
-      shippingCostsEntry.value=stored_labor_costs_e;
+      shippingCostsEntry.value=stored_shipping_costs_e;
   }
   let stored_unique_features_e  = localStorage.getItem("uniqueFeaturesEntry");
   if (stored_unique_features_e!==null) {

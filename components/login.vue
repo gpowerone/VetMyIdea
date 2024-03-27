@@ -92,6 +92,7 @@ export default {
                     isLoggedIn: true
                 }));
                 this.$store.state.isLoggedIn=true;
+                this.$emit("loggedIn");
             }
             else {
                 this.$store.state.errorText = "A failure occurred"
@@ -121,6 +122,7 @@ export default {
                       isLoggedIn: true
                   }));
                   this.$store.state.isLoggedIn=true;
+                  this.$emit("loggedIn");
               }
               else {
                   this.$store.state.errorText = "Login failed. Please check your credentials"

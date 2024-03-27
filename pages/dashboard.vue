@@ -56,7 +56,10 @@
                                 <td>
                                     {{ new Date(item.createdAt).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric", hour:"numeric", minute:"numeric" })  }}
                                 </td>
-                                <td><v-btn :icon="mdiDelete" density="compact" class="ma-2" @click="doDelete(item.ReportID)" /></td>
+                                <td>
+                                    <v-btn :icon="mdiPencil" density="compact" class="ma-2" v-if="item.IsReady" @click="doEdit(item.ReportID)" />
+                                    <v-btn :icon="mdiDelete" density="compact" class="ma-2" @click="doDelete(item.ReportID)" />
+                                </td>
                             </tr>
                         </template>
     
@@ -79,7 +82,7 @@
 
 <script setup>
   import login from '../components/login.vue'
-  import { mdiDelete } from '@mdi/js'
+  import { mdiDelete, mdiPencil } from '@mdi/js'
 
   const headers = [
         { title: 'Report', key: 'ProductType' },
@@ -122,6 +125,10 @@
     }
   }
 
+  function doEdit(reportID) {
+      navigateTo("/edit?ReportID="+reportID);
+  }
+
   async function fetchTable() {
      await fetch("/api/report/list/")
         .then(response => response.json())
@@ -137,8 +144,12 @@
      return "https://reports.vetmyidea.biz/"+generatePublicPageURL(item.ProductType, item.ReportID);
   }
 
-  function  generatePublicPageURL(productType,reportID) {
-     return productType.toLowerCase().replace(" ","_")+"_"+reportID+".html";
+  function generatePublicPageURL(productType,reportID) {
+     return productType.toLowerCase().replace(/\s/g,"_")+"_"+reportID+".html";
+  }
+
+  function loggedIn() {
+     fetchTable();
   }
 
   onMounted(()=>{

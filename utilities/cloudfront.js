@@ -1,6 +1,12 @@
 import AWS from 'aws-sdk';
 
-const cloudfront = new AWS.CloudFront();
+const cloudfront = new AWS.CloudFront({
+    region: 'us-east-2',
+    credentials: {
+        accessKeyId: typeof(process.env.NUXT_AWS_CLIENT)!=="undefined"?process.env.NUXT_AWS_CLIENT:useRuntimeConfig().awsClient,
+        secretAccessKey: typeof(process.env.NUXT_AWS_SECRET)!=="undefined"?process.env.NUXT_AWS_SECRET:useRuntimeConfig().awsSecret
+    }
+});
 
 export default {
     invalidateCloudFront: function(urlPath, Eml) {

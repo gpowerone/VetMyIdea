@@ -19,7 +19,7 @@
             <locality v-on:advancePanel="advancePanel" v-on:backPanel="backPanel" />
             </div>
             <div class="panel" v-if="panelOpt==2" >
-            <differentiators v-on:advancePanel="advancePanel" v-on:backPanel="backPanel" /> 
+            <differentiators v-on:advancePanel="advancePanel" v-on:backPanel="backPanel" :showButtons="true" /> 
             </div>
             <div class="panel" v-if="panelOpt==3" >
                <div v-if="store.state.isLoggedIn===true">

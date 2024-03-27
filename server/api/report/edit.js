@@ -29,42 +29,51 @@ export default defineEventHandler(async (event) => {
                     return { success: true, message: "CAPTCHA verification failed", data: {}};
                 }    
 
-                let data = tools.verifyReportInput(requestData);
-                if (data.IsValid) {
 
-                    // Uppercase first letter of product type name
-                    data.ProductType=data.ProductType[0].toUpperCase()+data.ProductType.slice(1);
-
-                    let report_id = uuidv4();
-                    await Report.create({
-                        ReportID: report_id,
+                const report = await Report.findOne({
+                    where: {
+                        ReportID: requestData.reportId,
                         UserID: session.UserID,
-                        ProductType: data.ProductType,
-                        Score: null,
-                        Flagged: false,
-                        TargetLocation: data.TargetLocation,
                         IsProcessing: false,
-                        ProductURL: null,
-                        IsDebug: true,
-                        Processor: 1,
-                        IsReady: false
-                    });
+                        IsReady: true
+                    },
+                });
+            
+                if (report!==null) {
 
-                    data.FillFields.forEach(async (item)=>{
-                        await ReportField.create({
-                            ReportFieldID: uuidv4(),
-                            ReportID: report_id,
-                            FieldType: item.FieldType,
-                            FieldValue: item.FieldValue
+                    requestData.product = report.ProductType;
+                    requestData.targetedLocation = report.TargetLocation;
+    
+                    let data = tools.verifyReportInput(requestData);
+                    if (data.IsValid) {
+
+                        await ReportField.destroy({
+                             where: {
+                                ReportID: requestData.reportId
+                             }
                         })
-                    })
 
-                    return { success: true };
+                        data.FillFields.forEach(async (item)=>{
+                            await ReportField.create({
+                                ReportFieldID: uuidv4(),
+                                ReportID: requestData.reportId,
+                                FieldType: item.FieldType,
+                                FieldValue: item.FieldValue
+                            })
+                        })
+
+                        report.IsReady=false;
+                        await report.save();
+
+                        return { success: true };
+                    }
+                    else {
+                        return { success: false, message: data.Error };
+                    }
                 }
                 else {
-                    return { success: false, message: data.Error };
-                }
-                
+                    return { success: false, message: "Report not found" }        
+                }      
         
             }
             return { success: false, message: "Invalid Session" }

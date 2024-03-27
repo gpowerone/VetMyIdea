@@ -93,6 +93,7 @@ export default defineComponent({
            localStorage.removeItem("lgstate");
            this.$store.state.isLoggedIn=false;
            this.$store.state.name=null;
+           this.$store.state.successText="Successfully Logged Out";
            navigateTo('/');
         })
     },

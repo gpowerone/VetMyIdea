@@ -9,7 +9,7 @@ export default {
         await s3.deleteS3Object("vetmyideareports", url, Eml);
     },
     generatePublicPageURL: function(productType,reportID) {
-        return productType.toLowerCase().replace(" ","_")+"_"+reportID+".html";
+        return productType.toLowerCase().replace(/\s/g,"_")+"_"+reportID+".html";
     },
     getPublicReportBody: function(title,url,reportContent) {
         return "<html>"+

@@ -17,7 +17,7 @@ export default {
     evaluateCompetitors: async function() {
         let results = await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional businesses that sell or offer "+this.productType+". You do not reference yourself in your answer. You only return an array as an answer",
         ["What are all the businesses you know of that sell or offer "+this.productType+" in "+this.targetLocation+", including national or regional chains that sell or offer "+ this.productType+". "+
-        "Return your answer as an array of [\"companyname\"], or an empty array if there are none"]);
+        "Do not include big-box retailers or auction sites that might sell competitor products. Return your answer as an array of [\"companyname\"], or an empty array if there are none"]);
 
         try {
             let parsedResults = JSON.parse(results[0].trim());
@@ -91,7 +91,7 @@ export default {
 
     },
 
-    evaluateField: async function(demarcator,targetStatement,conjunction,nonePenalty,benefitStatement,field) {
+    evaluateField: async function(demarcator,targetStatement,conjunction,benefitStatement,field) {
     
         try {
 
@@ -110,12 +110,11 @@ export default {
 
                         if (benefits.answer.trim().toLowerCase()=='well') {
                             score+=20;
+                            this.hadUniqueFeature=true;
                         }
                         else if (benefits.answer.trim().toLowerCase()=='a little bit well') {
                             score+=10;
-                        }
-                        else {
-                            score+=nonePenalty;
+                            this.hadUniqueFeature=true;
                         }
                       
                         explanation+=benefits.explanation;
@@ -124,7 +123,7 @@ export default {
                              score-=20;
                              explanation+="<br /><br /><em>Risks</em><br />"+risk.explanation;
                         }
-                        else if (risk.total>=50) {
+                        else if (risk.total>=60) {
                             score-=10;
                             explanation+="<br /><br /><em>Risks</em><br />"+risk.explanation;
                         }
@@ -202,6 +201,7 @@ export default {
                 "You are an expert on "+this.productType+" in "+this.targetLocation+". "+
                 "You provide answers with respect to objective data only. "+
                 "You write as if you are a 9th grade teacher teaching a novice student. " +
+                "You only give positive feedback, no negative feedback. " +
                 "You do not refer to yourself. ",
                 ["How well does "+evaluateString+" "+evaluateTarget+"? Give your answer as an object: { \"answer\":\"well|a little bit well|not at all\", \"explanation\":\"explanation\" }"]);
 
@@ -217,26 +217,21 @@ export default {
     evaluateFields: async function(field) {
 
         if (field.FieldType == "Unique Feature") {
-           this.hadUniqueFeature=true;
            return await this.evaluateField(
             "uniqueFeature",
             "introduce a feature for",
             "that",
-            this.competitorsNum>6?-15:0,
             "appeal to users of "+this.productType+" in "+this.targetLocation+"? Base your answer off of how popular '"+field.FieldValue+"' will be for users '"+this.productType+"'",
             field);
         }
         if (field.FieldType == "Reduced Raw Materials Cost") {
-            this.hadUniqueFeature=true;
-            return await this.evaluateField("rawMaterialsCost","reduce raw materials costs","by",0,"reduce raw materials costs for "+this.productType+" in "+this.targetLocation,field);
+            return await this.evaluateField("rawMaterialsCost","reduce raw materials costs","by","reduce raw materials costs for "+this.productType+" in "+this.targetLocation,field);
         }
         if (field.FieldType == "Reduced Labor Cost") {
-            this.hadUniqueFeature=true;
-            return await this.evaluateField("laborCost","reduce labor costs","by",0,"reduce labor costs for "+this.productType+" in "+this.targetLocation,field);
+            return await this.evaluateField("laborCost","reduce labor costs","by","reduce labor costs for "+this.productType+" in "+this.targetLocation,field);
         }
         if (field.FieldType == "Reduced Shipping Cost") {
-            this.hadUniqueFeature=true;
-            return await this.evaluateField("shippingCost","reduce shipping costs","by",0,"reduce shipping costs for "+this.productType+" in "+this.targetLocation,field);
+            return await this.evaluateField("shippingCost","reduce shipping costs","by","reduce shipping costs for "+this.productType+" in "+this.targetLocation,field);
         }
 
     },
@@ -293,6 +288,10 @@ export default {
                     this.reportText+='"viable":"yes", ';
                     report.IsViable=true;
 
+                    if (this.competitorsNum>3 && !this.hadUniqueFeature) {
+                        this.score-=30;
+                    }
+
                     await this.evaluateGrowth();
                     if (Gpt.flagged) {
                         return await this.flagReport(report);
@@ -301,10 +300,6 @@ export default {
                     await this.evaluateRegulatoryRisk();
                     if (Gpt.flagged) {
                         return await this.flagReport(report);
-                    }
-        
-                    if (this.competitorsNum>6 && !this.hadUniqueFeature) {
-                        this.score-=15;
                     }
 
                     if (this.score<0) this.score=0;

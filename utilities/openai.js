@@ -76,7 +76,7 @@ export default {
                 if (this.debug) {
                     console.log("AGENT: "+ctxt+" | REQUEST: " +request+" | RESPONSE: "+response.choices[0].message.content);
                 }
-                return response.choices[0].message.content.replace("```json","").replace("```","");
+                return response.choices[0].message.content.replace("```json","").replace("```","").replace(/\n/g,"").replace(/\r/g,"");
             });
         } 
         catch(error) { 
