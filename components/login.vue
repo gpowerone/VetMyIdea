@@ -1,11 +1,11 @@
 <template>
-  <v-container class="pa-0 pt-5" :class="{'mt-10':$vuetify.display.lg||$vuetify.display.xl||$vuetify.display.xxl}" >
+  <v-container class="pa-0" :class="{'mt-10':$vuetify.display.lg||$vuetify.display.xl||$vuetify.display.xxl}" >
     <v-row>
       <v-col cols="12" lg="5">
-        <h2 class="mb-5">Login</h2>
-        <v-card>
+        <h2 class="mb-5 mt-10 text-center">Login</h2>
+        <v-card class="loginCard">
           <v-card-text>
-    
+        
             <!-- Google Login -->
             <div id="g_id_signin"></div>
             <v-divider class="mt-5 mb-5" ></v-divider>
@@ -14,6 +14,7 @@
       
           </v-card-text>
         </v-card>
+        <p class="loginCard mt-7 text-center">By creating an account or logging in, you agree to our <NuxtLink to="/privacy">Privacy Policy</NuxtLink> and <NuxtLink to="/terms">Terms of Service</NuxtLink></p>
       </v-col>
       <v-col cols="12" lg="2" class="d-md-none d-lg-block">
          &nbsp;
@@ -188,3 +189,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+   .login-btn {
+      text-transform: none;
+      font-family:inherit;
+      letter-spacing: normal;
+      width:100%;
+   }
+</style>

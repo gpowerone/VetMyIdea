@@ -38,10 +38,8 @@
       
       </v-col>
       <v-col cols="12" lg="5" xs="12" sm="12" class='mt-15'>
-         <div id='banner' class="mt-15 d-none d-md-none d-lg-flex">
-           <img src='/images/screenshot3.png' width='100%' alt='product screenshot 3'  />
-           <img src='/images/screenshot2.png' width='100%' alt='product screenshot 2'  />
-           <img src='/images/screenshot1.png' width='100%' alt='product screenshot 1'  />
+         <div id='banner' class="mt-5 d-none d-md-none d-lg-flex">
+             <img src="/images/phcreative.png" alt="woman sitting at computer using VetMyIdea" />
          </div>
       </v-col>
       </v-row>
@@ -82,127 +80,5 @@
   .wizard .field-select {
       border-radius: 10px;
   }
-
-  @-webkit-keyframes cf4FadeInOut {
- 0% {
-   opacity:1;
- }
- 17% {
-   opacity:1;
- }
- 25% {
-   opacity:0;
- }
- 92% {
-   opacity:0;
- }
- 100% {
-   opacity:1;
- }
-}
-
-@-moz-keyframes cf4FadeInOut {
- 0% {
-   opacity:1;
- }
- 17% {
-   opacity:1;
- }
- 25% {
-   opacity:0;
- }
- 92% {
-   opacity:0;
- }
- 100% {
-   opacity:1;
- }
-}
-
-@-o-keyframes cf4FadeInOut {
- 0% {
-   opacity:1;
- }
- 17% {
-   opacity:1;
- }
- 25% {
-   opacity:0;
- }
- 92% {
-   opacity:0;
- }
- 100% {
-   opacity:1;
- }
-}
-
-@keyframes cf4FadeInOut {
- 0% {
-   opacity:1;
- }
- 17% {
-   opacity:1;
- }
- 25% {
-   opacity:0;
- }
- 92% {
-   opacity:0;
- }
- 100% {
-   opacity:1;
- }
-}
-
-#banner{
-  position:relative;
-  width:80%;
-}
-#banner img {
-  position:absolute;
-  left:0;
-}
-
-#banner img {
-  -webkit-animation-name: cf4FadeInOut;
-  -webkit-animation-timing-function: ease-in-out;
-  -webkit-animation-iteration-count: infinite;
-  -webkit-animation-duration: 8s;
-
-  -moz-animation-name: cf4FadeInOut;
-  -moz-animation-timing-function: ease-in-out;
-  -moz-animation-iteration-count: infinite;
-  -moz-animation-duration: 8s;
-
-  -o-animation-name: cf4FadeInOut;
-  -o-animation-timing-function: ease-in-out;
-  -o-animation-iteration-count: infinite;
-  -o-animation-duration: 8s;
-
-  animation-name: cf4FadeInOut;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  animation-duration: 8s;
-}
-#banner img:nth-of-type(3) {
-  -webkit-animation-delay: 0s;
-  -moz-animation-delay: 0s;
-  -o-animation-delay: 0s;
-  animation-delay: 0s;
-}
-#banner img:nth-of-type(2) {
-  -webkit-animation-delay: 2s;
-  -moz-animation-delay: 2s;
-  -o-animation-delay: 2s;
-  animation-delay: 2s;
-}
-#banner img:nth-of-type(1) {
-  -webkit-animation-delay: 4s;
-  -moz-animation-delay: 4s;
-  -o-animation-delay: 4s;
-  animation-delay: 4s;
-}
-
 
 </style>

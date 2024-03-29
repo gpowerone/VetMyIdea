@@ -1,20 +1,8 @@
 body.report {
     font-family: Roboto, sans-serif;
-    background: #faf3de;
+    background: #fefcf7;
     padding:0px;
     margin:0px;
-}
-
-h1.report  {
-    font-size:1.5em;
-    background:#FFF;
-    display:block;
-    float:left;
-    border:1px solid #0c1d36;
-    border-radius:5px;
-    margin-left:5px;
-    width:80%;
-    padding:10px;
 }
 
 .socials {
@@ -27,13 +15,25 @@ h1.report  {
     margin-right:5px;
 }
 
+.IN-widget {
+    display:inline-block;
+}
+
 
 #report {
     padding:10px;
 }
 
+a {
+    color: #a32d26;
+}
+
 header, footer {
     background-color: #0c1d36;
+}
+
+h3 {
+    font-size:1.4em!important;
 }
 
 footer.report {
@@ -76,12 +76,13 @@ footer.report a {
 }
 
 .summaryLeft {
-    width:55%;
+    width:50%;
     padding-right:5%;
 }
 
 .summaryRight {
-    width:39%;
+    width:44%;
+    float:right;
     text-align:center;
 }
 
@@ -117,8 +118,10 @@ footer.report a {
 .tabcontents section {
     border:2px solid #0c1d36;
     border-radius:5px;
-    background: #EEE;
+    background: #FFF;
     height:70%;
+    overflow:auto;
+    font-size:1.2em;
 }
 
 div.section {
@@ -144,13 +147,13 @@ div.section {
 
 .circle-score {
     position: relative;
-    box-shadow: inset 0 0 21px rgb(255, 255, 255);
+    box-shadow: inset 0 0 21px #EEE;
     display: inline-block;
     width: 30rem;
     height: 30rem;
-    margin-bottom:4.5rem;
+    margin-bottom:2.5rem;
     border-radius: 27rem;
-    border-bottom-color: #FFF!important;
+    border-bottom-color: #EEE!important;
     text-align: center;
     box-sizing: border-box;
 }
@@ -241,6 +244,7 @@ div.section {
         width:94vw!important;
         margin-bottom:15px;
         height:auto;
+        overflow:inherit;
      }
 }
 
@@ -257,6 +261,7 @@ div.section {
     width:95.8vw!important;
     margin-bottom:15px;
     height:auto;
+    overflow:inherit;
  }
 }
 

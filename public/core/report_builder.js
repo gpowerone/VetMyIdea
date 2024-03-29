@@ -30,7 +30,9 @@ function build_report(report_string) {
     else {
 
         buildTab(buildSummary(report));
+        buildTab(buildBreakdown(report));
         buildTab(buildGrowthCompetitors(report.expectedGrowth, report.competitors));
+        buildTab(buildUniqueFeature(report));
         buildTab(buildRawMaterialsCosts(report));
         buildTab(buildLaborCosts(report));
         buildTab(buildShippingCosts(report));
@@ -44,7 +46,7 @@ function build_report(report_string) {
     return  "<div class='tabbank'>"+this.report_tabs+"<div class='socials'>"+generateSocials(report.summary.url)+"</div><div class='clear'></div></div>"+
             "<div class='tabcontents'>"+this.report_tab_contents+"<div class='clear'></div></div>"+
             "<div class='run'><span style='font-style:italic;'>Report Created: "+dt.getFullYear()+"-"+(dt.getMonth()+1)+"-"+dt.getDate()+"</span> [Reports are time-sensitive!]</div>"+
-            "<div class='run'>Vet My Idea reports are not advice and may be factually incorrect. Use at your own risk. Please see the <a href='https://vetmyidea.biz/terms'>Terms of Service</a> for further detail</div>";
+            "<div class='run'>Vet My Idea reports are not advice and may be factually incorrect. Use at your own risk. By using this report, you agree to our <a href='https://vetmyidea.biz/terms'>Terms of Service</a> and <a href='https://vetmyidez.biz/privacy'>Privacy Policy</a></div>";
 }
 
 function buildTab(tab_input) {
@@ -57,6 +59,28 @@ function buildTab(tab_input) {
         this.report_tabs+="<button class='tab"+selected+"' id='tabheader"+tab_input.id+"' style='width:"+tab_input.width+"' onclick='selectTab(\""+tab_input.id+"\")'>"+tab_input.name+"</button>";
         this.report_tab_contents+=tab_input.contents;
     }
+}
+
+function buildBreakdown(report) {
+    let contents =   
+    "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>" +
+        "<div class='section'>"+
+          "<h3>Score Breakdown</h3>";
+
+
+    contents += "</div></section>";
+
+    let breakdown_result={
+        name: "Breakdown",
+        contents: contents,
+        id: tab_id,
+        width: "125px"
+    };
+
+    tab_id++;
+
+    return breakdown_result;
+
 }
 
 function buildLaborCosts(report) {
@@ -74,10 +98,10 @@ function buildLaborCosts(report) {
         contents += "</div></section>";
 
         let cost_result={
-            name: "Labor Cost",
+            name: "Labor",
             contents: contents,
             id: tab_id,
-            width: "150px"
+            width: "75px"
         };
     
         tab_id++;
@@ -105,10 +129,10 @@ function buildShippingCosts(report) {
         contents += "</div></section>";
 
         let cost_result={
-            name: "Shipping Cost",
+            name: "Shipping",
             contents: contents,
             id: tab_id,
-            width: "200px"
+            width: "100px"
         };
     
         tab_id++;
@@ -136,10 +160,10 @@ function buildRawMaterialsCosts(report) {
         contents += "</div></section>";
 
         let cost_result={
-            name: "Raw Materials Cost",
+            name: "Raw Materials",
             contents: contents,
             id: tab_id,
-            width: "250px"
+            width: "125px"
         };
     
         tab_id++;
@@ -213,7 +237,7 @@ function buildRisks(report) {
         name: "Regulatory Risk",
         contents: contents,
         id: tab_id,
-        width: "200px"
+        width: "150px"
     };
 
     tab_id++;
@@ -241,37 +265,36 @@ function buildSummary(report) {
       "<section id='tab"+tab_id+"' style='float:left;width:78vw;'>" +
         "<div class='section'>"; 
 
+    contents += "<div class='summaryRight'>";
+    contents += "<h3 class='scoreHeader summaryHeader' style='margin-top:1.5rem;'>VetMyIdea Score</h3><div class='circle-score' style='border: 3.6rem solid "+bordercolor+";'><div class='values'>"+report.summary.score+"</div><div class='labels'>"+sanitize(report.summary.scoremeaning)+"</div></div>";
+    contents += "<p><a href='#' onclick='selectTab(1)'>Detailed Score Breakdown</a></p>";
+    contents += "</div>";
+
     contents += "<div class='summaryLeft'>";
 
-    contents += "<h3 class='productTitle' style='margin-top:4.5rem;'>Product/Service &amp; Targeted Location</h3><p><em>"+this.sanitize(report.summary.title)+"</em></p>";
-
-    if (report.uniqueFeature) {
-     
-        contents+="<h3 class='uniqueFeatureHeader' style='margin-top:50px;'>Unique Feature "+scoreStyle(report.uniqueFeature.score)+"</h3>";
-        contents+="<p><em>"+report.uniqueFeature.evaluatedString+"</em></p>"
-        contents+="<p>"+report.uniqueFeature.benefits+"</p>";
+    contents += "<h3 class='productTitle summaryHeader' style='margin-top:1.5rem;'>Product/Service &amp; Targeted Location</h3><p><em>"+this.sanitize(report.summary.title)+"</em></p>";
     
-    }
-    else if (!report.hadUniqueFeature) {
-        
-        let lackUniqueInfraction=0;
-        if (report.competitors>6) {
-            lackUniqueInfraction=-15;
-        }
+    contents += "<h3 style='margin-top:4.5rem;' class='summaryHeader'>How To Use This Report</h3>"+
+        "<p><b>Understanding the Score</b><br />Click on the <a href='#' onclick='selectTab(1)'>score breakdown tab</a> to get further details about how the score was calculated and what it means</p>"+
+        "<p><b>Detailed Analysis</b><br />Click each tab at the top of the report (desktop) or scroll down (mobile) to get detailed input on different aspects of your idea</p>"+
+        "<p><b>Re-running the Report</b><br />If you'd like to change your answers, you can re-run this report by clicking the Edit (pencil) button on the My Reports dashboard. [Note: you cannot change the product/service or the location - you'll need to run a new report]</p>"+
+        "<p><b>Additional Research</b><br />You may wish to do further research on your idea. Our partners can assist you with this.</p>"+
+        "<p><b>Moving Forward</b><br />Should you decide to move forward, our partners can help you get your business off the ground.</p>"
 
-        contents+="<h3>No Differentiation "+scoreStyle(lackUniqueInfraction)+"</h3>";
-        contents+="<p>You didn't indicate any differentiation. "+
-        "While this doesn't make an idea non-viable, in a saturated market, it will be hard to win customers without a draw that the competition can't provide. Therefore, we assess a score penalty if there are a lot of competitors.</p>"+
-        "<p>It is possible that your business will differentiate itself in a manner that this tool doesn't evaluate (e.g. marketing), in which case you may be able to ignore this, although we encourage you to consider how you"+
-        " could differentiate your idea</p>";
+    /*
+    if (!report.summary.hadUniqueFeature) {
+        
+        if (report.competitors.length>3) {
+      
+            contents+="<h3 style='margin-top:1.0rem;'>Insufficient/Ineffective Differentiation "+scoreStyle(-30)+"</h3>";
+            contents+="<p>We detected more than a few competitors in this market. Without effective differentiation from them, it will be more difficult to compete in the market. Keep in mind that it is "+ 
+            "possible to differentiate in some way that this tool doesn't measure (e.g. marketing).</p><p>You can score higher by picking a differentiator (or a different one) and re-running the report.</p>";
+        }
     }
+    */
 
     contents += "</div>"
-    contents += "<div class='summaryRight'>";
-    contents += "<h3 class='scoreHeader' style='margin-top:4.5rem;'>Score</h3><div class='circle-score' style='border: 3.6rem solid "+bordercolor+";'><div class='values'>"+report.summary.score+"</div><div class='labels'>"+sanitize(report.summary.scoremeaning)+"</div></div>";
-    contents += "<div class='score-text'>A favorable score does not mean that the evaluated business idea is good or vice-versa, and should not be construed as advice either way. ";
-    contents += "There are many factors that influence whether or not a business will be successful, of which only some are measured by this tool</div>"
-    contents += "</div>";
+
     contents += "<div class='clear'></div>";
     contents += "</div></section>";
 
@@ -279,7 +302,7 @@ function buildSummary(report) {
         name: "Summary",
         contents: contents,
         id: tab_id,
-        width: "150px"
+        width: "100px"
     };
 
     tab_id++;
@@ -298,11 +321,11 @@ function buildGrowthCompetitors(growth, competitors) {
     competition+="</p>";
 
     let growth_result={
-        name: "Growth and Competition",
+        name: "Growth",
         contents: "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'><div class='section'><h3>Growth Potential: "+sanitize(growth.growth.toUpperCase()) + " "+scoreStyle(growth.score)+"</h3>"+
             "<p>"+sanitize(growth.explanation)+"</p><p>&nbsp;</p>"+competition+"</div></section>",
         id: tab_id,
-        width:"250px"
+        width:"75px"
     };
 
     tab_id++;
@@ -310,12 +333,43 @@ function buildGrowthCompetitors(growth, competitors) {
     return growth_result;
 }
 
+function buildUniqueFeature(report) {
+    if (report.uniqueFeature) {
+        let contents =   
+            "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>" +
+                "<div class='section'>";
+        
+        if (report.laborCost) {
+            contents+="<h3>Unique Feature "+scoreStyle(report.uniqueFeature.score)+"</h3>";
+            contents+="<p><b>Plan</b>: "+report.uniqueFeature.evaluatedString+"</p>"
+            contents+="<p>"+report.uniqueFeature.benefits+"</p>";
+        }
+
+        contents += "</div></section>";
+
+        let cost_result={
+            name: "Unique Feature",
+            contents: contents,
+            id: tab_id,
+            width: "150px"
+        };
+    
+        tab_id++;
+    
+        return cost_result;
+
+    }
+    else {
+        return null;
+    }
+}
+
 function doAffiliateCode() {
-    this.report_tab_contents+= "<section id='tab"+tab_id+"' style='float:right;text-center;width:19vw;'><div style='text-align:center;margin-top:25px;'>Links To Our Affiliates</div><br /></section>";
+    this.report_tab_contents+= "<section id='tab"+tab_id+"' style='float:right;text-center;width:19vw;'><div style='text-align:center;margin-top:25px;'>Links To Our Partners</div><br /></section>";
 }
 
 function generateSocials(url) {
-    return  '<script type="IN/Share" data-url="'+url+'"></script>' +
+    return  '<!--<script type="IN/Share" data-url="'+url+'"></script>//-->' +
             '<div id="fb-root"></div>'+
             '<div class="fb-share-button"'+ 
             'data-href="'+url+'"'+
@@ -338,7 +392,7 @@ function scoreStyle(score) {
             return "(<span style='color:green'>+"+String(score)+"</span>)";
         }
         else if (score<0) {
-            return "(<span style='color:red'>-"+String(score)+"</span>)";
+            return "(<span style='color:red'>"+String(score)+"</span>)";
         }
         else {
             return "";

@@ -4,7 +4,7 @@
         <v-row>
            <v-col>
                 <h1>Terms of Service</h1>
-                <p>March 1st, 2024</p>
+                <p>March 28th, 2024</p>
                 <p>
                     VetMyIdea.biz is a service provided by Techfalos, LLC ("we", "our", or "us"). Our product, powered by artificial intelligence, is designed to provide information surrounding potential business ideas
                 </p>
@@ -52,7 +52,10 @@
                     <b>Contact Information</b>
                 </p>
                 <p>
-                    [Contact info here]
+                    Techfalos, LLC<br />
+                    503 Devonshire Lane<br />
+                    Severna Park, MD 21146<br />
+                    admin@vetmyidea.biz
                 </p>
            </v-col>
         </v-row>

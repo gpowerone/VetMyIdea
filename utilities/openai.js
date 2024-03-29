@@ -12,7 +12,7 @@ export default {
     flagged: false,
     debug: false,
 
-    chatGPT: async function (ctxt,requests) {
+    chatGPT: async function (ctxt,requests,model) {
         try {
             if (this.flagged) {
                 return [];
@@ -21,7 +21,7 @@ export default {
             let promises=[];
 
             for (const request of requests) {
-                promises.push(this.checkContentForModeration(ctxt,request))
+                promises.push(this.checkContentForModeration(ctxt,request,model))
             }
 
             return Promise.all(promises).then((values)=>{
@@ -38,7 +38,7 @@ export default {
         }
     },
 
-    checkContentForModeration: async function (ctxt,request) {
+    checkContentForModeration: async function (ctxt,request,model) {
         try {
             const response = await openai.moderations.create({input:ctxt+". "+request});
 
@@ -49,7 +49,7 @@ export default {
             if (response.results[0].flagged) {
                  this.flagged=true;       
             } else {
-                return await this.makeRequest(ctxt,request);
+                return await this.makeRequest(ctxt,request,model);
             }
     
         } catch (error) {
@@ -60,7 +60,7 @@ export default {
         return ""; 
     },
 
-    makeRequest: async function(ctxt,request) {
+    makeRequest: async function(ctxt,request,model) {
 
         try {
             if (this.debug) {
@@ -68,7 +68,7 @@ export default {
             }
 
             return openai.chat.completions.create({
-                model: "gpt-4-turbo-preview", 
+                model: model, 
                 messages: [{role: "system", content: ctxt}, {role: "user", content: request}],
                 temperature: 0,
                 seed: 512

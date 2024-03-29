@@ -28,11 +28,11 @@
 
             <v-navigation-drawer role="menu" v-model="drawer" temporary clipped location="right" class="navdrawer" :class="{'navdrawer-xs': $vuetify.display.xs}">
                 <v-list>
-                    <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/">Home</NuxtLink></v-list-item> 
+                    <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/"><v-icon :icon="mdiHome" />&nbsp;&nbsp;Home</NuxtLink></v-list-item> 
                     <v-divider />
-                     <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/dashboard">My Reports</NuxtLink></v-list-item> 
+                     <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/dashboard"><v-icon :icon="mdiFileDocumentMultiple" />&nbsp;&nbsp;My Reports</NuxtLink></v-list-item> 
                     <v-divider v-if="$store.state.isLoggedIn" />
-                    <v-list-item v-if="$store.state.isLoggedIn" class=" menuitem"><NuxtLink role="menuitem" class="cursor" @click="doLogout">Logout</NuxtLink></v-list-item>
+                    <v-list-item v-if="$store.state.isLoggedIn" class=" menuitem"><NuxtLink role="menuitem" class="cursor" @click="doLogout"><v-icon :icon="mdiLogout" />&nbsp;&nbsp;Logout</NuxtLink></v-list-item>
                 </v-list>
             </v-navigation-drawer>
 
@@ -50,6 +50,10 @@
     </v-layout>
   </v-app>
 </template>    
+
+<script setup>
+import { mdiHome, mdiLogout, mdiFileDocumentMultiple } from '@mdi/js'
+</script>
 
 <script>
 import { defineComponent } from '@vue/composition-api'
@@ -140,11 +144,20 @@ export default defineComponent({
      color:#FFF;
   }
   .navdrawer {
-     width:200px !important;
-     border-left: 1px solid #0c1d36;
+     width:250px !important;
+     background-color: #0c1d36;
+     border-left: 1px solid #FFF;
+     border-top:1px solid #FFF;
+     padding-top:25px;
+     padding-left:25px;
   }
   .menuitem a {
-     color: #0c1d36;
+     color: #fefcf7;
+     text-decoration:none;
+     font-size:1.1em;
+  }
+  .menuitem {
+    margin-bottom:10px;
   }
   .top_pos {
       position:fixed;

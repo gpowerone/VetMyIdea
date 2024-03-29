@@ -58,7 +58,7 @@
                                 </td>
                                 <td>
                                     <v-btn :icon="mdiPencil" density="compact" class="ma-2" v-if="item.IsReady" @click="doEdit(item.ReportID)" />
-                                    <v-btn :icon="mdiDelete" density="compact" class="ma-2" @click="doDelete(item.ReportID)" />
+                                    <v-btn :icon="mdiDelete" density="compact" class="ma-2" v-if="item.IsReady" @click="doDelete(item.ReportID)" />
                                 </td>
                             </tr>
                         </template>
@@ -83,6 +83,9 @@
 <script setup>
   import login from '../components/login.vue'
   import { mdiDelete, mdiPencil } from '@mdi/js'
+  import { useStore } from 'vuex'
+
+  const store = useStore();
 
   const headers = [
         { title: 'Report', key: 'ProductType' },
@@ -109,17 +112,17 @@
         });
 
         if (!response.ok) {
-            window.alert("Failed to contact the backend, check your internet connection");
+            store.state.errorText="Failed to contact the backend, check your internet connection";
         }
         else {
 
             const responseData = await response.json();
             if (responseData.success) {
                 await fetchTable();
-                window.alert("Report successfully deleted");
+                store.state.successText="Report successfully deleted";
             }
             else {
-                window.alert(responseData.message);
+                store.state.errorText=responseData.message;
             }
         }
     }
@@ -129,6 +132,29 @@
       navigateTo("/edit?ReportID="+reportID);
   }
 
+  function doPoll(reportID) {
+    fetch("/api/report/poll/",  {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            reportId: reportID
+        })
+      })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            store.state.successText="Report has finished processing";
+        }
+        else {
+            setTimeout(function() {
+                doPoll(reportID)
+            },30000);
+        }
+    })
+  }
+
   async function fetchTable() {
      await fetch("/api/report/list/")
         .then(response => response.json())
@@ -136,6 +162,11 @@
            
             reports.value=data.data;
             loading.value=false;
+            for (var report of data.data.filter(p=>p.IsReady===false)) {
+                setTimeout(function() {
+                    doPoll(report.ReportID)
+                },30000);
+            }
         })
         .catch(error => console.error('Error fetching reports:', error));
   }
@@ -165,7 +196,7 @@
 </style>
 <style scoped>
     .report-table {
-        background:#EEE;
+        background:#FFF;
         border:1px solid #0c1d36;
         border-radius:10px;
     }

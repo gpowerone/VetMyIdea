@@ -13,6 +13,10 @@
 </style>
 
 <style>
+   @font-face {
+      font-family: 'AbrilFatface';
+      src: url('./JosefinSans.ttf') format('ttf');
+   }
   a {
     color:#a32d26;
     text-decoration:underline;

@@ -100,7 +100,7 @@ function fillStateOptions() {
     cityOptions.value=[];
     if (country.value!==null) {
         let code = csc.getCountries().filter(p=>p.name===country.value)[0].shortName;
-        stateOptions.value = csc.getStatesByShort(code);
+        stateOptions.value = csc.getStatesByShort(code).filter(p=>p.length>2);
     }
 }
 
@@ -129,7 +129,7 @@ function optionsHandled() {
 }
 
 onMounted(()=>{
-    countryOptions.value=csc.getCountries().map(p=>p.name);
+    countryOptions.value=csc.getCountries().map(p=>p.name).sort();
 
     let stored_locality = localStorage.getItem("locality");
     if (stored_locality!==null) {

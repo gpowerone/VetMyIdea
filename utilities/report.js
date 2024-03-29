@@ -17,7 +17,7 @@ export default {
     evaluateCompetitors: async function() {
         let results = await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional businesses that sell or offer "+this.productType+". You do not reference yourself in your answer. You only return an array as an answer",
         ["What are all the businesses you know of that sell or offer "+this.productType+" in "+this.targetLocation+", including national or regional chains that sell or offer "+ this.productType+". "+
-        "Do not include big-box retailers or auction sites that might sell competitor products. Return your answer as an array of [\"companyname\"], or an empty array if there are none"]);
+        "Do not include big-box retailers or auction sites that might sell competitor products. Be as exhaustive as possible. Return your answer as an array of [\"companyname\"], or an empty array if there are none"],"gpt-4");
 
         try {
             let parsedResults = JSON.parse(results[0].trim());
@@ -38,7 +38,7 @@ export default {
         try {
             let growth = await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional business that sell or offer "+this.productType+". You do not reference yourself in your answer.",
             ["What is the outlook for growth for "+this.productType+" in "+this.targetLocation+" for the next 5 years? "+
-            "Give your answer as an object: {\"growth\":\"very good|good|fair|poor|very poor\", \"explanation\":\"explanation\"}"]);
+            "Give your answer as an object: {\"growth\":\"very good|good|fair|poor|very poor\", \"explanation\":\"explanation\"}"],"gpt-4-turbo-preview");
         
             let parsed=JSON.parse(growth[0].trim());
 
@@ -69,7 +69,7 @@ export default {
         try {
             let risk = await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional business that sell or offer "+this.productType+". You do not reference yourself in your answer.",
             ["What is the risk that the sale of "+this.productType+" in "+this.targetLocation+" will be regulated in the future such that a company selling "+this.productType+" would be illegal?"+ 
-            "Give your answer as an object: { \"risk\": \"low|medium|high\", \"explanation\": \"explanation\" }"]);
+            "Give your answer as an object: { \"risk\": \"low|medium|high\", \"explanation\": \"explanation\" }"],"gpt-4-turbo-preview");
 
             let parsed=JSON.parse(risk[0]);
 
@@ -166,7 +166,7 @@ export default {
                 "You write as if you are a 9th grade teacher teaching a novice student. " +
                 "You do not refer to yourself. ",
                 ["To the best of your knowledge as of today, is it illegal to "+evaluateString+"? "+
-                "Give your answer as an object of {\"answer\":\"yes|no\", \"explanation\":\"if answer==yes then explanation else null\"}"]);
+                "Give your answer as an object of {\"answer\":\"yes|no\", \"explanation\":\"if answer==yes then explanation else null\"}"],"gpt-4-turbo-preview");
 
             return JSON.parse(result[0].trim());
         }
@@ -185,7 +185,7 @@ export default {
                 "You do not refer to yourself.",
                 ["Evaluate '"+evaluateString+"' for the following risks, with higher scores meaning most risky. Return only the JSON object with exactly the provided fields as your answer. "+
                 "{\"cyber_attacks\":\"score 0 to 10\", \"insider_threats\":\"score 0 to 10\", \"supply_chain_disruptions\":\"score 0 to 50\", \"employee_injury\": \"score 0 to 100\", "+
-                "\"inability_to_find_talent\": \"score 0 to 100\", \"reputation_loss\": \"0 to 50\", \"total\":\"total of all scores\", \"explanation\":\"if total>=50 then an explanation of why the idea is risky, focusing on the highest score else null\"}"]);
+                "\"inability_to_find_talent\": \"score 0 to 100\", \"reputation_loss\": \"0 to 50\", \"total\":\"total of all scores\", \"explanation\":\"if total>=50 then an explanation of why the idea is risky, focusing on the highest score else null\"}"],"gpt-4-turbo-preview");
 
                 return JSON.parse(result[0].trim());
         }
@@ -203,7 +203,7 @@ export default {
                 "You write as if you are a 9th grade teacher teaching a novice student. " +
                 "You only give positive feedback, no negative feedback. " +
                 "You do not refer to yourself. ",
-                ["How well does "+evaluateString+" "+evaluateTarget+"? Give your answer as an object: { \"answer\":\"well|a little bit well|not at all\", \"explanation\":\"explanation\" }"]);
+                ["How well does "+evaluateString+" "+evaluateTarget+"? Give your answer as an object: { \"answer\":\"well|a little bit well|not at all\", \"explanation\":\"explanation\" }"],"gpt-4-turbo-preview");
 
             return JSON.parse(result[0].trim());
         }
