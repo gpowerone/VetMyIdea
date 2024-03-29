@@ -62,17 +62,51 @@ function buildTab(tab_input) {
 }
 
 function buildBreakdown(report) {
-    let contents =   
+    let breakdown =   
     "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>" +
         "<div class='section'>"+
           "<h3>Score Breakdown</h3>";
 
 
-    contents += "</div></section>";
+
+    breakdown+="<p><b>Base Score:</b> 50</p><p>Each report starts at 50 and can go up to 100 or as low as 0</p>";
+
+    if (!report.summary.hadUniqueFeature && report.competitors.length>3) {
+        
+        breakdown+="<p style='margin-top:25px;'><b>Insufficient/Ineffective Differentiation:</b> "+scoreStyle(-30)+"</p>";
+        breakdown+="<p>We detected more than a few competitors in this market. Without effective differentiation from them, it will be more difficult to compete. Keep in mind that it is "+ 
+        "possible to differentiate in some way that this tool doesn't measure (e.g. marketing).</p><p>You can score higher by picking a differentiator (or a different one) and re-running the report.</p>";
+
+    }
+
+    if (report.expectedGrowth.score!==0) {
+        breakdown+="<p style='margin-top:25px;'><b>Potential Growth:</b> "+scoreStyle(report.expectedGrowth.score)+"</p>";
+    }
+    if (report.uniqueFeature && report.uniqueFeature.score!==0) {
+        breakdown+="<p style='margin-top:25px;'><b>Unique Feature:</b> "+scoreStyle(report.uniqueFeature.score)+"</p>";
+    }
+    if (report.rawMaterialsCost && report.rawMaterialsCost.score!==0) {
+        breakdown+="<p style='margin-top:25px;'><b>Raw Materials Cost:</b> "+scoreStyle(report.rawMaterialsCost.score)+"</p>";
+    }
+    if (report.laborCost && report.laborCost.score!==0) {
+        breakdown+="<p style='margin-top:25px;'><b>Labor Cost:</b> "+scoreStyle(report.laborCost.score)+"</p>";
+    }
+    if (report.shippingCost && report.shippingCost.score!==0) {
+        breakdown+="<p style='margin-top:25px;'><b>Shipping Cost:</b> "+scoreStyle(report.shippingCost.score)+"</p>";
+    }
+    if (report.regulatoryRisk.score!==0) {
+        breakdown+="<p style='margin-top:25px;'><b>Regulatory Risk:</b> "+scoreStyle(report.regulatoryRisk.score)+"</p>";
+    }
+   
+    breakdown += "<hr />";
+    breakdown+="<p><b>Total Score:</b> "+report.summary.score+"</p>";
+
+
+    breakdown += "</div></section>";
 
     let breakdown_result={
         name: "Breakdown",
-        contents: contents,
+        contents: breakdown,
         id: tab_id,
         width: "125px"
     };
@@ -280,18 +314,6 @@ function buildSummary(report) {
         "<p><b>Re-running the Report</b><br />If you'd like to change your answers, you can re-run this report by clicking the Edit (pencil) button on the My Reports dashboard. [Note: you cannot change the product/service or the location - you'll need to run a new report]</p>"+
         "<p><b>Additional Research</b><br />You may wish to do further research on your idea. Our partners can assist you with this.</p>"+
         "<p><b>Moving Forward</b><br />Should you decide to move forward, our partners can help you get your business off the ground.</p>"
-
-    /*
-    if (!report.summary.hadUniqueFeature) {
-        
-        if (report.competitors.length>3) {
-      
-            contents+="<h3 style='margin-top:1.0rem;'>Insufficient/Ineffective Differentiation "+scoreStyle(-30)+"</h3>";
-            contents+="<p>We detected more than a few competitors in this market. Without effective differentiation from them, it will be more difficult to compete in the market. Keep in mind that it is "+ 
-            "possible to differentiate in some way that this tool doesn't measure (e.g. marketing).</p><p>You can score higher by picking a differentiator (or a different one) and re-running the report.</p>";
-        }
-    }
-    */
 
     contents += "</div>"
 
