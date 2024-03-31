@@ -15,7 +15,7 @@
 <style>
    @font-face {
       font-family: 'AbrilFatface';
-      src: url('./JosefinSans.ttf') format('ttf');
+      src: url('./AbrilFatface.ttf') format('ttf');
    }
   a {
     color:#a32d26;
@@ -34,7 +34,7 @@
   .v-data-table-header__content span {
     font-weight:bold;
   }
-  .field-error .v-input__control {
+  .fielderror .v-input__control {
      border:1px solid #a32d26;
   }
   .inset {
@@ -71,5 +71,16 @@
   .v-popper__inner { max-width: 360px !important; }
   .v-field__outline {
       display:none;
+  }
+  .wizard button {
+      background-color: #0c1d36;
+      color:#FFF;
+  }
+  .wizard .field {
+      border: 1px solid #0c1d36;
+      background: #FFF;
+  }
+  .wizard .field-select {
+      border-radius: 10px;
   }
 </style>

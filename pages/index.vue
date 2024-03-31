@@ -69,16 +69,4 @@
      display: inline-block;
     text-align: left;
   }
-  .wizard button {
-      background-color: #0c1d36;
-      color:#FFF;
-  }
-  .wizard .field {
-      border: 1px solid #0c1d36;
-      background: #FFF;
-  }
-  .wizard .field-select {
-      border-radius: 10px;
-  }
-
 </style>

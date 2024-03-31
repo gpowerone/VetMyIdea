@@ -4,6 +4,9 @@ import Report from '~/models/report.js'
 import ReportField from '~/models/reportfield.js'
 import tools from '~/utilities/general.js'
 import { v4 as uuidv4 } from 'uuid';
+import Sequelize from 'sequelize';
+
+const Op = Sequelize.Op;
 
 export default defineEventHandler(async (event) => {
 
@@ -35,7 +38,10 @@ export default defineEventHandler(async (event) => {
                         ReportID: requestData.reportId,
                         UserID: session.UserID,
                         IsProcessing: false,
-                        IsReady: true
+                        [Op.or]: [
+                            {IsReady: true},
+                            {Flagged: true}
+                        ]
                     },
                 });
             
@@ -63,6 +69,7 @@ export default defineEventHandler(async (event) => {
                         })
 
                         report.IsReady=false;
+                        report.Flagged=false;
                         await report.save();
 
                         return { success: true };

@@ -16,12 +16,9 @@
             </div>
              
             <div class="panel" v-if="panelOpt==1"  >
-            <locality v-on:advancePanel="advancePanel" v-on:backPanel="backPanel" />
+               <locality v-on:advancePanel="advancePanel" v-on:backPanel="backPanel" />
             </div>
             <div class="panel" v-if="panelOpt==2" >
-            <differentiators v-on:advancePanel="advancePanel" v-on:backPanel="backPanel" :showButtons="true" /> 
-            </div>
-            <div class="panel" v-if="panelOpt==3" >
                <div v-if="store.state.isLoggedIn===true">
                   <summarycomp v-on:backPanel="backPanel" />
                </div>
@@ -82,7 +79,6 @@
 import monetize from '../components/monetize.vue'
 import locality from '../components/locality.vue'
 import login from '../components/login.vue'
-import differentiators from '../components/differentiators.vue'
 import summarycomp from '../components/summary.vue'
 import { ref, watch, defineEmits } from 'vue'
 import { useStore } from 'vuex'
@@ -130,16 +126,5 @@ onMounted(() => {
      font-size:1.2em;
      display: inline-block;
     text-align: left;
-  }
-  .wizard button {
-      background-color: #0c1d36;
-      color:#FFF;
-  }
-  .wizard .field {
-      border: 1px solid #0c1d36;
-      background: #FFF;
-  }
-  .wizard .field-select {
-      border-radius: 10px;
   }
 </style>

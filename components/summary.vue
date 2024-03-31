@@ -19,7 +19,7 @@
                     {{targetedLocation}}
                 </v-col>
             </v-row>
-            <v-row class="pa-0" v-if="selectedDifferentiation==='unique'">
+            <v-row class="pa-0">
                 <v-col cols="12" class="pb-0 pt-2">
                     <div>
                         <b>Differentiation:</b>
@@ -91,11 +91,9 @@ export default {
   },
   data() {
     return {
-        selectedDifferentiation: "",
         rawMaterialsCheaper: false,
         laborCostsCheaper: false,
         shippingCostsCheaper: false,
-        uniqueFeatures: false,
         missingFeatures: false,
         userExperience: false,
         rawMaterialsEntry: null,
@@ -108,10 +106,6 @@ export default {
     }
   },
   mounted() {
-    let stored_diff = localStorage.getItem("selectedDifferentiation");
-    if (stored_diff!==null) {
-        this.selectedDifferentiation=stored_diff;
-    }
     let stored_raw_materials = localStorage.getItem("rawMaterialsCheaper");
     if (stored_raw_materials!==null) {
         this.rawMaterialsCheaper=stored_raw_materials==="true";
@@ -124,30 +118,33 @@ export default {
     if (stored_shipping_costs!==null) {
         this.shippingCostsCheaper=stored_labor_costs==="true";
     }
-    let stored_unique_features = localStorage.getItem("uniqueFeatures");
-    if (stored_unique_features!==null) {
-        this.uniqueFeatures=stored_unique_features==="true";
-    }
     let stored_missing_features = localStorage.getItem("missingFeatures");
     if (stored_missing_features!==null) {
         this.missingFeatures=stored_missing_features==="true";
     }
-    let stored_user_experience = localStorage.getItem("userExperience");
-    if (stored_user_experience!==null) {
-        this.userExperience=stored_user_experience==="true";
+   
+
+    if (this.rawMaterialsCheaper) {
+        let stored_raw_materials_e = localStorage.getItem("rawMaterialsEntry");
+        if (stored_raw_materials_e!==null) {
+            this.rawMaterialsEntry=stored_raw_materials_e;
+        }
     }
-    let stored_raw_materials_e = localStorage.getItem("rawMaterialsEntry");
-    if (stored_raw_materials_e!==null) {
-        this.rawMaterialsEntry=stored_raw_materials_e;
+
+    if (this.laborCostsCheaper) {
+        let stored_labor_costs_e  = localStorage.getItem("laborCostsEntry");
+        if (stored_labor_costs_e!==null) {
+            this.laborCostsEntry=stored_labor_costs_e;
+        }
     }
-    let stored_labor_costs_e  = localStorage.getItem("laborCostsEntry");
-    if (stored_labor_costs_e!==null) {
-        this.laborCostsEntry=stored_labor_costs_e;
+
+    if (this.shippingCostsCheaper) {
+        let stored_shipping_costs_e  = localStorage.getItem("shippingCostsEntry");
+        if (stored_shipping_costs_e!==null) {
+            this.shippingCostsEntry=stored_shipping_costs_e;
+        }
     }
-    let stored_shipping_costs_e  = localStorage.getItem("shippingCostsEntry");
-    if (stored_shipping_costs_e!==null) {
-        this.shippingCostsEntry=stored_shipping_costs_e;
-    }
+
     let stored_unique_features_e  = localStorage.getItem("uniqueFeaturesEntry");
     if (stored_unique_features_e!==null) {
         this.uniqueFeaturesEntry=stored_unique_features_e;

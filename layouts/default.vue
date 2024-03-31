@@ -32,7 +32,7 @@
                     <v-divider />
                      <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/dashboard"><v-icon :icon="mdiFileDocumentMultiple" />&nbsp;&nbsp;My Reports</NuxtLink></v-list-item> 
                     <v-divider v-if="$store.state.isLoggedIn" />
-                    <v-list-item v-if="$store.state.isLoggedIn" class=" menuitem"><NuxtLink role="menuitem" class="cursor" @click="doLogout"><v-icon :icon="mdiLogout" />&nbsp;&nbsp;Logout</NuxtLink></v-list-item>
+                    <v-list-item v-if="$store.state.isLoggedIn" class="menuitem"><NuxtLink role="menuitem" class="cursor" @click="doLogout"><v-icon :icon="mdiLogout" />&nbsp;&nbsp;Logout</NuxtLink></v-list-item>
                 </v-list>
             </v-navigation-drawer>
 
@@ -98,6 +98,7 @@ export default defineComponent({
            this.$store.state.isLoggedIn=false;
            this.$store.state.name=null;
            this.$store.state.successText="Successfully Logged Out";
+           this.drawer=false;
            navigateTo('/');
         })
     },
@@ -166,4 +167,9 @@ export default defineComponent({
       z-index:10000;
  }
 </style>
-          
+
+<style scoped>
+    .cursor {
+        cursor:pointer;
+    }
+</style>

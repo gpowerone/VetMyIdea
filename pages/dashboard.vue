@@ -57,8 +57,8 @@
                                     {{ new Date(item.createdAt).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric", hour:"numeric", minute:"numeric" })  }}
                                 </td>
                                 <td>
-                                    <v-btn :icon="mdiPencil" density="compact" class="ma-2" v-if="item.IsReady" @click="doEdit(item.ReportID)" />
-                                    <v-btn :icon="mdiDelete" density="compact" class="ma-2" v-if="item.IsReady" @click="doDelete(item.ReportID)" />
+                                    <v-btn :icon="mdiPencil" density="compact" class="ma-2" v-if="item.IsReady||item.Flagged" @click="doEdit(item.ReportID)" />
+                                    <v-btn :icon="mdiDelete" density="compact" class="ma-2" v-if="item.IsReady||item.Flagged" @click="doDelete(item.ReportID)" />
                                 </td>
                             </tr>
                         </template>
@@ -146,6 +146,7 @@
     .then(data => {
         if (data.success) {
             store.state.successText="Report has finished processing";
+            fetchTable();
         }
         else {
             setTimeout(function() {

@@ -14,11 +14,13 @@
     <div class="mt-5" v-if="monetize==='Start a business to sell a product or service'" >
         <v-container class="pa-0">
             <v-row>
-                <v-col cols="10" xs="10" sm="11" md="11" lg="11" xl="11" xxl="11">
-                    <v-text-field v-model="product" class="field" label="Describe the product or service (up to 100 chars)"></v-text-field>
+                <v-col cols="12">
+                    <v-text-field v-model="product" bg-color="white" class="field" :class="{'fielderror': !isProductTypeValid()}" label="Describe the product or service" outlined dense></v-text-field>
                 </v-col>
-                <v-col cols="2" xs="2" sm="1" md="1" lg="1" xl="1" xxl="1">
-                    <span class="tooltip tips d-block" v-tooltip.bottom="{ content: `<h3>Tips</h3><p>1. Give us only the product or service (e.g. 'golf club' or 'email marketing')<br /><br />2. If multiple types of businesses could sell the product or service then be specific (e.g. if you're selling 'food', then specify that you want to sell 'grocery store food', 'diner food', or 'steakhouse food', etc.)<br /><br />3.  Don't add the features that make your product or service unique here (we'll get to that later).</p>`}">?</span>
+            </v-row>
+            <v-row>
+                <v-col cols="12">
+                    <differentiators ref="differ" class="mb-10" />
                 </v-col>
             </v-row>
         </v-container>
@@ -34,7 +36,9 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
 import { mdiArrowRight } from '@mdi/js'
+import differentiators from '../components/differentiators.vue'
 
+let differ = ref();
 let monetize=ref("");
 let product=ref("");
 let emit = defineEmits(['advancePanel']);
@@ -44,7 +48,6 @@ watch(monetize, async (newValue, oldValue) => {
     if (newValue!==oldValue && newValue.length<=50) {
         localStorage.setItem("monetize", newValue)
     }
-    
 });
 
 watch(product, async (newValue, oldValue) => {
@@ -57,12 +60,18 @@ function handleAdvance() {
     emit('advancePanel');
 }
 
+function isProductTypeValid() {
+    if (product.value.length===0 || (product.value.length<=100 && /^[A-Za-z0-9\'\.\s]+$/.test(product.value))) {
+        return true;
+    }
+    return false;
+    
+}
+
 function optionsHandled() {
-    if (monetize.value!==null) {
-        if (product.value!==null) {
-          if (product.value.length>0 && product.value.length<=100 && /^[A-Za-z0-9\'\.\s]+$/.test(product.value)) {
-              return false;
-          }
+    if (monetize.value!==null&&typeof(differ.value)!=="undefined") {
+        if (product.value.length>0) {
+             return !isProductTypeValid()&&!differ.value.optionsHandled();
         }  
     } 
     return true;

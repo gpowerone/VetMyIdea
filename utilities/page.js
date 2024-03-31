@@ -57,7 +57,7 @@ export default {
                 "</head>"+
                 "<body class='report'>"+
                 "<header class='report'>"+
-                "<div class='header-left'><a href='https://www.vetmyidea.biz'><img src='./images/logo.png' alt='Vet My Idea' height='60' /></a></div>"+
+                "<div class='header-left'><a href='https://vetmyidea.biz'><img src='./images/logo.png' alt='Vet My Idea' height='60' /></a></div>"+
                 "<div class='header-right'>Report</div>"+
                 "<div class='clear'></div>"+
                 "</header>"+
