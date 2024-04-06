@@ -12,22 +12,16 @@
                     </v-selection-control-group>   
                     
                     <div v-if="productionCosts===true">
-                        <v-selection-control-group  v-model="rawMaterialsCheaper" > 
-                            <v-checkbox density="compact"  label="My raw materials cost less"></v-checkbox>                
-                        </v-selection-control-group>
-                        <v-text-field v-if="rawMaterialsCheaper===true" bg-color="white"  class="field" :class="{'fielderror': !rawMaterialsValid()}" v-model="rawMaterialsEntry" label="How?" outlined dense></v-text-field>
-
-                        <v-selection-control-group  v-model="laborCostsCheaper" > 
-                            <v-checkbox density="compact" label="My labor costs less"></v-checkbox>       
-                        </v-selection-control-group>
-                        <v-text-field v-if="laborCostsCheaper===true" bg-color="white"  class="field" :class="{'fielderror': !laborCostsValid()}" label="How?" v-model="laborCostsEntry" outlined dense></v-text-field>
-
-                        <v-selection-control-group  v-model="shippingCostsCheaper" > 
-                            <v-checkbox density="compact" label="My shipping costs less"></v-checkbox>          
-                        </v-selection-control-group>
-                        <v-text-field v-if="shippingCostsCheaper===true" bg-color="white"  class="field" :class="{'fielderror': !shippingCostsValid()}" label="How?" v-model="shippingCostsEntry" outlined dense></v-text-field>
+                        <v-text-field  bg-color="white"  class="field" :class="{'fielderror': !costsValid()}" v-model="costsEntry" label="How?" outlined dense></v-text-field>
                     </div>
 
+                    <v-selection-control-group v-model="marketingStrategy"> 
+                        <v-checkbox density="compact" label="My marketing strategy is better than my competitors"></v-checkbox>
+                    </v-selection-control-group>   
+                    
+                    <div v-if="marketingStrategy===true">
+                        <v-text-field  bg-color="white"  class="field" :class="{'fielderror': !marketingValid()}" v-model="marketingEntry" label="How?" outlined dense></v-text-field>
+                    </div>
                           
                 </v-col>
             </v-row>
@@ -35,7 +29,7 @@
                 <v-col cols="12">
                     <div>
                         <b>Other Differentiators</b> 
-                        <span class="tooltip tips" v-tooltip.bottom="{ content: `<p>There are some additional differentiators that could put your product or service above the competition. We do not evaluate these because it would be difficult to provide a fair evaluation without having source materials to analyze, or because these are more of a company strategy than a product-specific one:</p><p class='mt-5'>1. Marketing/Advertising Strategy<br />2. User Experience<br />3. Customer Service and Support</p>`}">?</span>
+                        <span class="tooltip tips" v-tooltip.bottom="{ content: `<p>There are some additional differentiators that could put your product or service above the competition. We do not evaluate these because it would be difficult to provide a fair evaluation without having source materials to analyze, or because these are more of a company strategy than a product-specific one:</p><p class='mt-5'>1. Advertising Strategy<br />2. User Experience<br />3. Customer Service and Support</p>`}">?</span>
                      </div>       
                 </v-col>
             </v-row>
@@ -48,12 +42,9 @@ import { mdiArrowRight, mdiArrowLeft } from '@mdi/js'
 import { ref, watch } from 'vue'
 
 let productionCosts = ref(false);
-let rawMaterialsCheaper = ref(false);
-let laborCostsCheaper = ref(false);
-let shippingCostsCheaper = ref(false);
-let rawMaterialsEntry = ref("");
-let laborCostsEntry = ref("");
-let shippingCostsEntry = ref("");
+let marketingStrategy = ref(false);
+let costsEntry = ref("");
+let marketingEntry = ref("");
 let uniqueFeaturesEntry = ref("");
 
 
@@ -62,34 +53,19 @@ watch(productionCosts, async (newValue, oldValue) => {
         localStorage.setItem("productionCosts", newValue)
     }
 });
-watch(rawMaterialsCheaper, async (newValue, oldValue) => {
+watch(marketingStrategy, async (newValue, oldValue) => {
     if (newValue!==oldValue) {
-        localStorage.setItem("rawMaterialsCheaper", newValue)
+        localStorage.setItem("marketingStrategy", newValue)
     }
 });
-watch(laborCostsCheaper, async (newValue, oldValue) => {
-    if (newValue!==oldValue) {
-        localStorage.setItem("laborCostsCheaper", newValue)
-    }
-});
-watch(shippingCostsCheaper, async (newValue, oldValue) => {
-    if (newValue!==oldValue) {
-        localStorage.setItem("shippingCostsCheaper", newValue)
-    }
-});
-watch(rawMaterialsEntry, async (newValue, oldValue) => {
+watch(costsEntry, async (newValue, oldValue) => {
     if (newValue!==oldValue && newValue.length<=300) {
-        localStorage.setItem("rawMaterialsEntry", newValue)
+        localStorage.setItem("costsEntry", newValue)
     }
 });
-watch(laborCostsEntry, async (newValue, oldValue) => {
+watch(marketingEntry, async (newValue, oldValue) => {
     if (newValue!==oldValue && newValue.length<=300) {
-        localStorage.setItem("laborCostsEntry", newValue)
-    }
-});
-watch(shippingCostsEntry, async (newValue, oldValue) => {
-    if (newValue!==oldValue && newValue.length<=300) {
-        localStorage.setItem("shippingCostsEntry", newValue)
+        localStorage.setItem("marketingEntry", newValue)
     }
 });
 watch(uniqueFeaturesEntry, async (newValue, oldValue) => {
@@ -98,22 +74,15 @@ watch(uniqueFeaturesEntry, async (newValue, oldValue) => {
     }
 });
 
-function laborCostsValid() {
-  if (laborCostsEntry.value.length>0 && (laborCostsEntry.value.length>300 || !/^[A-Za-z0-9\.\'\s]+$/.test(laborCostsEntry.value))) {
+function costsValid() {
+  if (costsEntry.value.length>0 && (costsEntry.value.length>300 || !/^[A-Za-z0-9\.\'\s]+$/.test(costsEntry.value))) {
         return false;
   }
   return true;
 }
 
-function rawMaterialsValid() {
-  if (rawMaterialsEntry.value.length>0 && (rawMaterialsEntry.value.length>300 || !/^[A-Za-z0-9\.\'\s]+$/.test(rawMaterialsEntry.value))) {
-        return false;
-  }
-  return true;
-}
-
-function shippingCostsValid() {
-  if (shippingCostsEntry.value.length>0 && (shippingCostsEntry.value.length>300 || !/^[A-Za-z0-9\.\'\s]+$/.test(shippingCostsEntry.value))) {
+function marketingValid() {
+  if (marketingEntry.value.length>0 && (marketingEntry.value.length>300 || !/^[A-Za-z0-9\.\'\s]+$/.test(marketingEntry.value))) {
         return false;
   }
   return true;
@@ -128,7 +97,7 @@ function uniqueFeatureValid() {
 
 function optionsHandled() {
     
-   return !laborCostsValid()||!rawMaterialsValid()||!shippingCostsValid()||!uniqueFeatureValid();
+   return !costsValid()||!marketingValid()||!uniqueFeatureValid();
    
 }
 
@@ -142,29 +111,17 @@ onMounted(() => {
   if (stored_prod_costs!==null) {
       productionCosts.value=stored_prod_costs==="true";
   }
-  let stored_raw_materials = localStorage.getItem("rawMaterialsCheaper");
-  if (stored_raw_materials!==null) {
-      rawMaterialsCheaper.value=stored_raw_materials==="true";
+  let marketing_strategy = localStorage.getItem("marketingStrategy");
+  if (marketing_strategy!==null) {
+      marketingStrategy.value=marketing_strategy==="true";
   }
-  let stored_labor_costs = localStorage.getItem("laborCostsCheaper");
-  if (stored_labor_costs!==null) {
-      laborCostsCheaper.value=stored_labor_costs==="true";
+  let stored_costs_e = localStorage.getItem("costsEntry");
+  if (stored_costs_e!==null) {
+      costsEntry.value=stored_costs_e;
   }
-  let stored_shipping_costs = localStorage.getItem("shippingCostsCheaper");
-  if (stored_shipping_costs!==null) {
-      shippingCostsCheaper.value=stored_labor_costs==="true";
-  }
-  let stored_raw_materials_e = localStorage.getItem("rawMaterialsEntry");
-  if (stored_raw_materials_e!==null) {
-      rawMaterialsEntry.value=stored_raw_materials_e;
-  }
-  let stored_labor_costs_e  = localStorage.getItem("laborCostsEntry");
-  if (stored_labor_costs_e!==null) {
-      laborCostsEntry.value=stored_labor_costs_e;
-  }
-  let stored_shipping_costs_e  = localStorage.getItem("shippingCostsEntry");
-  if (stored_shipping_costs_e!==null) {
-      shippingCostsEntry.value=stored_shipping_costs_e;
+  let stored_marketing_e  = localStorage.getItem("marketingEntry");
+  if (stored_marketing_e!==null) {
+      marketingEntry.value=stored_marketing_e;
   }
   let stored_unique_features_e  = localStorage.getItem("uniqueFeaturesEntry");
   if (stored_unique_features_e!==null) {

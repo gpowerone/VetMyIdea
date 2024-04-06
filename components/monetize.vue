@@ -4,7 +4,7 @@
         v-model="monetize"
         :items="monetizeOptions"
         label="How do you plan to monetize your idea?"
-        class="mt-3 field field-select"
+        class="mt-3 field-select"
     ></v-select>
     
     <div class="mt-5 text-center" v-if="monetize==='Accept donations'||monetize==='I do not plan to monetize my idea'">

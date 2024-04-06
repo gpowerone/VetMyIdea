@@ -20,7 +20,7 @@ export default {
             "<meta name='robots' content='noindex'>"+
             "<meta property='og:url' content='https://reports.vetmyidea.biz/"+url+"' />"+
             "<meta property='og:type' content='website' />"+
-            "<meta property='og:title' content='${title}' />"+
+            "<meta property='og:title' content='"+title.replace(/'/g,"&apos;")+"' />"+
             "<meta property='og:description' content='Information about starting a "+title.replace(/'/g,"&apos;")+"' />"+
             "<meta property='og:image' content='https://reports.vetmyidea.biz/core/vetmyidea.png' />"+
             "<link rel='preconnect' href='https://fonts.googleapis.com'>"+
@@ -29,6 +29,7 @@ export default {
             "<link href='./core/report_builder.css' rel='stylesheet' />"+
             "<script src='./core/report_builder.js' type='text/javascript'></script>"+
             "<script src='https://platform.linkedin.com/in.js' type='text/javascript'>lang: en_US</script>"+
+            "<script async src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7307219219068554' crossorigin='anonymous'></script>"+
             "<script src='https://www.googletagmanager.com/gtag/js?id=G-Z4T5SBW4ZS'></script>"+
             "<script type='text/javascript'>(function(d, s, id) {"+
                 "var js, fjs = d.getElementsByTagName(s)[0];"+

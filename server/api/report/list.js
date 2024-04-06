@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
    
             const ds = await Report.findAll({
                 where: { UserID: session.UserID },
-                order: [['createdAt', 'DESC']]
+                order: [['updatedAt', 'DESC']]
             });
 
             return { success: true, data: ds }

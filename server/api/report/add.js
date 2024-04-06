@@ -32,9 +32,6 @@ export default defineEventHandler(async (event) => {
                 let data = tools.verifyReportInput(requestData);
                 if (data.IsValid) {
 
-                    // Uppercase first letter of product type name
-                    data.ProductType=data.ProductType[0].toUpperCase()+data.ProductType.slice(1);
-
                     let report_id = uuidv4();
                     await Report.create({
                         ReportID: report_id,
@@ -46,7 +43,7 @@ export default defineEventHandler(async (event) => {
                         IsProcessing: false,
                         ProductURL: null,
                         IsDebug: true,
-                        Processor: 1,
+                        IsDelayed: false,
                         IsReady: false
                     });
 

@@ -30,19 +30,27 @@
         </v-col>
         <v-col cols="12" lg="5" xs="12" v-if="panelOpt==0" >
             
-            <p class="text-center mt-10" style='font-size:1.2em;'>Evaluate it <em>before</em> you start. Save time and money! Get a <span style='color:#a32d26;font-weight:bold;'>Vet My Idea Report</span>:</p>
+            <p class="text-center mt-10"  style='font-size:1.6em;'><b>90%</b> of startups <b>fail</b>. Why yours could be next:</p>
+            <div class='mt-5 mb-7' style='text-align:center;'>
+               <ul class='market-list' :class="{'ml-7': $vuetify.display.xs}">
+                  <li>An unconvincing value proposition - customers buy your competitors product</li>
+                  <li>Incorrect marketing strategy - customers don't know they need your product</li>
+                  <li>Weak growth in your industry - no one wants your product</li> 
+                  <li>Being unaware of risks</li>
+                  <li>Your product is, unbeknownst to you, illegal</li>
+               </ul>
+            </div>
 
-            <div class='mt-5 mb-15' style='text-align:center;'>
-               <ul class='market-list' :class="{'ml-7': $vuetify.display.xs||$vuetify.display.sm||$vuetify.display.md}">
-                  <li>Report based on targeted location (city, region, country, or international)</li>
-                  <li>Potential growth in your industry</li>
-                  <li>Potential competitors</li>
+            <h3 class="text-center mt-15" style="font-size:1.6em;" >Evaluate it <em>before</em> you start. Get a <span style='color:#a32d26;font-weight:bold;'>VetMyIdea Report</span></h3>
+
+            <div class='mt-5 mb-7' style='text-align:center;'>
+               <ul class='market-list' :class="{'ml-7': $vuetify.display.xs}">
+                  <li>Potential growth and competitors in your industry</li>
                   <li>Potential risks</li>
-                  <li>Evaluation of unique feature/value-proposition</li>
-                  <li>Evaluation of cost-cutting measures</li>
-                  <li>Favorability score</li>    
-                  <li>Optionally share your report</li>
-                  <li>Run a report in under 5 minutes</li>
+                  <li>Evaluation of unique feature, cost-cutting, and marketing strategies</li>
+                  <li>Report based on targeted location (city, region, country, or international)</li>
+                  <li>VetMyIdea favorability score</li>    
+                  <li>Run a report for free in under 5 minutes</li>
                </ul>
             </div>
 

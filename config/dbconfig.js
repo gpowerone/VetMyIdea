@@ -23,5 +23,6 @@ export default {
         host: process.env.NUXT_DB_HOST,
         port: 5432,
         dialect: 'postgresql',
+        logging: false
     }
   };

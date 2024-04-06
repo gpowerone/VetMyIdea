@@ -10,14 +10,11 @@ function build_report(report_string) {
         buildTab(buildNovelReport());
     }
     else if (report.viable=="no") {
-        if (report.hasOwnProperty("rawMaterialsCost")) {
-            buildTab(buildNonViableReport(report.rawMaterialsCost.viable.evaluatedString, report.rawMaterialsCost.viable.explanation));
+        if (report.hasOwnProperty("cost")) {
+            buildTab(buildNonViableReport(report.cost.viable.evaluatedString, report.cost.viable.explanation));
         }
-        else if (report.hasOwnProperty("shippingCost")) {
-            buildTab(buildNonViableReport(report.shippingCost.viable.evaluatedString, report.shippingCost.viable.explanation));
-        }
-        else if (report.hasOwnProperty("laborCost")) {
-            buildTab(buildNonViableReport(report.laborCost.viable.evaluatedString, report.laborCost.viable.explanation));
+        else if (report.hasOwnProperty("marketing")) {
+            buildTab(buildNonViableReport(report.marketing.viable.evaluatedString, report.marketing.viable.explanation));
         }
         else if (report.hasOwnProperty("uniqueFeature")) {
             buildTab(buildNonViableReport(report.uniqueFeature.viable.evaluatedString, report.uniqueFeature.viable.explanation));
@@ -33,9 +30,8 @@ function build_report(report_string) {
         buildTab(buildBreakdown(report));
         buildTab(buildGrowthCompetitors(report.expectedGrowth, report.competitors));
         buildTab(buildUniqueFeature(report));
-        buildTab(buildRawMaterialsCosts(report));
-        buildTab(buildLaborCosts(report));
-        buildTab(buildShippingCosts(report));
+        buildTab(buildCosts(report));
+        buildTab(buildMarketing(report));
         buildTab(buildRisks(report));
 
     }
@@ -86,14 +82,11 @@ function buildBreakdown(report) {
     if (report.uniqueFeature && report.uniqueFeature.score!==0) {
         breakdown+="<p style='margin-top:25px;'><b>Unique Feature:</b> "+scoreStyle(report.uniqueFeature.score)+"</p>";
     }
-    if (report.rawMaterialsCost && report.rawMaterialsCost.score!==0) {
-        breakdown+="<p style='margin-top:25px;'><b>Raw Materials Cost:</b> "+scoreStyle(report.rawMaterialsCost.score)+"</p>";
+    if (report.cost && report.cost.score!==0) {
+        breakdown+="<p style='margin-top:25px;'><b>Reduced Cost:</b> "+scoreStyle(report.cost.score)+"</p>";
     }
-    if (report.laborCost && report.laborCost.score!==0) {
-        breakdown+="<p style='margin-top:25px;'><b>Labor Cost:</b> "+scoreStyle(report.laborCost.score)+"</p>";
-    }
-    if (report.shippingCost && report.shippingCost.score!==0) {
-        breakdown+="<p style='margin-top:25px;'><b>Shipping Cost:</b> "+scoreStyle(report.shippingCost.score)+"</p>";
+    if (report.marketing && report.marketing.score!==0) {
+        breakdown+="<p style='margin-top:25px;'><b>Marketing Strategy:</b> "+scoreStyle(report.marketing.score)+"</p>";
     }
     if (report.regulatoryRisk.score!==0) {
         breakdown+="<p style='margin-top:25px;'><b>Regulatory Risk:</b> "+scoreStyle(report.regulatoryRisk.score)+"</p>";
@@ -118,22 +111,22 @@ function buildBreakdown(report) {
 
 }
 
-function buildLaborCosts(report) {
-    if (report.laborCost) {
+function buildCosts(report) {
+    if (report.cost) {
         let contents =   
             "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>" +
                 "<div class='section'>";
         
-        if (report.laborCost) {
-            contents+="<h3>Reduced Labor Cost "+scoreStyle(report.laborCost.score)+"</h3>";
-            contents+="<p><b>Plan</b>: "+report.laborCost.evaluatedString+"</p>"
-            contents+="<p>"+report.laborCost.benefits+"</p>";
+        if (report.cost) {
+            contents+="<h3>Reduced Cost "+scoreStyle(report.cost.score)+"</h3>";
+            contents+="<p><b>Plan</b>: "+report.cost.evaluatedString+"</p>"
+            contents+="<p>"+report.cost.benefits+"</p>";
         }
 
         contents += "</div></section>";
 
         let cost_result={
-            name: "Labor",
+            name: "Cost",
             contents: contents,
             id: tab_id,
             width: "75px"
@@ -149,22 +142,22 @@ function buildLaborCosts(report) {
     }
 }
 
-function buildShippingCosts(report) {
-    if (report.shippingCost) {
+function buildMarketing(report) {
+    if (report.marketing) {
         let contents =   
             "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>" +
                 "<div class='section'>";
         
-        if (report.shippingCost) {
-            contents+="<h3>Reduced Shipping Cost "+scoreStyle(report.shippingCost.score)+"</h3>";
-            contents+="<p><b>Plan</b>: "+report.shippingCost.evaluatedString+"</p>"
-            contents+="<p>"+report.shippingCost.benefits+"</p>";
+        if (report.marketing) {
+            contents+="<h3>Marketing Strategy "+scoreStyle(report.marketing.score)+"</h3>";
+            contents+="<p><b>Plan</b>: "+report.marketing.evaluatedString+"</p>"
+            contents+="<p>"+report.marketing.benefits+"</p>";
         }
 
         contents += "</div></section>";
 
-        let cost_result={
-            name: "Shipping",
+        let mkt_result={
+            name: "Marketing",
             contents: contents,
             id: tab_id,
             width: "100px"
@@ -172,38 +165,7 @@ function buildShippingCosts(report) {
     
         tab_id++;
     
-        return cost_result;
-
-    }
-    else {
-        return null;
-    }
-}
-
-function buildRawMaterialsCosts(report) {
-    if (report.rawMaterialsCost) {
-        let contents =   
-            "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>" +
-                "<div class='section'>";
-        
-        if (report.rawMaterialsCost) {
-            contents+="<h3>Reduced Raw Materials Cost "+scoreStyle(report.rawMaterialsCost.score)+"</h3>";
-            contents+="<p><b>Plan</b>: "+report.rawMaterialsCost.evaluatedString+"</p>"
-            contents+="<p>"+report.rawMaterialsCost.benefits+"</p>";
-        }
-
-        contents += "</div></section>";
-
-        let cost_result={
-            name: "Raw Materials",
-            contents: contents,
-            id: tab_id,
-            width: "145px"
-        };
-    
-        tab_id++;
-    
-        return cost_result;
+        return mkt_result;
 
     }
     else {
@@ -219,7 +181,7 @@ function buildNonViableReport(strategy,explanation) {
         "<p>We found one or more arguments that your stated strategy: '"+strategy+"' is non-viable. These are in the paragraph below this one:</p>"+
         "<p>&quot;"+explanation+"&quot;</p>"+
         "<p><b>Warning</b>: <em>You should independently verify the correctness of these arguments</em></p>"+
-        "<p>Potentially non-viable ideas are not scored because if they are non-viable they would automatically receive a score of zero</p>"+
+        "<p>Potentially non-viable ideas are not scored</p>"+
       "</div>"+
       "</section>"; 
 
@@ -346,7 +308,7 @@ function buildGrowthCompetitors(growth, competitors) {
     let growth_result={
         name: "Growth",
         contents: "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'><div class='section'><h3>Growth Potential: "+sanitize(growth.growth.toUpperCase()) + " "+scoreStyle(growth.score)+"</h3>"+
-            "<p>"+sanitize(growth.explanation)+"</p><p>&nbsp;</p>"+competition+"</div></section>",
+            "<p style='margin-bottom:30px;'>"+sanitize(growth.explanation)+"</p>"+competition+"</div></section>",
         id: tab_id,
         width:"75px"
     };

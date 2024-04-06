@@ -38,10 +38,6 @@ Report.init({
         allowNull: true,
         type: DataTypes.SMALLINT,
     },
-    Processor: {
-        allowNull: false,
-        type: DataTypes.SMALLINT,
-    },
     TargetLocation: {
         allowNull: false,
         type: DataTypes.STRING(255),
@@ -67,6 +63,10 @@ Report.init({
     IsProcessing: {
         allowNull: false,
         default: false,
+        type: DataTypes.BOOLEAN
+    },
+    IsDelayed: {
+        allowNull: true,
         type: DataTypes.BOOLEAN
     },
     createdAt: {

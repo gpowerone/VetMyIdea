@@ -24,7 +24,7 @@
           <h3>Create An Account</h3>
           <p class="mt-5">
           &bull; Get Your Free Report<br />
-          &bull; Create Additional  Free Reports<br />
+          &bull; Create Additional Free Reports (up to 3/day)<br />
           &bull; Optionally Share Your Reports<br />
           </p>
         </div>

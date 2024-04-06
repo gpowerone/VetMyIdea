@@ -24,20 +24,16 @@
                     <div>
                         <b>Differentiation:</b>
                     </div>
-                   
-                    <div class="mt-3" v-if="rawMaterialsCheaper===true">
-                        Raw materials cheaper because: {{rawMaterialsEntry}} 
-                    </div>  
-
-                    <div class="mt-3" v-if="laborCostsCheaper===true">
-                        Labor costs cheaper because: {{laborCostsEntry}} 
+                        
+                    <div class="mt-3" v-if="costsEntry!==null">
+                        Cost strategy: {{costsEntry}} 
                     </div>   
 
-                    <div class="mt-3" v-if="shippingCostsCheaper===true">
-                        Shipping costs cheaper because: {{shippingCostsEntry}} 
+                    <div class="mt-3" v-if="marketingEntry!==null">
+                        Marketing strategy: {{marketingEntry}} 
                     </div>     
 
-                     <div class="mt-3" v-if="uniqueFeatures===true">
+                     <div class="mt-3" v-if="uniqueFeaturesEntry!==null && uniqueFeaturesEntry.length>0">
                         Feature with the greatest customer draw: {{uniqueFeaturesEntry}}
                      </div>
                 </v-col>
@@ -91,14 +87,8 @@ export default {
   },
   data() {
     return {
-        rawMaterialsCheaper: false,
-        laborCostsCheaper: false,
-        shippingCostsCheaper: false,
-        missingFeatures: false,
-        userExperience: false,
-        rawMaterialsEntry: null,
-        laborCostsEntry: null,
-        shippingCostsEntry: null,
+        costsEntry: null,
+        marketingEntry: null,
         uniqueFeaturesEntry: null,
         targetedLocation: null,
         product: null,
@@ -106,43 +96,15 @@ export default {
     }
   },
   mounted() {
-    let stored_raw_materials = localStorage.getItem("rawMaterialsCheaper");
-    if (stored_raw_materials!==null) {
-        this.rawMaterialsCheaper=stored_raw_materials==="true";
-    }
-    let stored_labor_costs = localStorage.getItem("laborCostsCheaper");
-    if (stored_labor_costs!==null) {
-        this.laborCostsCheaper=stored_labor_costs==="true";
-    }
-    let stored_shipping_costs = localStorage.getItem("shippingCostsCheaper");
-    if (stored_shipping_costs!==null) {
-        this.shippingCostsCheaper=stored_labor_costs==="true";
-    }
-    let stored_missing_features = localStorage.getItem("missingFeatures");
-    if (stored_missing_features!==null) {
-        this.missingFeatures=stored_missing_features==="true";
-    }
-   
-
-    if (this.rawMaterialsCheaper) {
-        let stored_raw_materials_e = localStorage.getItem("rawMaterialsEntry");
-        if (stored_raw_materials_e!==null) {
-            this.rawMaterialsEntry=stored_raw_materials_e;
-        }
+  
+    let stored_costs_e  = localStorage.getItem("costsEntry");
+    if (stored_costs_e!==null) {
+        this.costsEntry=stored_costs_e;
     }
 
-    if (this.laborCostsCheaper) {
-        let stored_labor_costs_e  = localStorage.getItem("laborCostsEntry");
-        if (stored_labor_costs_e!==null) {
-            this.laborCostsEntry=stored_labor_costs_e;
-        }
-    }
-
-    if (this.shippingCostsCheaper) {
-        let stored_shipping_costs_e  = localStorage.getItem("shippingCostsEntry");
-        if (stored_shipping_costs_e!==null) {
-            this.shippingCostsEntry=stored_shipping_costs_e;
-        }
+    let stored_marketing_e  = localStorage.getItem("marketingEntry");
+    if (stored_marketing_e!==null) {
+        this.marketingEntry=stored_marketing_e;
     }
 
     let stored_unique_features_e  = localStorage.getItem("uniqueFeaturesEntry");
@@ -192,9 +154,8 @@ export default {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        rawMaterialsEntry: this.rawMaterialsEntry,
-                        laborCostsEntry: this.laborCostsEntry,
-                        shippingCostsEntry: this.shippingCostsEntry,
+                        costsEntry: this.costsEntry,
+                        marketingEntry: this.marketingEntry,
                         uniqueFeaturesEntry: this.uniqueFeaturesEntry,
                         targetedLocation: this.targetedLocation,
                         product: this.product,

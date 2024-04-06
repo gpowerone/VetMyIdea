@@ -25,46 +25,45 @@ export default {
                     data.TargetLocation=requestData.targetedLocation.replace(/[^\x00-\x7F]/g, ""); 
                     data.IsValid=true;
     
-                    if (requestData.rawMaterialsEntry && requestData.rawMaterialsEntry.length>0 && requestData.rawMaterialsEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.rawMaterialsEntry)) {
-                        data.FillFields.push({"FieldType": "Reduced Raw Materials Cost", "FieldValue": requestData.rawMaterialsEntry.replace(/[^\x00-\x7F]/g, "").trim()});
-                    }
-                    else {
-                        return {
-                            IsValid: false,
-                            FillFields: []
+                    if (requestData.marketingEntry) {
+                        if (requestData.marketingEntry.length>0 && requestData.marketingEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.marketingEntry)) {
+                            data.FillFields.push({"FieldType": "Marketing", "FieldValue": requestData.marketingEntry.replace(/[^\x00-\x7F]/g, "").trim()});
+                        }
+                        else {
+                            return {
+                                IsValid: false,
+                                FillFields: [],
+                                Error: "Marketing entry invalid"
+                            }
                         }
                     }
     
-                    if (requestData.laborCostsEntry && requestData.laborCostsEntry.length>0 && requestData.laborCostsEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.laborCostsEntry)) {
-                        data.FillFields.push({"FieldType": "Reduced Labor Cost", "FieldValue": requestData.laborCostsEntry.replace(/[^\x00-\x7F]/g, "").trim()});
-                    }
-                    else {
-                        return {
-                            IsValid: false,
-                            FillFields: []
+                    if (requestData.costsEntry) {
+                        if (requestData.costsEntry.length>0 && requestData.costsEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.costsEntry)) {
+                            data.FillFields.push({"FieldType": "Cost", "FieldValue": requestData.costsEntry.replace(/[^\x00-\x7F]/g, "").trim()});
+                        }
+                        else {
+                            return {
+                                IsValid: false,
+                                FillFields: [],
+                                Error: "Cost entry invalid"
+                            }
                         }
                     }
+
     
-                    if (requestData.shippingCostsEntry && requestData.shippingCostsEntry.length>0 && requestData.shippingCostsEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.shippingCostsEntry)) {
-                        data.FillFields.push({"FieldType": "Reduced Shipping Cost", "FieldValue": requestData.shippingCostsEntry.replace(/[^\x00-\x7F]/g, "").trim()});
-                    }
-                    else {
-                        return {
-                            IsValid: false,
-                            FillFields: []
+                    if (requestData.uniqueFeaturesEntry) {
+                        if (requestData.uniqueFeaturesEntry.length>0 && requestData.uniqueFeaturesEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.uniqueFeaturesEntry)) {
+                            data.FillFields.push({"FieldType": "Unique Feature", "FieldValue": requestData.uniqueFeaturesEntry.replace(/[^\x00-\x7F]/g, "").trim()});
+                        }
+                        else {
+                            return {
+                                IsValid: false,
+                                FillFields: [],
+                                Error: "Unique feature entry invalid"
+                            }
                         }
                     }
-    
-                    if (requestData.uniqueFeaturesEntry && requestData.uniqueFeaturesEntry.length>0 && requestData.uniqueFeaturesEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.uniqueFeaturesEntry)) {
-                        data.FillFields.push({"FieldType": "Unique Feature", "FieldValue": requestData.uniqueFeaturesEntry.replace(/[^\x00-\x7F]/g, "").trim()});
-                    }
-                    else {
-                        return {
-                            IsValid: false,
-                            FillFields: []
-                        }
-                    }
-    
                 }
             }
         }

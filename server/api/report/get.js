@@ -26,9 +26,8 @@ export default defineEventHandler(async (event) => {
                          ProductType: result.ProductType,
                          TargetLocation: result.TargetLocation,
                          uniqueFeaturesEntry: null,
-                         rawMaterialsEntry: null,
-                         shippingCostsEntry: null,
-                         laborCostsEntry: null
+                         costEntry: null,
+                         marketingEntry: null,
                     };
 
                     const fields = await ReportField.findAll({
@@ -41,15 +40,13 @@ export default defineEventHandler(async (event) => {
                          if (field.FieldType=="Unique Feature") {
                             reportdata.uniqueFeaturesEntry = field.FieldValue;
                          }
-                         if (field.FieldType=="Reduced Raw Materials Cost") {
-                            reportdata.rawMaterialsEntry = field.FieldValue;
+                         if (field.FieldType=="Cost") {
+                            reportdata.costEntry = field.FieldValue;
                          }
-                         if (field.FieldType=="Reduced Shipping Cost") {
-                            reportdata.shippingCostsEntry = field.FieldValue;
+                         if (field.FieldType=="Marketing") {
+                            reportdata.marketingEntry = field.FieldValue;
                          }
-                         if (field.FieldType=="Reduced Labor Cost") {
-                            reportdata.laborCostsEntry = field.FieldValue;
-                         }
+              
                     })
 
     

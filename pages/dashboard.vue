@@ -13,6 +13,9 @@
                     >
                         <template v-slot:item="{ item }">
                             <tr>
+                                <td class="text-right">
+                                    <v-btn :icon="mdiPencil" density="compact" class="ma-2" v-if="item.IsReady||item.Flagged" @click="doEdit(item.ReportID)" />                                
+                                </td>
                                 <td>
                                     <b v-if="item.IsReady">
                                         <NuxtLink :to="getReportURL(item)" target="_blank" >{{ item.ProductType }}</NuxtLink>
@@ -54,11 +57,10 @@
                                     </div>
                                 </td>
                                 <td>
-                                    {{ new Date(item.createdAt).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric", hour:"numeric", minute:"numeric" })  }}
+                                    {{ new Date(item.updatedAt).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric", hour:"numeric", minute:"numeric" })  }}
                                 </td>
                                 <td>
-                                    <v-btn :icon="mdiPencil" density="compact" class="ma-2" v-if="item.IsReady||item.Flagged" @click="doEdit(item.ReportID)" />
-                                    <v-btn :icon="mdiDelete" density="compact" class="ma-2" v-if="item.IsReady||item.Flagged" @click="doDelete(item.ReportID)" />
+                                      <v-btn :icon="mdiDelete" density="compact" class="ma-2" v-if="item.IsReady||item.Flagged" @click="doDelete(item.ReportID)" />
                                 </td>
                             </tr>
                         </template>
@@ -68,6 +70,9 @@
                         <spinner :isLoading="loading" />  
                         <div v-if="!loading">You have no reports</div>
                     </div>
+                    <p class="text-center mt-5">
+                        You may create reports above the 3/day a limit. They will remain in "Queued" status until additional reports become available
+                    </p>
                     <p class="text-center mt-5">
                         Loved it? Hated it? Be sure to let us know by taking our <NuxtLink to="https://forms.gle/k1LcAbWo3CUXzxjP9" target="_blank">survey!</NuxtLink>
                     </p>
@@ -88,12 +93,14 @@
   const store = useStore();
 
   const headers = [
+        { title: '', key: 'action1', sortable: false },
         { title: 'Report', key: 'ProductType' },
         { title: 'Location', key: 'TargetLocation' },
         { title: 'Status', key: 'Status' },
         { title: 'Score', key: 'Score' },
-        { title: 'Created', key: 'Created' },
-        { title: '', key: 'action', sortable: false },
+        { title: 'Updated', key: 'Updated' },
+         { title: '', key: 'action2', sortable: false },
+       
     ];
 
   const reports=ref([]);

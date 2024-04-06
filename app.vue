@@ -34,8 +34,15 @@
   .v-data-table-header__content span {
     font-weight:bold;
   }
-  .fielderror .v-input__control {
-     border:1px solid #a32d26;
+  .field.fielderror .v-field__input {
+     background-color: rgb(163,45,38, 0.2)!important;
+  }
+  .wizard .field.fielderror .v-field {
+       border:1px solid rgb(163,45,38, 0.4);
+      border-radius:0%;
+      -moz-box-shadow: 1px 2px 3px rgba(163,45,38,.3);
+      -webkit-box-shadow: 1px 2px 3px rgba(163,45,38,.3);
+      box-shadow: 1px 2px 3px rgba(163,45,38,.3);
   }
   .inset {
      font-size:0.8em;
@@ -82,5 +89,17 @@
   }
   .wizard .field-select {
       border-radius: 10px;
+      border: 1px solid #0c1d36;
+      background: #FFF;
+  }
+  .v-field__overlay {
+      display:none;
+  }
+  .wizard .field .v-field:hover {
+      border:1px solid rgb(0,0,139, 0.4);
+      border-radius:0%;
+      -moz-box-shadow: 1px 2px 3px rgba(0,0,139,.3);
+      -webkit-box-shadow: 1px 2px 3px rgba(0,0,139,.3);
+      box-shadow: 1px 2px 3px rgba(0,0,139,.3);
   }
 </style>

@@ -11,12 +11,9 @@ export default defineNuxtConfig({
       script: [
         {src: "https://www.google.com/recaptcha/api.js?render=explicit", defer: true, async: true},
         {src: "https://accounts.google.com/gsi/client", async:true},
-        /*{src: "https://reports.vetmyidea.biz/core/report_builder.js", crossorigin:"anonymous"},*/
+        {src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7307219219068554", crossorigin:"anonymous"},
         {src: "https://www.googletagmanager.com/gtag/js?id=G-Z4T5SBW4ZS", async:true}
       ],
-      /*link: [
-        {href: "https://reports.vetmyidea.biz/core/report_builder.css", rel:"stylesheet", type:"text/css", crossorigin:"anonymous"}
-      ],*/
       title: 'Vet My Idea'
     },
   },

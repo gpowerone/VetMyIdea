@@ -19,6 +19,7 @@
                         />
                     </div>
                     <v-btn class="mt-7" @click="doEditReport" :disabled="isSubmitted">Submit Edits</v-btn>
+                    <p class="mt-10"><b>Warning</b>: when viewing edited reports, you may need to hit the browser refresh button to see the updated changes!</p>
                 </div>
                 <spinner v-else class="mt-5" :isLoading="!isLoaded" />
             </v-col>
@@ -35,10 +36,9 @@ export default defineComponent({
             isLoaded:false,
             productType: null,
             targetedLocation: null,
-            isSubmitted:false,
-            rawMaterialsEntry: null,
-            laborCostsEntry: null,
-            shippingCostsEntry: null,
+            isSubmitted:true,
+            marketingEntry: null,
+            costsEntry: null,
             uniqueFeaturesEntry: null,
         }
     },
@@ -52,17 +52,13 @@ export default defineComponent({
             try {
                 this.isSubmitted=true;
 
-                let stored_raw_materials_e = localStorage.getItem("rawMaterialsEntry");
-                if (stored_raw_materials_e!==null) {
-                    this.rawMaterialsEntry=stored_raw_materials_e;
+                let stored_marketing_e = localStorage.getItem("marketingEntry");
+                if (stored_marketing_e!==null) {
+                    this.marketingEntry=stored_marketing_e;
                 }
-                let stored_labor_costs_e  = localStorage.getItem("laborCostsEntry");
-                if (stored_labor_costs_e!==null) {
-                    this.laborCostsEntry=stored_labor_costs_e;
-                }
-                let stored_shipping_costs_e  = localStorage.getItem("shippingCostsEntry");
-                if (stored_shipping_costs_e!==null) {
-                    this.shippingCostsEntry=stored_shipping_costs_e;
+                let stored_costs_e  = localStorage.getItem("costsEntry");
+                if (stored_costs_e!==null) {
+                    this.costsEntry=stored_costs_e;
                 }
                 let stored_unique_features_e  = localStorage.getItem("uniqueFeaturesEntry");
                 if (stored_unique_features_e!==null) {
@@ -78,9 +74,8 @@ export default defineComponent({
                         },
                         body: JSON.stringify({
                             reportId: this.$route.query.ReportID,
-                            rawMaterialsEntry: this.rawMaterialsEntry,
-                            laborCostsEntry: this.laborCostsEntry,
-                            shippingCostsEntry: this.shippingCostsEntry,
+                            marketingEntry: this.marketingEntry,
+                            costsEntry: this.costsEntry,
                             uniqueFeaturesEntry: this.uniqueFeaturesEntry,
                             token: token
                         }),
@@ -143,32 +138,20 @@ export default defineComponent({
                     this.productType = report.ProductType;
                     this.targetedLocation = report.TargetLocation;
 
-                    localStorage.setItem("selectedDifferentiation","notunique");
+                    console.log(report);
 
                     if (report.uniqueFeaturesEntry!==null) {
-                        localStorage.setItem("selectedDifferentiation","unique");
-                        localStorage.setItem("uniqueFeatures","true");
-                        localStorage.setItem("uniqueFeature","true");
                         localStorage.setItem("uniqueFeaturesEntry",report.uniqueFeaturesEntry);
                     }
-                    if (report.laborCostsEntry!==null) {
-                        localStorage.setItem("selectedDifferentiation","unique");
+                    if (report.costEntry!==null) {
                         localStorage.setItem("productionCosts","true");
-                        localStorage.setItem("laborCostsCheaper","true");
-                        localStorage.setItem("laborCostsEntry",report.laborCostsEntry);
+                        localStorage.setItem("costsEntry",report.costEntry);
                     }
-                    if (report.rawMaterialsEntry!==null) {
-                        localStorage.setItem("selectedDifferentiation","unique");
-                        localStorage.setItem("productionCosts","true");
-                        localStorage.setItem("rawMaterialsCheaper","true");
-                        localStorage.setItem("rawMaterialsEntry",report.rawMaterialsEntry);
+                    if (report.marketingEntry!==null) {
+                        localStorage.setItem("marketingStrategy","true");
+                        localStorage.setItem("marketingEntry",report.marketingEntry);
                     }
-                    if (report.shippingCostsEntry!==null) {
-                        localStorage.setItem("selectedDifferentiation","unique");
-                        localStorage.setItem("productionCosts","true");
-                        localStorage.setItem("shippingCostsCheaper","true");
-                        localStorage.setItem("shippingCostsEntry",report.shippingCostsEntry);
-                    }
+         
 
                     this.isLoaded=true;
                     setTimeout(this.render,1000);
@@ -189,6 +172,7 @@ export default defineComponent({
                 this.widgetId = window.grecaptcha.render('g-recaptcha-edit', {
                 sitekey: this.sitekey,
                 })
+                this.isSubmitted=false;
             }
         }
     },
