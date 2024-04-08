@@ -48,3 +48,50 @@ resource "aws_lb_target_group" "vetmyidea_tg" {
     type = "lb_cookie"
   }
 }
+
+# Redirect rule for HTTPS
+resource "aws_lb_listener_rule" "redirect_www_https" {
+  listener_arn = aws_lb_listener.vetmyidea_https.arn
+  priority     = 100
+
+  action {
+    type = "redirect"
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      host        = "vetmyidea.biz"
+      path        = "/#{path}"
+      query       = "#{query}"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    host_header {
+      values = ["www.vetmyidea.biz"]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "redirect_www_http" {
+  listener_arn = aws_lb_listener.vetmyidea_http.arn
+  priority     = 100
+
+  action {
+    type = "redirect"
+    redirect {
+      port        = "80"
+      protocol    = "HTTP"
+      host        = "vetmyidea.biz"
+      path        = "/#{path}"
+      query       = "#{query}"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    host_header {
+      values = ["www.vetmyidea.biz"]
+    }
+  }
+}

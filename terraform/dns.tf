@@ -16,16 +16,12 @@ resource "aws_route53_record" "www" {
   }
 }
 
-resource "aws_route53_record" "root" {
+resource "aws_route53_record" "redirect" {
   zone_id = aws_route53_zone.vet_my_idea_zone.zone_id
   name    = "www.vetmyidea.biz"
-  type    = "A"
-
-  alias {
-    name                   = aws_s3_bucket_website_configuration.redirect_bucket_site.website_endpoint
-    zone_id                = aws_s3_bucket.redirect_bucket.hosted_zone_id
-    evaluate_target_health = false
-  }
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["vetmyidea.biz"]
 }
 
 resource "aws_route53_record" "reports" {

@@ -133,22 +133,3 @@ resource "aws_security_group" "vetmyidea_db_sg" {
     Name = "vetmyidea_db_sg"
   }
 }
-
-# Website redirect
-resource "aws_s3_bucket_policy" "bucket_policy" {
-  bucket = aws_s3_bucket.redirect_bucket.id
-
-  policy = <<POLICY
-{
-  "Version":"2012-10-17",
-  "Statement":[
-    {
-      "Effect":"Allow",
-      "Principal": "*",
-      "Action":"s3:GetObject",
-      "Resource":["${aws_s3_bucket.redirect_bucket.arn}/*"]
-    }
-  ]
-}
-POLICY
-}

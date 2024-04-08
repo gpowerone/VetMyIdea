@@ -19,12 +19,10 @@ export default {
             user = await User.create({
                     UserID: uuidv4(),
                     Username: username,
-                    IsAdmin: false,
                     AuthSource: authsource,
                     Remaining: 3,
                     IsAdmin: false,
-                    IsUnlimited: false,
-                    ProjectCredits: 0
+                    IsUnlimited: false
                 })
         }
 
