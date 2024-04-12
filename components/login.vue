@@ -73,35 +73,58 @@ export default {
       return useRuntimeConfig().public.oauthRedirect
     }
   },
+  methods: {
+    parseState(lgstate) { 
+      this.$store.state.name=lgstate.name;
+      this.$store.state.isLoggedIn=true;
+      this.$store.state.id = lgstate.id;
+
+      fetch("/api/user/get", {
+            method: "GET",
+      })
+      .then(async (response)=>await response.json())
+      .then(async (response)=>{
+            if (response.success) {
+                this.$store.state.remaining = response.message;
+            }
+ 
+      });
+    }
+  },
   mounted() {
 
     if (this.isStateValid(this.$route.query.state)) {
         localStorage.removeItem('pestate');
 
-        fetch("/api/login/oauth/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ code: this.$route.query.code }),
-        })
-        .then(async (response)=>await response.json())
-        .then(async (response)=>{
-            if (response.success) {
-                this.$store.state.name = response.data;
-                this.$store.state.isAdmin = response.isAdmin;
-                localStorage.setItem("lgstate", JSON.stringify({
-                    name: response.data,
-                    isLoggedIn: true
-                }));
-                this.$store.state.isLoggedIn=true;
-                this.$emit("loggedIn");
-            }
-            else {
-                this.$store.state.errorText = "A failure occurred"
-            }
-        })
-        .catch(()=>{
-            this.$store.state.errorText = "Error contacting the backend, please check your connection"
-        });
+        if (this.$route.query.error_description && this.$route.query.error_description=="Please verify your email before continuing") {
+            this.$store.state.successText = "Please verify your email address and then log in again";
+        } 
+        else {
+          fetch("/api/login/oauth/", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ code: this.$route.query.code, typ:this.loadBack?"w":"d" }),
+          })
+          .then(async (response)=>await response.json())
+          .then(async (response)=>{
+              if (response.success) {
+                  let lgstate = {
+                      name: response.data,
+                      isLoggedIn: true,
+                      id: response.id
+                  };
+                  localStorage.setItem("lgstate", JSON.stringify(lgstate));
+                  this.parseState(lgstate);
+                  this.$emit("loggedIn");
+              }
+              else {
+                this.$store.state.errorText = "Access Denied";            
+              }
+          })
+          .catch(()=>{
+              this.$store.state.errorText = "Error contacting the backend, please check your connection"
+          });
+        }
     }
     else {
 
@@ -116,13 +139,13 @@ export default {
           .then(async (response)=>await response.json())
           .then(async (response)=>{
               if (response.success) {
-                  this.$store.state.name = response.data;
-                  this.$store.state.isAdmin = response.isAdmin;
-                  localStorage.setItem("lgstate", JSON.stringify({
+                  let lgstate = {
                       name: response.data,
-                      isLoggedIn: true
-                  }));
-                  this.$store.state.isLoggedIn=true;
+                      isLoggedIn: true,
+                      id: response.id
+                  };
+                  localStorage.setItem("lgstate", JSON.stringify(lgstate));
+                  this.parseState(lgstate);
                   this.$emit("loggedIn");
               }
               else {
@@ -168,10 +191,15 @@ export default {
     login() {
         // Handle login with username and password
         // Configuration
+        let oauthredirecturi="https://vetmyidea.biz/wizard";
+        if (!this.loadBack) {
+           oauthredirecturi="https://vetmyidea.biz/dashboard";
+        }
+
         const clientId = this.oauthclientid;
         const oauthUri = this.oauthuri;
         const scopes = encodeURIComponent(this.oauthscopes);
-        const redirectUri = encodeURIComponent(this.oauthredirecturi);
+        const redirectUri = encodeURIComponent(oauthredirecturi);
         const responseType = 'code'; 
         const state = Math.random().toString(36).substring(2, 15); 
 

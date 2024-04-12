@@ -3,12 +3,17 @@ import sessiontools from '~/utilities/sessiontools.js'
 
 export default defineEventHandler(async (event) => {
     try {
-        const { code } = await readBody(event);
+        const { code,typ } = await readBody(event);
+
+        let redirecturi="https://vetmyidea.biz/wizard";
+        if (typ=="d") {
+            redirecturi="https://vetmyidea.biz/dashboard";
+        }
 
         const body = new URLSearchParams({
             grant_type: 'authorization_code',
             code: code,
-            redirect_uri: useRuntimeConfig().public.oauthRedirect,
+            redirect_uri: redirecturi,
             client_id: useRuntimeConfig().public.oauthClient,
             client_secret: useRuntimeConfig().oauthSecret,
         });
@@ -52,7 +57,7 @@ export default defineEventHandler(async (event) => {
 
         setCookie(event, "vms", session.Token);
 
-        return { success: true, data: session.UserFirstName }
+        return { success: true, data: session.UserFirstName, isAdmin: session.isAdmin, id: session.id }
     } catch (error) {
         console.log(error);
         return { success: false }

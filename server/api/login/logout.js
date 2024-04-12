@@ -9,13 +9,13 @@ export default defineEventHandler(async (event) => {
         if (event.method === 'POST') {
             let sess = await sessiontools.verifySession(event);
             if (sess!==null) {   
-                const session = await Session.findOne({
+                const sessiondata = await Session.findOne({
                     where: {
                         SessionID: sess.SessionID
                     }
                 })
-                if (session!==null) {
-                    session.destroy();
+                if (sessiondata!==null) {
+                    await sessiondata.destroy();
                 }
                 setCookie(event, "vms", "");
 

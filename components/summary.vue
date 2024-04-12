@@ -19,27 +19,27 @@
                     {{targetedLocation}}
                 </v-col>
             </v-row>
-            <v-row class="pa-0">
-                <v-col cols="12" class="pb-0 pt-2">
+            <v-row class="pa-0" v-if="(costsEntry!==null&&costsEntry.length>0)||(marketingEntry!==null&&marketingEntry.length>0)||(uniqueFeaturesEntry!==null&&uniqueFeaturesEntry.length>0)">
+                <v-col cols="12" class="pb-0 pt-10">
                     <div>
                         <b>Differentiation:</b>
                     </div>
                         
-                    <div class="mt-3" v-if="costsEntry!==null">
-                        Cost strategy: {{costsEntry}} 
+                    <div class="mt-5" v-if="costsEntry!==null">
+                        <em>Cost strategy:</em><br /> {{costsEntry}} 
                     </div>   
 
-                    <div class="mt-3" v-if="marketingEntry!==null">
-                        Marketing strategy: {{marketingEntry}} 
+                    <div class="mt-5" v-if="marketingEntry!==null">
+                        <em>Marketing strategy:</em><br /> {{marketingEntry}} 
                     </div>     
 
-                     <div class="mt-3" v-if="uniqueFeaturesEntry!==null && uniqueFeaturesEntry.length>0">
-                        Feature with the greatest customer draw: {{uniqueFeaturesEntry}}
+                     <div class="mt-5" v-if="uniqueFeaturesEntry!==null && uniqueFeaturesEntry.length>0">
+                        <em>Feature with the greatest customer draw:</em><br /> {{uniqueFeaturesEntry}}
                      </div>
                 </v-col>
             </v-row>
         </v-container>
-        <div class="mt-3 mb-5">
+        <div class="mt-15 mb-5">
             <hr />
         </div>
         <div>

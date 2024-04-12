@@ -89,7 +89,6 @@ function fillCityOptions() {
     city.value=null;
     if (country.value!==null && state.value!==null) {
         let ccode = csc.getCountries().filter(p=>p.name===country.value)[0].shortName;
-        console.log(csc.getCities(ccode,state.value));
         cityOptions.value = csc.getCities(ccode,state.value);
     }
 }

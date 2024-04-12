@@ -11,8 +11,12 @@
               </h1>
           </v-app-bar-title>
 
-          <div class="d-none d-sm-flex pr-5" v-if="name!==null">
+          <div class="d-none d-sm-flex pr-10" v-if="name!==null">
               Hello {{name}}!
+          </div>
+
+          <div class="d-none d-sm-flex pr-5" v-if="remaining!==null">
+              <span v-tooltip="'Number of reports remaining. You get up to 3 free reports per day.'"><span class="remaining_number">{{remaining}}</span> <v-icon :icon="mdiFileChartOutline" /></span>
           </div>
 
           <template v-slot:append>
@@ -52,7 +56,7 @@
 </template>    
 
 <script setup>
-import { mdiHome, mdiLogout, mdiFileDocumentMultiple } from '@mdi/js'
+import { mdiHome, mdiLogout, mdiFileDocumentMultiple, mdiFileChartOutline } from '@mdi/js'
 </script>
 
 <script>
@@ -78,6 +82,11 @@ export default defineComponent({
             return this.$store.state.name;
         }
     },
+    remaining: {
+       get() {
+          return this.$store.state.remaining;
+       }
+    },
     successText: {
         get() {
             return this.$store.state.successText;
@@ -90,15 +99,17 @@ export default defineComponent({
   methods: {
     doLogout() {
         fetch("/api/login/logout/", {
-            method: "GET",
+            method: "POST",
         })
         .then(async (response)=>await response.json())
         .then(async (response)=>{
            localStorage.removeItem("lgstate");
            this.$store.state.isLoggedIn=false;
            this.$store.state.name=null;
+           this.$store.state.id=null;
            this.$store.state.successText="Successfully Logged Out";
            this.drawer=false;
+           this.remaining=null;
            navigateTo('/');
         })
     },
@@ -106,25 +117,38 @@ export default defineComponent({
       if (event.code === 'Escape') {
         this.drawer = false
       }
+    },
+    parseState(lgstate) {
+      this.$store.state.name=lgstate.name;
+      this.$store.state.isLoggedIn=true;
+      this.$store.state.id = lgstate.id;
+
+      fetch("/api/user/get", {
+            method: "GET",
+      })
+      .then(async (response)=>await response.json())
+      .then(async (response)=>{
+            if (response.success) {
+                this.$store.state.remaining = response.message;
+            }
+ 
+      });
     }
   },
   destroyed () {
     window.removeEventListener('keydown', this.keyDownHandler)
-  },
-  setup() {
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-Z4T5SBW4ZS');
-  },
+  },  
   mounted() {
     window.addEventListener('keydown', this.keyDownHandler)
     let lgstate = localStorage.getItem("lgstate");
     if (lgstate) {
-        let lgstateitems = JSON.parse(lgstate);
-        this.$store.state.name=lgstateitems.name;
-        this.$store.state.isLoggedIn=true;
+       let lgstateitems = JSON.parse(lgstate);
+        this.parseState(lgstateitems);
     }
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Z4T5SBW4ZS');
   }
 })
 </script>
@@ -171,5 +195,9 @@ export default defineComponent({
 <style scoped>
     .cursor {
         cursor:pointer;
+    }
+    .remaining_number {
+        font-size:1.1em;
+        vertical-align:middle;
     }
 </style>

@@ -4,19 +4,29 @@ var tab_id=0;
 var current_tab=0;
 
 function build_report(report_string) {
-    var report = JSON.parse(report_string);
+    var report = "";
+    
+    try {
+        report =JSON.parse(report_string);
+    }
+    catch(e) {
+        let li = report_string.lastIndexOf("&apos;");
+        report_string = report_string.substring(0, li) + '"' + report_string.substring(li + 6);
+
+        report = JSON.parse(report_string);
+    }
 
     if (report.hasOwnProperty("novel")) {
         buildTab(buildNovelReport());
     }
     else if (report.viable=="no") {
-        if (report.hasOwnProperty("cost")) {
+        if (report.hasOwnProperty("cost") && report.cost.hasOwnProperty("viable") && report.cost.viable.hasOwnProperty("evaluatedString")) {
             buildTab(buildNonViableReport(report.cost.viable.evaluatedString, report.cost.viable.explanation));
         }
-        else if (report.hasOwnProperty("marketing")) {
+        else if (report.hasOwnProperty("marketing") && report.marketing.hasOwnProperty("viable") && report.marketing.viable.hasOwnProperty("evaluatedString")) {
             buildTab(buildNonViableReport(report.marketing.viable.evaluatedString, report.marketing.viable.explanation));
         }
-        else if (report.hasOwnProperty("uniqueFeature")) {
+        else if (report.hasOwnProperty("uniqueFeature") && report.uniqueFeature.hasOwnProperty("viable") && report.uniqueFeature.viable.hasOwnProperty("evaluatedString")) {
             buildTab(buildNonViableReport(report.uniqueFeature.viable.evaluatedString, report.uniqueFeature.viable.explanation));
         }
         else {
@@ -53,7 +63,7 @@ function buildTab(tab_input) {
             selected=" selected";
         }
 
-        this.report_tabs+="<button class='tab"+selected+"' id='tabheader"+tab_input.id+"' style='width:"+tab_input.width+"' onclick='selectTab(\""+tab_input.id+"\")'>"+tab_input.name+"</button>";
+        this.report_tabs+="<button class='tab"+selected+"' id='tabheader"+tab_input.id+"' style='width:"+tab_input.width+"' onclick='selectTab(\""+tab_input.id+"\")'>"+tab_input.svg+"&nbsp;"+tab_input.name+"</button>";
         this.report_tab_contents+=tab_input.contents;
     }
 }
@@ -102,7 +112,8 @@ function buildBreakdown(report) {
         name: "Breakdown",
         contents: breakdown,
         id: tab_id,
-        width: "125px"
+        width: "150px",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" style="vertical-align:middle;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" /></svg>'
     };
 
     tab_id++;
@@ -129,7 +140,8 @@ function buildCosts(report) {
             name: "Cost",
             contents: contents,
             id: tab_id,
-            width: "75px"
+            width: "110px",
+            svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" style="vertical-align:middle;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg>'
         };
     
         tab_id++;
@@ -160,7 +172,8 @@ function buildMarketing(report) {
             name: "Marketing",
             contents: contents,
             id: tab_id,
-            width: "100px"
+            width: "135px",
+            svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" style="vertical-align:middle;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" /></svg>'
         };
     
         tab_id++;
@@ -189,7 +202,8 @@ function buildNonViableReport(strategy,explanation) {
         name: "Summary",
         contents: contents,
         id: tab_id,
-        width: "150px"
+        width: "150px",
+        svg: ''
     };
 
     tab_id++;
@@ -214,7 +228,8 @@ function buildNovelReport() {
         name: "Summary",
         contents: contents,
         id: tab_id,
-        width: "150px"
+        width: "150px",
+        svg: ''
     };
 
     tab_id++;
@@ -234,7 +249,8 @@ function buildRisks(report) {
         name: "Regulatory Risk",
         contents: contents,
         id: tab_id,
-        width: "150px"
+        width: "175px",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" style="vertical-align:middle;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" /></svg>'
     };
 
     tab_id++;
@@ -287,7 +303,8 @@ function buildSummary(report) {
         name: "Summary",
         contents: contents,
         id: tab_id,
-        width: "100px"
+        width: "125px",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" style="vertical-align:middle;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25M9 16.5v.75m3-3v3M15 12v5.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>'
     };
 
     tab_id++;
@@ -310,7 +327,8 @@ function buildGrowthCompetitors(growth, competitors) {
         contents: "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'><div class='section'><h3>Growth Potential: "+sanitize(growth.growth.toUpperCase()) + " "+scoreStyle(growth.score)+"</h3>"+
             "<p style='margin-bottom:30px;'>"+sanitize(growth.explanation)+"</p>"+competition+"</div></section>",
         id: tab_id,
-        width:"75px"
+        width:"110px",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" style="vertical-align:middle;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" /></svg>'
     };
 
     tab_id++;
@@ -336,7 +354,8 @@ function buildUniqueFeature(report) {
             name: "Unique Feature",
             contents: contents,
             id: tab_id,
-            width: "150px"
+            width: "175px",
+            svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" style="vertical-align:middle;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" /></svg>'
         };
     
         tab_id++;
@@ -371,7 +390,7 @@ function generateSocials(report) {
 
 function sanitize(content) {
     if (typeof(content)==="string") {
-        return content.replace(/[^A-Za-z0-9\.&,;'\s]/g,"");
+        return content.replace(/_/g," ").replace(/[^A-Za-z0-9\.&,;'\s]/g,"");
     }
     return content;
 }

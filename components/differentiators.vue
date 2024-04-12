@@ -1,18 +1,24 @@
 <template>
        <v-container class="fluid pa-0">
-              <v-row>
-                <v-col cols="12">
-                    <v-text-field class="field" bg-color="white"  :class="{'fielderror': !uniqueFeatureValid()}" v-model="uniqueFeaturesEntry" label="What unique feature will best draw in customers? (leave blank if nothing)" outlined dense></v-text-field>
-                </v-col>
-            </v-row>
              <v-row>
                 <v-col cols="12">
+
+  
+                    <v-selection-control-group v-model="uncommonFeature"> 
+                        <v-checkbox density="compact" label="My product has a unique or uncommon feature that will draw in customers"></v-checkbox>
+                    </v-selection-control-group>   
+                    
+                    <div v-if="uncommonFeature===true">
+                        <v-textarea class="field" bg-color="white"  :class="{'fielderror': !uniqueFeatureValid()}" v-model="uniqueFeaturesEntry" label="What feature will best draw in customers? (max 300 chars)" outlined dense></v-textarea>
+                    </div>
+
+
                     <v-selection-control-group v-model="productionCosts"> 
                         <v-checkbox density="compact" label="My costs are less than my competitors"></v-checkbox>
                     </v-selection-control-group>   
                     
                     <div v-if="productionCosts===true">
-                        <v-text-field  bg-color="white"  class="field" :class="{'fielderror': !costsValid()}" v-model="costsEntry" label="How?" outlined dense></v-text-field>
+                        <v-textarea  bg-color="white"  class="field" :class="{'fielderror': !costsValid()}" v-model="costsEntry" label="How? (max 300 chars)" outlined dense></v-textarea>
                     </div>
 
                     <v-selection-control-group v-model="marketingStrategy"> 
@@ -20,7 +26,7 @@
                     </v-selection-control-group>   
                     
                     <div v-if="marketingStrategy===true">
-                        <v-text-field  bg-color="white"  class="field" :class="{'fielderror': !marketingValid()}" v-model="marketingEntry" label="How?" outlined dense></v-text-field>
+                        <v-textarea  bg-color="white"  class="field" :class="{'fielderror': !marketingValid()}" v-model="marketingEntry" label="How? (max 300 chars)" outlined dense></v-textarea>
                     </div>
                           
                 </v-col>
@@ -41,13 +47,18 @@
 import { mdiArrowRight, mdiArrowLeft } from '@mdi/js'
 import { ref, watch } from 'vue'
 
+let uncommonFeature = ref(false);
 let productionCosts = ref(false);
 let marketingStrategy = ref(false);
 let costsEntry = ref("");
 let marketingEntry = ref("");
 let uniqueFeaturesEntry = ref("");
 
-
+watch(uncommonFeature, async (newValue, oldValue) => {
+    if (newValue!==oldValue) {
+        localStorage.setItem("uncommonFeature", newValue)
+    }
+});
 watch(productionCosts, async (newValue, oldValue) => {
     if (newValue!==oldValue) {
         localStorage.setItem("productionCosts", newValue)
@@ -75,21 +86,24 @@ watch(uniqueFeaturesEntry, async (newValue, oldValue) => {
 });
 
 function costsValid() {
-  if (costsEntry.value.length>0 && (costsEntry.value.length>300 || !/^[A-Za-z0-9\.\'\s]+$/.test(costsEntry.value))) {
+  let costs = costsEntry.value.trim();
+  if (costs.length>0 && costs.length>300) {
         return false;
   }
   return true;
 }
 
 function marketingValid() {
-  if (marketingEntry.value.length>0 && (marketingEntry.value.length>300 || !/^[A-Za-z0-9\.\'\s]+$/.test(marketingEntry.value))) {
+  let marketing = marketingEntry.value.trim();
+  if (marketing.length>0 && marketing.length>300) {
         return false;
   }
   return true;
 }
 
 function uniqueFeatureValid() {
-  if (uniqueFeaturesEntry.value.length>0 && (uniqueFeaturesEntry.value.length>300 || !/^[A-Za-z0-9\.\'\s]+$/.test(uniqueFeaturesEntry.value))) {
+  let uniquefeature = uniqueFeaturesEntry.value.trim();
+  if (uniquefeature.length>0 && uniquefeature.length>300) {
         return false;
   }
   return true;
@@ -107,6 +121,10 @@ defineExpose({
 
 onMounted(() => {
 
+  let stored_uncommon_feature = localStorage.getItem("uncommonFeature");
+  if (stored_uncommon_feature!==null) {
+      uncommonFeature.value=stored_uncommon_feature==="true";
+  }
   let stored_prod_costs = localStorage.getItem("productionCosts");
   if (stored_prod_costs!==null) {
       productionCosts.value=stored_prod_costs==="true";

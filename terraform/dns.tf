@@ -16,14 +16,6 @@ resource "aws_route53_record" "www" {
   }
 }
 
-resource "aws_route53_record" "redirect" {
-  zone_id = aws_route53_zone.vet_my_idea_zone.zone_id
-  name    = "www.vetmyidea.biz"
-  type    = "CNAME"
-  ttl     = "300"
-  records = ["vetmyidea.biz"]
-}
-
 resource "aws_route53_record" "reports" {
   zone_id = aws_route53_zone.vet_my_idea_zone.zone_id
   name    = "reports.vetmyidea.biz"

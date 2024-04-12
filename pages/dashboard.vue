@@ -9,7 +9,7 @@
                         :headers="headers"
                         :items="reports"
                         class="elevation-1 mt-5 report-table"
-                        v-if="reports.length>0"
+                        v-if="reports && reports.length>0"
                     >
                         <template v-slot:item="{ item }">
                             <tr>
@@ -78,7 +78,7 @@
                     </p>
                 </div>
                 <div v-else>
-                    <login :loadBack="false" />
+                    <login v-on:loggedIn="loggedIn" :loadBack="false" />
                 </div>
             </v-col>
         </v-row>
@@ -140,43 +140,64 @@
   }
 
   function doPoll(reportID) {
-    fetch("/api/report/poll/",  {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            reportId: reportID
+    try {
+        fetch("/api/report/poll/",  {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                reportId: reportID
+            })
         })
-      })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            store.state.successText="Report has finished processing";
-            fetchTable();
-        }
-        else {
-            setTimeout(function() {
-                doPoll(reportID)
-            },30000);
-        }
-    })
-  }
-
-  async function fetchTable() {
-     await fetch("/api/report/list/")
         .then(response => response.json())
         .then(data => {
-           
-            reports.value=data.data;
-            loading.value=false;
-            for (var report of data.data.filter(p=>p.IsReady===false)) {
+            if (data.success) {
+                store.state.successText="Report has finished processing";
+                
+                // Get report count
+                fetch("/api/user/get", {
+                        method: "GET",
+                })
+                .then(async (response)=>await response.json())
+                .then(async (response)=>{
+                        if (response.success) {
+                            store.state.remaining = response.message;
+                        }
+            
+                });
+                
+                fetchTable();
+            }
+            else {
                 setTimeout(function() {
-                    doPoll(report.ReportID)
+                    doPoll(reportID)
                 },30000);
             }
         })
+    }
+    catch(e) {
+
+    }
+  }
+
+  async function fetchTable() {
+
+     await fetch("/api/report/list/")
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+            reports.value=data.data;
+                loading.value=false;
+                for (var report of data.data.filter(p=>p.IsReady===false)) {
+                    setTimeout(function() {
+                        doPoll(report.ReportID)
+                    },30000);
+                }
+            }
+        })
         .catch(error => console.error('Error fetching reports:', error));
+
   }
 
   function getReportURL(item) {

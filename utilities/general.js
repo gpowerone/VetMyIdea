@@ -19,15 +19,15 @@ export default {
         }
     
         if (requestData.product && requestData.product.length>0) {
-            data.ProductType = requestData.product.replace(/[^\x00-\x7F]/g, "").trim();
-            if (data.ProductType.length<=100 && /^[A-Za-z0-9\.\'\s]+$/.test(data.ProductType)) {
-                if (requestData.targetedLocation && requestData.targetedLocation.length>0 && requestData.targetedLocation.length<200 && /^[A-Za-z0-9\,\s]+$/.test(requestData.targetedLocation)) {
-                    data.TargetLocation=requestData.targetedLocation.replace(/[^\x00-\x7F]/g, ""); 
+            data.ProductType = requestData.product.trim();
+            if (data.ProductType.length>0 && data.ProductType.length<=100) {
+                if (requestData.targetedLocation && requestData.targetedLocation.trim().length>0 && requestData.targetedLocation.trim().length<200) {
+                    data.TargetLocation=requestData.targetedLocation.trim(); 
                     data.IsValid=true;
     
                     if (requestData.marketingEntry) {
-                        if (requestData.marketingEntry.length>0 && requestData.marketingEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.marketingEntry)) {
-                            data.FillFields.push({"FieldType": "Marketing", "FieldValue": requestData.marketingEntry.replace(/[^\x00-\x7F]/g, "").trim()});
+                        if (requestData.marketingEntry.length>0 && requestData.marketingEntry.length<=300) {
+                            data.FillFields.push({"FieldType": "Marketing", "FieldValue": requestData.marketingEntry.trim()});
                         }
                         else {
                             return {
@@ -39,8 +39,8 @@ export default {
                     }
     
                     if (requestData.costsEntry) {
-                        if (requestData.costsEntry.length>0 && requestData.costsEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.costsEntry)) {
-                            data.FillFields.push({"FieldType": "Cost", "FieldValue": requestData.costsEntry.replace(/[^\x00-\x7F]/g, "").trim()});
+                        if (requestData.costsEntry.length>0 && requestData.costsEntry.length<=300) {
+                            data.FillFields.push({"FieldType": "Cost", "FieldValue": requestData.costsEntry.trim()});
                         }
                         else {
                             return {
@@ -53,8 +53,8 @@ export default {
 
     
                     if (requestData.uniqueFeaturesEntry) {
-                        if (requestData.uniqueFeaturesEntry.length>0 && requestData.uniqueFeaturesEntry.length<=300 && /^[A-Za-z0-9\.\'\s]+$/.test(requestData.uniqueFeaturesEntry)) {
-                            data.FillFields.push({"FieldType": "Unique Feature", "FieldValue": requestData.uniqueFeaturesEntry.replace(/[^\x00-\x7F]/g, "").trim()});
+                        if (requestData.uniqueFeaturesEntry.length>0 && requestData.uniqueFeaturesEntry.length<=300) {
+                            data.FillFields.push({"FieldType": "Unique Feature", "FieldValue": requestData.uniqueFeaturesEntry.trim()});
                         }
                         else {
                             return {

@@ -12,7 +12,7 @@ resource "aws_ecs_task_definition" "vetmyidea" {
 
   container_definitions = jsonencode([{
     name  = "vetmyidea",
-    image = "693727416545.dkr.ecr.us-east-2.amazonaws.com/vetmyidea:latest", 
+    image = "693727416545.dkr.ecr.us-east-2.amazonaws.com/vetmyideaapi:latest", 
     portMappings = [{
       containerPort = 3000,
       hostPort      = 3000

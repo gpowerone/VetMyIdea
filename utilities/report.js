@@ -39,11 +39,11 @@ export default {
     },
 
     evaluateCompetitors: async function() {
-        let results = await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional businesses that sell or offer "+this.productType+". "+
+        let results = await Gpt.chatGPT("You are an expert on '"+this.productType+"' in "+this.targetLocation + " including national or regional businesses that sell or offer '"+this.productType+"'. "+
         "You only return an array as an answer. "+
         "You do not return an array with more than 10 entries. If there are more than 10 entries, you pick the 10 largest ones to the best of your knowledge. ",
-        ["What are all the businesses you know of that sell or offer "+this.productType+" in "+this.targetLocation+", including national or regional chains that sell or offer "+ this.productType+". "+
-        "Do not include big-box retailers or auction sites that might sell competitor products. Be as exhaustive as possible. Return your answer as an array of [\"companyname\"], or an empty array if there are none"],"gpt-4");
+        ["What are all the businesses you know of that sell or offer '"+this.productType+"' in "+this.targetLocation+", including national or regional chains that sell or offer '"+ this.productType+"'. "+
+        "Do not include big-box retailers or auction sites that might sell competitor products. Be as exhaustive as possible. Return your answer as an array of [\"companyname\"], or an empty array if there are none"],"gpt-4-turbo-preview");
 
         try {
             let parsedResults = JSON.parse(results[0].trim());
@@ -129,7 +129,7 @@ export default {
 
     },
 
-    evaluateField: async function(demarcator,targetStatement,conjunction,benefitStatement,possibilityStatement,evalUniqueness,field) {
+    evaluateField: async function(demarcator,targetStatement,conjunction,benefitStatement,possibilityStatement,efficacyStatement,evalUniqueness,field) {
     
         try {
 
@@ -138,74 +138,98 @@ export default {
             let possibility = await this.evaluatePossibility(possibilityStatement);
             if (possibility.answer=='no') {
 
-                let legality = await this.evaluateLegality(targetStatement+" "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'");
-                if (legality.answer=='no') {    
-              
-                    let score=0; 
+                let ridiciulousness = await this.evaluateRidiculousness(field.FieldValue);
+                if (ridiciulousness.score<8) {
 
-                    let uniqueness=null;
-                    if (evalUniqueness) {
-                         uniqueness = await this.evaluateBenefitUniqueness(field.FieldValue);
-                    }
-                    else {
-                         uniqueness = await this.evaluateDrawback(field.FieldValue);
+                    let efficacy=null;
+                    if (!evalUniqueness) {
+                        efficacy = await this.evaluateEfficacy(field.FieldValue,efficacyStatement);
                     }
 
-                    let explanation=""; 
-                    if (uniqueness.answer=='no') {
+                    if (efficacy===null || efficacy.score>2) 
+                    {
+                        let legality = await this.evaluateLegality(targetStatement+" "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'");
+                        if (legality.answer=='no') {    
+                    
+                            let score=0; 
 
-                        let benefits = await this.evaluateBenefit("'"+field.FieldValue+"'", benefitStatement);
-                        explanation+=benefits.explanation;
-
-                        if (benefits.answer>=9) {
-                            score+=30;
-                        }
-                        else if (benefits.answer==7) {
-                            score+=10;                     
-                        }
-            
-                        if (score>0) {
-                            let specificity = await this.evaluateSpecificity("'"+field.FieldValue+"'", benefitStatement);
-                            if (specificity.score<=2) {
-                                explanation+="<br /><br /><em>Specificity</em><br />The statement '"+field.FieldValue+"' is not specific enough to earn points for this category. To fairly evaluate your strategy, you will need to be more specific";
-                                score=0;
+                            let uniqueness=null;
+                            if (evalUniqueness) {
+                                uniqueness = await this.evaluateBenefitUniqueness(field.FieldValue);
                             }
                             else {
-                                this.hadUniqueFeature=true;
+                                uniqueness = await this.evaluateDrawback(field.FieldValue);
                             }
-                        }
 
-                        let risk = await this.evaluateRisk(targetStatement+" "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'")
+                            let explanation=""; 
+                            if (uniqueness.answer=='no') {
+           
+                                let benefits = await this.evaluateBenefit("'"+field.FieldValue+"'", benefitStatement);
+                                explanation+=benefits.explanation;
 
-                        let risk_total = -1*risk.answer*10;
-                        if (risk_total<-30) {
-                            risk_total=-30;
-                        }
+                                if (benefits.answer>=9) {
+                                    score+=30;
+                                }
+                                else if (benefits.answer==7) {
+                                    score+=10;                     
+                                }
+                    
+                                if (score>0) {
+                                    let specificity = await this.evaluateSpecificity("'"+field.FieldValue+"'");
+                                    if (specificity.score<=2) {
+                                        explanation+="<br /><br /><em>Specificity</em><br />The statement '"+field.FieldValue+"' is not specific enough to earn points for this category. To fairly evaluate your strategy, you will need to be more specific. Describe exactly <em>how</em> you plan to do what you are going to do.";
+                                        score=0;
+                                    }
+                                    else {
+                                        this.hadUniqueFeature=true;
+                                    }
+                                }
 
-                        score+=risk_total;
+                                let risk = await this.evaluateRisk(targetStatement+" "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'")
 
-                        if (risk_total<0 && risk.explanation!==null) {
-                            explanation+="<br /><br /><em>Risks</em><br />"+risk.explanation;   
-                        }
+                                let risk_total = -1*risk.answer*10;
+                                if (risk_total<-30) {
+                                    risk_total=-30;
+                                }
+
+                                score+=risk_total;
+
+                                if (risk_total<0 && risk.explanation!==null) {
+                                    explanation+="<br /><br /><em>Potential Risks</em><br />"+risk.explanation;   
+                                }
+                                
+                
+                            }
+                            else {
+                                if (uniqueness.answer=='yes') {
+                                    if (evalUniqueness) {
+                                        explanation+="<em>Uniqueness</em><br />This feature may not be unique among features for this product<br /><br />"+uniqueness.explanation;
+                                    }
+                                    else {
+                                        explanation+="<em>Drawback</em><br />One or more drawbacks to this strategy may exist<br /><br />"+uniqueness.explanation;
+                                    }
+                                }
+                            }
+
+                            this.reportText+='"benefits":"'+explanation+'",';
+
+                            this.score+=score;
+                            this.reportText+='"score":'+score+',"evaluatedString":"'+field.FieldValue+'","viable":"yes"},';
+                            
+                            return true;
+                        }            
+
+                        else {
+                            this.reportText+='"viable":{"evaluatedString":"'+field.FieldValue+'","explanation":"'+legality.explanation+'"}},';
+                        } 
                     }
                     else {
-                        if (uniqueness.answer=='yes') {
-                            explanation+="<br /><br /><em>Drawbacks</em><br />"+uniqueness.explanation;
-                        }
-                    }
-
-                    this.reportText+='"benefits":"'+explanation+'",';
-
-                    this.score+=score;
-                    this.reportText+='"score":'+score+',"evaluatedString":"'+field.FieldValue+'","viable":"yes"},';
-                    
-                    return true;
-                  
-                
+                        this.reportText+='"viable":{"evaluatedString":"'+field.FieldValue+'","explanation":"'+efficacy.explanation+'"}},';
+                    } 
                 }
                 else {
-                    this.reportText+='"viable":{"evaluatedString":"'+field.FieldValue+'","explanation":"'+legality.explanation+'"}},';
-                } 
+                    this.reportText+='"viable":{"evaluatedString":"'+field.FieldValue+'","explanation":"'+ridiciulousness.explanation+'"}},';
+                }
             }
             else {
                 this.reportText+='"viable":{"evaluatedString":"'+field.FieldValue+'","explanation":"'+possibility.explanation+'"}},';
@@ -218,6 +242,27 @@ export default {
 
         return false;
     
+    },
+
+    evaluateClarity: async function(evaluateString) {
+        try {
+            let result = await Gpt.chatGPT(
+                "You are an omniscient god. "+
+                "You write as if you are a 9th grade business class teacher. " +
+                "You do not give scores of 3. If you would give a score of 3, you analyze further and give a 2 or 4 instead. "+
+                "You do not use metaphors or similes. "+
+                "You don't refer to any part of the prompt in written explanations. "+
+                "You do not refer to yourself. ",
+                ["If I told you I was selling a '"+evaluateString+"' as a product or service, how clear is it what I am selling? "+
+                "Give your answer as a score from 1 to 10, with 1 being least clear and 10 being most clear. "+
+                "Return your answer as an object: {\"score\":\"1 to 10\",\"explanation\":\"explanation if score<=2 else null\"}"],"gpt-4-turbo-preview");
+
+            return JSON.parse(result[0].trim());
+        }
+        catch(e) {
+            console.log(e);
+            return null;
+        }
     },
 
     evaluateLegality: async function(evaluateString) {
@@ -257,6 +302,22 @@ export default {
             console.log(e);
             return null;
         }
+    },
+
+    evaluateRidiculousness: async function(evaluateString) {
+        try {
+            let result = await Gpt.chatGPT(
+                "You are an expert on "+this.productType+" in "+this.targetLocation + ". "+
+                "You do not give scores of 8. If you would give a score of 8, you analyze further and give a 7 or 9 instead ",
+                ["If the statement 'the sun rises every morning' is an example of a 1 and 'cows sponataneously growing wings and flying to Mars' is a 10, how does the statement '"+evaluateString+"' rank on a ridculousness scale 1-10? " + 
+                "Give your answer as an object: {\"score\":\"1 to 10\", \"explanation\":\"explanation if score>=9 else null\"}"],"gpt-4-turbo-preview");
+ 
+            return JSON.parse(result[0].trim());
+         }
+         catch(e) {
+            console.log(e);
+            return null;
+         }
     },
 
     evaluateRisk: async function(evaluateString) {
@@ -353,17 +414,33 @@ export default {
         }
    },
 
-    evaluateSpecificity: async function(evaluateString) {
+   evaluateEfficacy: async function(evaluateString,practice) {
+        try {
+            let result = await Gpt.chatGPT(
+                "You are an expert in " + this.productType+" in "+this.targetLocation+ " "+
+                "You write as if you are a 9th grade business class teacher. " +
+                "You do not use metaphors or similes. "+
+                "You don't refer to any part of the prompt in written explanations. "+
+                "You do not refer to yourself. "+
+                "You do not give scores of 3. If you would give a score of 4, you analyze further and give a 2 or 4 instead ",
+                ["Does the statement '"+evaluateString+"' make sense in the context of "+practice+" '"+this.productType+"'? "+
+                "Rate from 1 to 10 with 1 being total nonsense and 10 being equivalent meaning. Return an array of {\"score\":\"1 to 10\", \"explanation\":\"explanation if score<=2 else null\"}"],"gpt-4-turbo-preview");
+
+            return JSON.parse(result[0].trim());
+        }
+        catch(e) {
+            console.log(e);
+            return null;
+        }
+   },
+
+   evaluateSpecificity: async function(evaluateString) {
         try {
            let result = await Gpt.chatGPT(
                "You are an omniscient god. " +
-               "You write as if you are a 9th grade english teacher. " +
-               "You do not use metaphors or similes. "+
-               "You don't refer to any part of the prompt in written explanations. "+
-               "You do not refer to yourself. "+
-               "You do not give scores of 3. If you would give a score of 3, you analyze further and give a 2 or 4 instead ",
-               ["If the statement 'I buy cheaper raw materials' is an example of a 1 and the contents of a textbook on any topic is example of a 10, how does '"+evaluateString+"' rank on " + 
-               "a scale of specificity from 1 to 10. Give your answer as an object: {\"score\":\"1 to 10\"}"],"gpt-4-turbo-preview");
+               "You do not give scores of 3. If you would give a score of 4, you analyze further and give a 2 or 4 instead ",
+               ["How does '"+evaluateString+"' score on a scale of 'explicitness about what it is or what is being done' from 1 to 10. Give your answer as an object: "+
+               "{\"score\":\"1 to 10\"}"],"gpt-4-turbo-preview");
 
            return JSON.parse(result[0].trim());
         }
@@ -382,6 +459,7 @@ export default {
                 "that",
                 "appeal to users of "+this.productType+" in "+this.targetLocation+"? Base your answer off of how much many users will want to use the feature based upon your knowledge of how popular the feature is. ",
                 "the following feature for "+this.productType+" - "+field.FieldValue,
+                null,
                 true,
                 field);
         }
@@ -392,6 +470,7 @@ export default {
                 "by",
                 "reduce costs for "+this.productType+" in "+this.targetLocation,
                 "following method to reduce costs for "+this.productType+" - "+field.FieldValue,
+                "reducing costs of",
                 false,
                 field);
         }
@@ -402,6 +481,7 @@ export default {
                 "by",
                 "market "+this.productType+" in "+this.targetLocation,
                 "following method to market "+this.productType+" - "+field.FieldValue,
+                "marketing",
                 false,
                 field);
         }
@@ -449,32 +529,39 @@ export default {
 
                 let viability=false;
 
-                let productLegality = await this.evaluateLegality("sell "+this.productType+" in "+this.targetLocation);
-                if (productLegality.answer=='no') {
+                let clarity = await this.evaluateClarity(this.productType);
+                if (clarity.score>2) {
 
-                    viability=true;
+                    let productLegality = await this.evaluateLegality("sell "+this.productType+" in "+this.targetLocation);
+                    if (productLegality.answer=='no') {
 
-                    let fields = await ReportFields.findAll({
-                        where: {
-                        ReportID: reportId
-                        }
-                    }) 
-                    
-                    for (const field of fields) {
-                        if (viability) {
-                            let new_viability = await this.evaluateFields(field);
-                            if (Gpt.flagged) {
-                                return await this.flagReport(report, t1);
+                        viability=true;
+
+                        let fields = await ReportFields.findAll({
+                            where: {
+                            ReportID: reportId
                             }
-                            if (!new_viability) {
-                                viability=false;
-                                this.reportText+='"viable":"no", ';
+                        }) 
+                        
+                        for (const field of fields) {
+                            if (viability) {
+                                let new_viability = await this.evaluateFields(field);
+                                if (Gpt.flagged) {
+                                    return await this.flagReport(report, t1);
+                                }
+                                if (!new_viability) {
+                                    viability=false;
+                                    this.reportText+='"viable":"no", ';
+                                }
                             }
                         }
                     }
+                    else {
+                        this.reportText+='"viable":"no", "explanation":"'+productLegality.explanation+"', ";
+                    }
                 }
                 else {
-                    this.reportText+='"viable":"no", "explanation":"'+productLegality.explanation+"', ";
+                    this.reportText+='"viable":"no", "explanation":"'+clarity.explanation+"', ";
                 }
 
                 if (viability) {
@@ -530,14 +617,15 @@ export default {
                 this.reportText+='"title":"'+report.ProductType+' business in '+report.TargetLocation+'"';
 
                 this.reportText+='}, "created":'+Date.now()+'}';    
-            
-           }
-           else {
-              if (Gpt.flagged) {
-                 return await this.flagReport(report, t1);
-              }    
-              this.reportText+='"novel":"true", "created":'+Date.now()+'}';
-           }
+                
+
+            }
+            else {
+                if (Gpt.flagged) {
+                    return await this.flagReport(report, t1);
+                }    
+                this.reportText+='"novel":"true", "created":'+Date.now()+'}';
+            }
 
            await Page.createPublicPage(report.ProductType+" business in "+report.TargetLocation, Page.generatePublicPageURL(report.ProductType, report.ReportID),  this.reportText);
 

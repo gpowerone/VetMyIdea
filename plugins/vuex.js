@@ -6,9 +6,11 @@ const store = createStore({
       errorText: null,
       name: null,
       isLoggedIn: false,
-      successText: null
+      id: null,
+      successText: null,
+      remaining: null
     };
-  }
+  },
 });
 
 export default defineNuxtPlugin((app) => {

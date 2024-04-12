@@ -15,7 +15,7 @@
         <v-container class="pa-0">
             <v-row>
                 <v-col cols="12">
-                    <v-text-field v-model="product" bg-color="white" class="field" :class="{'fielderror': !isProductTypeValid()}" label="Describe the product or service" outlined dense></v-text-field>
+                    <v-text-field v-model="product" bg-color="white" class="field" :class="{'fielderror': !isProductTypeValid()}" label="Describe the product or service (max 100 chars)" outlined dense></v-text-field>
                 </v-col>
             </v-row>
             <v-row>
@@ -61,7 +61,7 @@ function handleAdvance() {
 }
 
 function isProductTypeValid() {
-    if (product.value.length===0 || (product.value.length<=100 && /^[A-Za-z0-9\'\.\s]+$/.test(product.value))) {
+    if (product.value.length===0 || product.value.length<=100) {
         return true;
     }
     return false;

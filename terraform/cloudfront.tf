@@ -51,4 +51,47 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     ssl_support_method  = "sni-only"
     minimum_protocol_version = "TLSv1.2_2019"
   }
+
+   web_acl_id = aws_wafv2_web_acl.s3_distribution_waf.arn
+}
+
+# Define the WAF Web ACL
+resource "aws_wafv2_web_acl" "s3_distribution_waf" {
+  provider = aws.us-east-1
+  name        = "vmiwebacl"
+  scope       = "CLOUDFRONT"
+  description = "Example WAF Web ACL for CloudFront. Allows all traffic."
+  
+  visibility_config {
+    cloudwatch_metrics_enabled = false
+    metric_name                = "exampleWebACLMetric"
+    sampled_requests_enabled   = false
+  }
+
+  default_action {
+    allow {}
+  }
+
+  rule {
+    name     = "rule-1"
+    priority = 1
+
+    override_action {
+      count {}
+    }
+
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesCommonRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = false
+      metric_name                = "friendly-rule-metric-name"
+      sampled_requests_enabled   = false
+    }
+  }
+
 }

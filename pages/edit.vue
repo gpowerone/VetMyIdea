@@ -138,8 +138,6 @@ export default defineComponent({
                     this.productType = report.ProductType;
                     this.targetedLocation = report.TargetLocation;
 
-                    console.log(report);
-
                     if (report.uniqueFeaturesEntry!==null) {
                         localStorage.setItem("uniqueFeaturesEntry",report.uniqueFeaturesEntry);
                     }

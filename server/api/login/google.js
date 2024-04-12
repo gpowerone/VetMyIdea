@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
         setCookie(event, "vms", session.Token);
 
-        return { success: true, data: session.UserFirstName }
+        return { success: true, data: session.UserFirstName, isAdmin: session.isAdmin, id: session.id }
 
     } catch (error) {
         return { success: false }

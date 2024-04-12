@@ -43,7 +43,8 @@ export default {
         return { 
             Token: session.Token,
             UserFirstName: session.UserFirstName,
-            isAdmin: user.IsAdmin
+            isAdmin: user.IsAdmin,
+            id: user.UserID
         }; 
     },
     verifySession: async function(event) {
