@@ -369,7 +369,27 @@ function buildUniqueFeature(report) {
 }
 
 function doAffiliateCode() {
-    this.report_tab_contents+= "<section id='tab"+tab_id+"' style='float:right;text-center;width:19vw;'><div style='text-align:center;margin-top:25px;'>Links To Our Partners</div><br /></section>";
+    this.report_tab_contents+= "<section id='tab"+tab_id+"' style='float:right;text-center;width:19vw;'>"+
+                                    "<div style='margin-top:10px;padding:15px;'>"+
+                                        "<div style='text-align:center;'><br /><br />Need a website for your business?<br />" +
+                                        "<br /><span style='font-size:1.2em;'>Use <b>Gator Website Builder!</b></span><br /><br />" +
+                                        "<br /></div><div style='padding-left:10%;padding-right:10%'>"+
+                                        "* Free domain!<br /><br />"+
+                                        "* Free SSL certificate for security!<br /><br />"+
+                                        "* Cloud hosting included<br /><br />"+
+                                        "* Blogging option included with all plans<br /><br />"+
+                                        "* Frustration-free drag-and-drop editor<br /><br />"+
+                                        "* No ads!<br /><br />"+
+                                        "</div><div style='text-align:center;'><a href='https://partners.hostgator.com/zNVEE0'>Get Started Right Now!</a>"+
+                                        "<br /><br /><br /><br /><br /><br />"+
+                                        "Reports can cost up to 10 cents each to generate.<br /><br /><b>Donations</b> are appreciated!<br /><br />" +
+                                        "<form action=\"https://www.paypal.com/donate\" method=\"post\" target=\"_top\">"+
+                                        "<input type=\"hidden\" name=\"hosted_button_id\" value=\"X9UB4CNBABHYQ\" />"+
+                                        "<input type=\"image\" src=\"https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif\" border=\"0\" name=\"submit\" title=\"PayPal - The safer, easier way to pay online!\" alt=\"Donate with PayPal button\" />"+
+                                        "<img alt=\"\" border=\"0\" src=\"https://www.paypal.com/en_US/i/scr/pixel.gif\" width=\"1\" height=\"1\" />"+
+                                        "</form></div>"+
+                                    "</div>"+
+                                "</section>";
 }
 
 function generateSocials(report) {

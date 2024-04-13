@@ -1,36 +1,25 @@
 <template>
  
-     <v-select
-        v-model="monetize"
-        :items="monetizeOptions"
-        label="How do you plan to monetize your idea?"
-        class="mt-3 field-select"
-    ></v-select>
-    
-    <div class="mt-5 text-center" v-if="monetize==='Accept donations'||monetize==='I do not plan to monetize my idea'">
-        We cannot evaluate products or services being offered for free or with the intent to accept donations only. 
+    <v-container class="pa-0 mt-5">
+        <v-row>
+            <v-col cols="12">
+                <v-text-field v-model="product" bg-color="white" class="field" :class="{'fielderror': !isProductTypeValid()}" label="Describe the product or service (<100 chars)" outlined dense></v-text-field>
+                <div class="text-right inset mt-1">Note: franchise businesses and free products/services are not supported</div>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col cols="12">
+                <differentiators ref="differ" class="mb-5" />
+            </v-col>
+        </v-row>
+    </v-container>
+
+    <div class="mt-3">
+        <v-btn @click="handleAdvance" class="next-btn" :disabled="optionsHandled()">
+                <v-icon :icon="mdiArrowRight"></v-icon>
+        </v-btn>
     </div>
 
-    <div class="mt-5" v-if="monetize==='Start a business to sell a product or service'" >
-        <v-container class="pa-0">
-            <v-row>
-                <v-col cols="12">
-                    <v-text-field v-model="product" bg-color="white" class="field" :class="{'fielderror': !isProductTypeValid()}" label="Describe the product or service (max 100 chars)" outlined dense></v-text-field>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col cols="12">
-                    <differentiators ref="differ" class="mb-10" />
-                </v-col>
-            </v-row>
-        </v-container>
-
-        <div class="mt-3">
-            <v-btn @click="handleAdvance" class="next-btn" :disabled="optionsHandled()">
-                 <v-icon :icon="mdiArrowRight"></v-icon>
-            </v-btn>
-        </div>
-    </div>
      
 </template>
 <script setup>
@@ -42,7 +31,6 @@ let differ = ref();
 let monetize=ref("");
 let product=ref("");
 let emit = defineEmits(['advancePanel']);
-let monetizeOptions=ref(["Start a business to sell a product or service","Accept donations","I do not plan to monetize my idea"])
 
 watch(monetize, async (newValue, oldValue) => {
     if (newValue!==oldValue && newValue.length<=50) {

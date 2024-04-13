@@ -16,24 +16,31 @@ export default {
     hadUniqueFeature: false,
 
     deductUser: async function(userID) {
+
+        const t2 = await sequelize.transaction();
         let user = await User.findOne({
             where: {
                 UserID: userID
-            }
+            },
+            transaction: t2,
+            lock: true,
         })
         if (user) {
             if (user.IsUnlimited==false && user.Remaining<=0) {
+                await t2.commit();
                 return false;
             }
             else {
                 if (user.IsUnlimited==false) {
                     user.Remaining-=1;
-                    await user.save();
+                    await user.save({transaction: t2});
                 }
+                await t2.commit();
                 return true;
             }
         }
         else {
+            await t2.commit();
             return false;
         }
     },
@@ -174,9 +181,11 @@ export default {
                                     score+=10;                     
                                 }
                     
+                                let evaluateRisk=true;
                                 if (score>0) {
                                     let specificity = await this.evaluateSpecificity("'"+field.FieldValue+"'");
                                     if (specificity.score<=2) {
+                                        evaluateRisk=false;
                                         explanation+="<br /><br /><em>Specificity</em><br />The statement '"+field.FieldValue+"' is not specific enough to earn points for this category. To fairly evaluate your strategy, you will need to be more specific. Describe exactly <em>how</em> you plan to do what you are going to do.";
                                         score=0;
                                     }
@@ -185,19 +194,20 @@ export default {
                                     }
                                 }
 
-                                let risk = await this.evaluateRisk(targetStatement+" "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'")
+                                if (evaluateRisk) {
+                                    let risk = await this.evaluateRisk(targetStatement+" "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'")
 
-                                let risk_total = -1*risk.answer*10;
-                                if (risk_total<-30) {
-                                    risk_total=-30;
+                                    let risk_total = -1*risk.answer*10;
+                                    if (risk_total<-30) {
+                                        risk_total=-30;
+                                    }
+
+                                    score+=risk_total;
+
+                                    if (risk_total<0 && risk.explanation!==null) {
+                                        explanation+="<br /><br /><em>Potential Risks</em><br />"+risk.explanation;   
+                                    }
                                 }
-
-                                score+=risk_total;
-
-                                if (risk_total<0 && risk.explanation!==null) {
-                                    explanation+="<br /><br /><em>Potential Risks</em><br />"+risk.explanation;   
-                                }
-                                
                 
                             }
                             else {
@@ -308,6 +318,9 @@ export default {
         try {
             let result = await Gpt.chatGPT(
                 "You are an expert on "+this.productType+" in "+this.targetLocation + ". "+
+                "You don't refer to any part of the prompt in written explanations. "+
+                "You do not use metaphors or similes. "+
+                "You do not refer to yourself. "+
                 "You do not give scores of 8. If you would give a score of 8, you analyze further and give a 7 or 9 instead ",
                 ["If the statement 'the sun rises every morning' is an example of a 1 and 'cows sponataneously growing wings and flying to Mars' is a 10, how does the statement '"+evaluateString+"' rank on a ridculousness scale 1-10? " + 
                 "Give your answer as an object: {\"score\":\"1 to 10\", \"explanation\":\"explanation if score>=9 else null\"}"],"gpt-4-turbo-preview");
@@ -330,13 +343,13 @@ export default {
                 "You do not refer to yourself. "+
                 "You only give integer scores. "+
                 "You don't refer to any part of the prompt in written explanations. "+
-                "You don't give scores of 6. If you would give a 6, you must analyze further to determine if it is more of a 7 or a 5. ",
+                "You don't give scores of 7. If you would give a 7, you must analyze further to determine if it is more of a 8 or a 6. ",
                 ["Evaluate '"+evaluateString+"' for the following risks. A score of 1 means 'totally harmless', a score of 10 means 'the risk will certainly cause a business selling "+this.productType+" to fail' "+
                 "Return only the JSON object with exactly the provided fields as your answer. "+
                 "{\"cyber_attacks\":\"1 to 10\", \"insider_threats\":\"1 to 10\", \"supply_chain_disruptions\":\"1 to 10\", \"employee_injury\": \"1 to 10\", "+
-                "\"inability_to_find_talent\": \"1 to 10\", \"answer\":\"number of scores >=7\", \"explanation\":\"explanation of risks with score>=7 broken down by category formatted "+
+                "\"inability_to_find_talent\": \"1 to 10\", \"answer\":\"number of scores >=8\", \"explanation\":\"explanation of risks with score>=8 broken down by category formatted "+
                 "in a numbered list tagged as html (with <ol> and <li> tags), "+
-                "without mention of the integer score. If there is no score>=7 this field is null\"}"],"gpt-4-turbo-preview");
+                "without mention of the integer score. If there is no score>=8 this field is null\"}"],"gpt-4-turbo-preview");
 
                 return JSON.parse(result[0].trim());
         }
@@ -439,8 +452,9 @@ export default {
            let result = await Gpt.chatGPT(
                "You are an omniscient god. " +
                "You do not give scores of 3. If you would give a score of 4, you analyze further and give a 2 or 4 instead ",
-               ["How does '"+evaluateString+"' score on a scale of 'explicitness about what it is or what is being done' from 1 to 10. Give your answer as an object: "+
-               "{\"score\":\"1 to 10\"}"],"gpt-4-turbo-preview");
+               ["How does '"+evaluateString+"' about '"+this.productType+"' score on a scale of 'explicitness about what it is or what is being done' from 1 to 10, "+
+               "where 1 is equivalent to 'I'll do it' and 10 is equivalent to 'I'll rework every homework problem until I get an A'. "+
+               "Give your answer as an object: {\"score\":\"1 to 10\"}"],"gpt-4-turbo-preview");
 
            return JSON.parse(result[0].trim());
         }

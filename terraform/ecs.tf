@@ -90,7 +90,15 @@ resource "aws_ecs_task_definition" "vetmyidea" {
     {
        Name="NUXT_RECAPTCHA_SECRET",
        ValueFrom= aws_secretsmanager_secret.recaptcha_secret.arn
-    }]
+    },
+    {
+        Name="NUXT_PUBLIC_LINKEDIN_CLIENT",
+        ValueFrom= aws_secretsmanager_secret.linkedin_client.arn
+    },
+    {
+        Name="NUXT_LINKEDIN_SECRET",
+        ValueFrom= aws_secretsmanager_secret.linkedin_secret.arn
+    },]
   }])
 }
 

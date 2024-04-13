@@ -77,4 +77,11 @@ resource "aws_secretsmanager_secret" "pgadminpass" {
   name = "pgadminpass_vmi"
 }
 
+resource "aws_secretsmanager_secret" "linkedin_client" {
+  name = "linkedin_client_vmi"
+}
+
+resource "aws_secretsmanager_secret" "linkedin_secret" {
+  name = "linkedin_secret_vmi"
+}
 

@@ -5,28 +5,28 @@
 
   
                     <v-selection-control-group v-model="uncommonFeature"> 
-                        <v-checkbox density="compact" label="My product has a unique or uncommon feature that will draw in customers"></v-checkbox>
+                        <v-checkbox label="My product/service has a unique or uncommon feature that will draw in customers"></v-checkbox>
                     </v-selection-control-group>   
                     
                     <div v-if="uncommonFeature===true">
-                        <v-textarea class="field" bg-color="white"  :class="{'fielderror': !uniqueFeatureValid()}" v-model="uniqueFeaturesEntry" label="What feature will best draw in customers? (max 300 chars)" outlined dense></v-textarea>
+                        <v-textarea class="field" bg-color="white"  :class="{'fielderror': !uniqueFeatureValid()}" v-model="uniqueFeaturesEntry" label="What feature will best draw in customers? (<300 chars)" outlined dense></v-textarea>
                     </div>
 
 
                     <v-selection-control-group v-model="productionCosts"> 
-                        <v-checkbox density="compact" label="My costs are less than my competitors"></v-checkbox>
+                        <v-checkbox label="My costs are less than my competitors"></v-checkbox>
                     </v-selection-control-group>   
                     
                     <div v-if="productionCosts===true">
-                        <v-textarea  bg-color="white"  class="field" :class="{'fielderror': !costsValid()}" v-model="costsEntry" label="How? (max 300 chars)" outlined dense></v-textarea>
+                        <v-textarea  bg-color="white"  class="field" :class="{'fielderror': !costsValid()}" v-model="costsEntry" label="How? (<300 chars)" outlined dense></v-textarea>
                     </div>
 
                     <v-selection-control-group v-model="marketingStrategy"> 
-                        <v-checkbox density="compact" label="My marketing strategy is better than my competitors"></v-checkbox>
+                        <v-checkbox label="My marketing strategy is better than my competitors"></v-checkbox>
                     </v-selection-control-group>   
                     
                     <div v-if="marketingStrategy===true">
-                        <v-textarea  bg-color="white"  class="field" :class="{'fielderror': !marketingValid()}" v-model="marketingEntry" label="How? (max 300 chars)" outlined dense></v-textarea>
+                        <v-textarea  bg-color="white"  class="field" :class="{'fielderror': !marketingValid()}" v-model="marketingEntry" label="How? (<300 chars)" outlined dense></v-textarea>
                     </div>
                           
                 </v-col>
@@ -34,8 +34,8 @@
             <v-row>
                 <v-col cols="12">
                     <div>
-                        <b>Other Differentiators</b> 
-                        <span class="tooltip tips" v-tooltip.bottom="{ content: `<p>There are some additional differentiators that could put your product or service above the competition. We do not evaluate these because it would be difficult to provide a fair evaluation without having source materials to analyze, or because these are more of a company strategy than a product-specific one:</p><p class='mt-5'>1. Advertising Strategy<br />2. User Experience<br />3. Customer Service and Support</p>`}">?</span>
+                        <b>Other Differentiators</b> &nbsp;
+                        <span class="tooltip" style="padding-top:1px;" v-tooltip.bottom="{ triggers: ['click'], content: `<p>There are some additional differentiators that could put your product or service above the competition. We do not evaluate these because it would be difficult to provide a fair evaluation without having source materials to analyze, or because these are more of a company strategy than a product-specific one:</p><p class='mt-5'>1. Advertising Strategy<br />2. User Experience<br />3. Customer Service and Support</p>`}">?</span>
                      </div>       
                 </v-col>
             </v-row>

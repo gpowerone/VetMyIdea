@@ -3,14 +3,28 @@
         <v-row>
             <v-col>
                 <div v-if="$store.state.isLoggedIn">
-                    <h2>My Reports</h2>
-                    <p class="mt-5"><NuxtLink to="/">Create New Report</NuxtLink></p>
+                    <h2 class="ml-2 mt-5">My Reports</h2>
+                    <p class="mt-2 mr-5 text-right"><b><NuxtLink to="/" class="greenlink"><v-icon :icon="mdiPlusCircle" />New Report</NuxtLink></b></p>
                     <v-data-table
                         :headers="headers"
                         :items="reports"
                         class="elevation-1 mt-5 report-table"
                         v-if="reports && reports.length>0"
                     >
+                         <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
+                            <tr class="tblheader">
+                                <template v-for="column in columns" :key="column.key">
+                                <td>
+                                    <span class="mr-2 cursor-pointer" @click="() => toggleSort(column)">{{ column.title }}</span>
+                                    <template v-if="isSorted(column)">
+                                    <v-icon :icon="getSortIcon(column)"></v-icon>
+                                    </template>
+                                    <v-icon v-if="column.removable" icon="$close" @click="() => remove(column.key)"></v-icon>
+                                </td>
+                                </template>
+                            </tr>
+                        </template>
+
                         <template v-slot:item="{ item }">
                             <tr>
                                 <td class="text-right">
@@ -27,7 +41,7 @@
                                 <td>{{ item.TargetLocation }}</td>
                                 <td>
                                     <div v-if="item.Flagged" >
-                                        <b>Flagged</b> <span class="tooltip" v-tooltip="'This report has been flagged for a content violation. Content must comply with the Open AI Content Policy. Edit and re-run the report.'">?</span> 
+                                        <b>Flagged</b> <span class="tooltip" v-tooltip="{triggers: ['click'], content:'This report has been flagged for a content violation. Content must comply with the Open AI Content Policy. Edit and re-run the report.'}">?</span> 
                                     </div>
                                     <div v-else>
                                         <div v-if="item.IsReady">
@@ -35,10 +49,13 @@
                                         </div>
                                         <div v-else>
                                             <div v-if="item.IsProcessing">
-                                                <b>Processing</b> <span class="tooltip" v-tooltip="'Please allow 1-5 minutes for your report to process.'">?</span> 
+                                                <b>Processing</b> <span class="tooltip" v-tooltip="{triggers: ['click'], content:'Please allow 1-5 minutes for your report to process.'}">?</span> 
+                                            </div>
+                                            <div v-else-if="item.IsDelayed">
+                                                <b>Delayed</b> <span class="tooltip" v-tooltip="{triggers: ['click'], content:'Due to there being zero reports available, this report will process the next time a report becomes available'}">?</span> 
                                             </div>
                                             <div v-else>
-                                                <b>Queued</b> <span class="tooltip" v-tooltip="'Your report is queued for processing. Under normal load, wait times to start processing are <1 minute'">?</span> 
+                                                <b>Queued</b> <span class="tooltip" v-tooltip="{triggers: ['click'], content:'Your report is queued for processing. Under normal load, wait times to start processing are <1 minute'}">?</span> 
                                             </div>
                                         </div>
                                     </div>
@@ -71,7 +88,7 @@
                         <div v-if="!loading">You have no reports</div>
                     </div>
                     <p class="text-center mt-5">
-                        You may create reports above the 3/day a limit. They will remain in "Queued" status until additional reports become available
+                        You may create reports above the 3/day a limit. They will remain in "Delayed" status until additional reports become available
                     </p>
                     <p class="text-center mt-5">
                         Loved it? Hated it? Be sure to let us know by taking our <NuxtLink to="https://forms.gle/k1LcAbWo3CUXzxjP9" target="_blank">survey!</NuxtLink>
@@ -87,7 +104,7 @@
 
 <script setup>
   import login from '../components/login.vue'
-  import { mdiDelete, mdiPencil } from '@mdi/js'
+  import { mdiDelete, mdiPencil, mdiPlusCircle } from '@mdi/js'
   import { useStore } from 'vuex'
 
   const store = useStore();
@@ -210,11 +227,23 @@
 
   function loggedIn() {
      fetchTable();
+
+    fetch("/api/user/get", {
+            method: "GET",
+    })
+    .then(async (response)=>await response.json())
+    .then(async (response)=>{
+            if (response.success) {
+                store.state.remaining = response.message;
+            }
+
+    });
   }
 
   onMounted(()=>{
 
      fetchTable();
+
   })
 </script>
 

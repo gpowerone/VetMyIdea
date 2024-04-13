@@ -10,10 +10,12 @@
         <meta property="og:description" content="{META_DESCRIPTION}" />
         <meta property="og:image" content="https://reports.vetmyidea.biz/core/vetmyidea.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" rel="stylesheet">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">   
         <link href="./core/report_builder.css" rel="stylesheet" />
         <script src="./core/report_builder.js" type="text/javascript"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/scripts/verify.min.js"></script>
         <script src="https://platform.linkedin.com/in.js" type="text/javascript">lang: en_US</script>
         <script type="text/javascript">(function(d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
@@ -52,14 +54,20 @@
         </main>
         <footer class="report">
             <br /><br />
-            <a href="https://www.vetmyidea.biz/about">About</a> | <a href="https://www.vetmyidea.biz/contact">Contact</a> | <a href="https://vetmyidea.blogspot.com/">Blog</a><br /><br />
+            <a href="https://www.vetmyidea.biz/about">About</a> | <a href="https://www.vetmyidea.biz/contact">Contact</a> | <a href="https://vetmyidea.blogspot.com/">Blog</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span style="font-size:1.2em;">
+                <a href="https://www.youtube.com/channel/UCKfBFd43hmSLZgsh-jLiq0A" target="_blank" rel="noopener noreferer"><span class="mdi mdi-youtube"></span></a>&nbsp;
+                <a href="https://twitter.com/VetMyIdea" target="_blank" rel="noopener noreferer"><span class="mdi mdi-twitter"></a>&nbsp;
+                <a href="https://www.linkedin.com/company/vetmyidea"><span class="mdi mdi-linkedin"></span></a>
+            </span>
+            <br /><br />
             &copy;2024 Techfalos, LLC
         </footer>
     </body>
     <script language="javascript">
         
-        report_contents='{"competitors": ["Wizard World", "Wizards of the Coast", "Wizard Entertainment", "Magic Wizard Company", "Wizard Tech Solutions", "Wizard Hat Games", "Wizard Studios", "Wizard Tower Games", "Wizard Coin Supply", "Wizard International, Inc."],"viable":"no", "explanation":"Selling wizards or any sentient beings is considered illegal as it violates laws against slavery and human trafficking. These laws are designed to protect individuals&apos; rights and freedoms, ensuring that all beings are treated with dignity and respect. Engaging in the sale of sentient beings would be against both moral principles and legal statutes in many jurisdictions.&apos;, "summary": {"score":0,"product":"wizard","hadUniqueFeature":false,"scoremeaning":"Highly Unfavorable","title":"wizard business in All Locations"}, "created":1712797006134}'
-
+        report_contents='{"competitors": ["Product Hunt", "AngelList", "Startup Digest", "Mattermark", "Crunchbase News", "SaaStr", "TechCrunch", "VentureBeat", "The Hustle", "Indie Hackers"],"uniqueFeature": {"benefits":"The feature &apos;Exclusive deals for subscribers Free marketing for startups&apos; is highly appealing to users of a Newsletter that partners with early stage startups for several reasons. First, subscribers are attracted to the idea of receiving exclusive deals, which means they can access discounts and offers that are not available to the general public. This exclusivity makes the subscription more valuable to them, as they can save money on products or services they are interested in. Second, for startups, the offer of free marketing is extremely beneficial. Early stage startups often have limited budgets for marketing and advertising, so the opportunity to reach a dedicated audience without incurring additional costs is very attractive. This can help them gain visibility, attract new customers, and grow their business. The combination of these two features creates a win-win situation for both subscribers and startups, making it a popular and highly sought-after feature. The appeal is based on the practical benefits it offers to both parties involved.","score":30,"evaluatedString":"Exclusive deals for subscribers Free marketing for startups","viable":"yes"},"viable":"yes", "expectedGrowth": {"growth":"very good","explanation":"The market for newsletters that partner with early-stage startups to offer exclusive deals is expected to grow significantly in the next five years. This growth is driven by increasing interest in startup culture, a rising appetite for personalized and exclusive content, and the growing trend of digital subscriptions. As more people look for unique offers and insights into the startup ecosystem, these newsletters are positioned to capture a larger audience. Additionally, the proliferation of startups across various industries provides a continuous stream of content and partnership opportunities, further fueling growth. The digital nature of newsletters allows for easy scalability and global reach, enhancing growth prospects. Therefore, the expected growth rate is categorized as very good.","score":20},"regulatoryRisk": {"risk":"medium","explanation":"The risk of regulation making the sale of newsletters that partner with early-stage startups and offer exclusive deals to readers illegal is considered medium. This is because the regulatory environment around digital content, data protection, and consumer rights is evolving. Governments and regulatory bodies are increasingly focusing on protecting consumers from misleading information, ensuring data privacy, and maintaining fair competition. If these newsletters are found to be in violation of emerging laws related to these areas, such as not being transparent about partnerships, not respecting user data privacy, or promoting unfair competitive practices, they could face regulatory actions. However, as long as these newsletters comply with laws and regulations, particularly those related to advertising, consumer protection, and data privacy, the risk remains manageable. The situation could change based on how regulations evolve in response to new digital marketing practices and consumer protection concerns.","score":-5},"summary": {"score":95,"product":"Newsletter that partners with early stage startups and offers exclusive deals to readers","hadUniqueFeature":true,"scoremeaning":"Highly Favorable","title":"Newsletter that partners with early stage startups and offers exclusive deals to readers business in All Locations"}, "created":1712931521756}';
+        
         window.onload=function() {
             document.getElementById("report").innerHTML=build_report(report_contents,true);
         }

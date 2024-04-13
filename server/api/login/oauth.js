@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     try {
         const { code,typ } = await readBody(event);
 
-        let redirecturi="https://vetmyidea.biz/wizard";
+        let redirecturi="https://vetmyidea.biz/";
         if (typ=="d") {
             redirecturi="https://vetmyidea.biz/dashboard";
         }

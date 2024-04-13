@@ -31,6 +31,9 @@
   hr {
     border-top:1px solid #0c1d36;
   }
+  .greenlink {
+     color:#034d02;
+  }
   .v-data-table-header__content span {
     font-weight:bold;
   }
@@ -45,7 +48,7 @@
       box-shadow: 1px 2px 3px rgba(163,45,38,.3);
   }
   .inset {
-     font-size:0.8em;
+     font-size:0.9em;
   }
   .fullheight {
      height:100%;
@@ -65,15 +68,26 @@
      font-size:1.1em;
   }
   .tooltip {
-     height: 25px;
-     width: 25px;
+     height: 35px;
+     width: 35px;
      background-color: #0c1d36;
      color:#FFF;
+     font-size:1.2em;
+     padding-top:3px;
      text-align:center;
      font-weight:bold;
      border:2px solid #FFF;
      border-radius: 50%;
      display: inline-block;
+     cursor: pointer;
+  }
+  .tblheader {
+      background-color: #0c1d36;
+      color: #FFF;
+  }
+  .tblheader>td {
+      font-weight:bold;
+      font-size:1.2em;
   }
   .v-popper__inner { max-width: 360px !important; }
   .v-field__outline {

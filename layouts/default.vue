@@ -15,8 +15,8 @@
               Hello {{name}}!
           </div>
 
-          <div class="d-none d-sm-flex pr-5" v-if="remaining!==null">
-              <span v-tooltip="'Number of reports remaining. You get up to 3 free reports per day.'"><span class="remaining_number">{{remaining}}</span> <v-icon :icon="mdiFileChartOutline" /></span>
+          <div class="pr-5" v-if="remaining!==null">
+              <span v-tooltip="{triggers: ['click'], content:'Number of reports remaining. You get up to 3 free reports per day.'}"><span class="remaining_number">{{remaining}}</span> <v-icon :icon="mdiFileChartOutline" /></span>
           </div>
 
           <template v-slot:append>
@@ -35,6 +35,8 @@
                     <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/"><v-icon :icon="mdiHome" />&nbsp;&nbsp;Home</NuxtLink></v-list-item> 
                     <v-divider />
                      <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/dashboard"><v-icon :icon="mdiFileDocumentMultiple" />&nbsp;&nbsp;My Reports</NuxtLink></v-list-item> 
+                     <v-divider />
+                      <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/scoring"><v-icon :icon="mdiChartLineVariant" />&nbsp;&nbsp;Scoring</NuxtLink></v-list-item> 
                     <v-divider v-if="$store.state.isLoggedIn" />
                     <v-list-item v-if="$store.state.isLoggedIn" class="menuitem"><NuxtLink role="menuitem" class="cursor" @click="doLogout"><v-icon :icon="mdiLogout" />&nbsp;&nbsp;Logout</NuxtLink></v-list-item>
                 </v-list>
@@ -46,7 +48,11 @@
 
             <div class="footer stdlink mt-3">
               <div class="text-center pt-7 pb-10 force-white-text">
-                  <NuxtLink to="/about">About</NuxtLink> | <NuxtLink to="/contact">Contact</NuxtLink> | <NuxtLink to="https://vetmyidea.blogspot.com/">Blog</NuxtLink><br /><br />
+                  <NuxtLink to="/about">About</NuxtLink> | <NuxtLink to="/contact">Contact</NuxtLink> | <NuxtLink to="https://vetmyidea.blogspot.com/">Blog</NuxtLink>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <a href="https://www.youtube.com/channel/UCKfBFd43hmSLZgsh-jLiq0A" target="_blank" rel="noopener noreferer"><v-icon :icon="mdiYoutube" /></a>&nbsp;
+                  <a href="https://twitter.com/VetMyIdea" target="_blank" rel="noopener noreferer"><v-icon :icon="mdiTwitter" /></a>&nbsp;
+                  <a href="https://www.linkedin.com/company/vetmyidea"><v-icon :icon="mdiLinkedin" /></a>
+                  <br /><br />
                   &copy; 2024 Techfalos, LLC
               </div>
             </div>
@@ -56,7 +62,7 @@
 </template>    
 
 <script setup>
-import { mdiHome, mdiLogout, mdiFileDocumentMultiple, mdiFileChartOutline } from '@mdi/js'
+import { mdiHome, mdiLogout, mdiFileDocumentMultiple, mdiFileChartOutline, mdiChartLineVariant, mdiYoutube, mdiTwitter, mdiLinkedin } from '@mdi/js'
 </script>
 
 <script>
@@ -107,6 +113,7 @@ export default defineComponent({
            this.$store.state.isLoggedIn=false;
            this.$store.state.name=null;
            this.$store.state.id=null;
+           this.$store.state.remaining=null;
            this.$store.state.successText="Successfully Logged Out";
            this.drawer=false;
            this.remaining=null;

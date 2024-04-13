@@ -38,6 +38,7 @@ export default defineNuxtConfig({
        oauthRedirect: "",
        oauthScopes: "",
        oauthUri: "",
+       linkedinClient: "",
        recaptchaSitekey: ""
     },
 
@@ -47,6 +48,7 @@ export default defineNuxtConfig({
     oauthSecret: "",
     oauthToken: "",
     oauthUserinfo: "",
+    linkedinSecret: "",
     recaptchaSecret: ""
   },
   security: {
@@ -80,7 +82,8 @@ export default defineNuxtConfig({
         'upgrade-insecure-requests': true
       },
       referrerPolicy: 'strict-origin-when-cross-origin',
-      crossOriginOpenerPolicy: 'same-origin-allow-popups'
+      crossOriginOpenerPolicy: 'same-origin-allow-popups',
+      strictTransportSecurity: false,
     },
     sri: true
   },

@@ -26,9 +26,11 @@ export default {
             "<link rel='preconnect' href='https://fonts.googleapis.com'>"+
             "<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>"+
             "<link href='https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap' rel='stylesheet'>"+
+            "<link href='https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css' rel='stylesheet'></link>"+
             "<link href='./core/report_builder.css' rel='stylesheet' />"+
             "<script src='./core/report_builder.js' type='text/javascript'></script>"+
             "<script src='https://platform.linkedin.com/in.js' type='text/javascript'>lang: en_US</script>"+
+            "<script src='https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/scripts/verify.min.js'></script>"+
             "<script async src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7307219219068554' crossorigin='anonymous'></script>"+
             "<script src='https://www.googletagmanager.com/gtag/js?id=G-Z4T5SBW4ZS'></script>"+
             "<script type='text/javascript'>(function(d, s, id) {"+
@@ -66,12 +68,18 @@ export default {
                 "</main>"+
                 "<footer class='report'>"+
                 "<br /><br />"+
-                "<a href='https://www.vetmyidea.biz/about'>About</a> | <a href='https://www.vetmyidea.biz/contact'>Contact</a> | <a href='https://vetmyidea.blogspot.com/'>Blog</a><br /><br />"+
+                "<a href='https://www.vetmyidea.biz/about'>About</a> | <a href='https://www.vetmyidea.biz/contact'>Contact</a> | <a href='https://vetmyidea.blogspot.com/'>Blog</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+
+                "<span style='font-size:1.2em;'>" +
+                "<a href='https://www.youtube.com/channel/UCKfBFd43hmSLZgsh-jLiq0A' target='_blank' rel='noopener noreferer'><span class='mdi mdi-youtube'></span></a>&nbsp;" +
+                "<a href='https://twitter.com/VetMyIdea' target='_blank' rel='noopener noreferer'><span class='mdi mdi-twitter'></a>&nbsp;" +
+                "<a href='https://www.linkedin.com/company/vetmyidea'><span class='mdi mdi-linkedin'></span></a>" +
+                "</span>" +
+                "<br /><br />" +
                 "&copy;2024 Techfalos, LLC"+
                 "</footer>"+
                 "</body>"+
                 "<script language='javascript'>"+
-                "let report_contents='"+reportContent.replace(/'/g,"&apos;")+"';"+
+                "let report_contents='"+reportContent.replace(/\n/g,"").replace(/\r/g,"").replace(/'/g,"&apos;")+"';"+
             "window.onload=function() { document.getElementById('report').innerHTML=build_report(report_contents,true); }"+
         "</script>\n"+
     "</html>";

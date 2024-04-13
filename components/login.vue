@@ -73,30 +73,12 @@ export default {
       return useRuntimeConfig().public.oauthRedirect
     }
   },
-  methods: {
-    parseState(lgstate) { 
-      this.$store.state.name=lgstate.name;
-      this.$store.state.isLoggedIn=true;
-      this.$store.state.id = lgstate.id;
-
-      fetch("/api/user/get", {
-            method: "GET",
-      })
-      .then(async (response)=>await response.json())
-      .then(async (response)=>{
-            if (response.success) {
-                this.$store.state.remaining = response.message;
-            }
- 
-      });
-    }
-  },
   mounted() {
 
     if (this.isStateValid(this.$route.query.state)) {
         localStorage.removeItem('pestate');
 
-        if (this.$route.query.error_description && this.$route.query.error_description=="Please verify your email before continuing") {
+        if (this.$route.query.error_description && this.$route.query.error_description=="Please verify your email before continuing.") {
             this.$store.state.successText = "Please verify your email address and then log in again";
         } 
         else {
@@ -114,14 +96,17 @@ export default {
                       id: response.id
                   };
                   localStorage.setItem("lgstate", JSON.stringify(lgstate));
-                  this.parseState(lgstate);
+                  this.$store.state.name=lgstate.name;
+                  this.$store.state.isLoggedIn=true;
+                  this.$store.state.id = lgstate.id;
                   this.$emit("loggedIn");
               }
               else {
                 this.$store.state.errorText = "Access Denied";            
               }
           })
-          .catch(()=>{
+          .catch((e)=>{
+              console.log(e);
               this.$store.state.errorText = "Error contacting the backend, please check your connection"
           });
         }
@@ -145,14 +130,17 @@ export default {
                       id: response.id
                   };
                   localStorage.setItem("lgstate", JSON.stringify(lgstate));
-                  this.parseState(lgstate);
+                  this.$store.state.name=lgstate.name;
+                  this.$store.state.isLoggedIn=true;
+                  this.$store.state.id = lgstate.id;
                   this.$emit("loggedIn");
               }
               else {
                   this.$store.state.errorText = "Login failed. Please check your credentials"
               }
           })
-          .catch(()=>{
+          .catch((e)=>{
+              console.log(e);
               this.$store.state.errorText = "Error contacting the backend, please check your connection"
           });
         }
@@ -191,7 +179,7 @@ export default {
     login() {
         // Handle login with username and password
         // Configuration
-        let oauthredirecturi="https://vetmyidea.biz/wizard";
+        let oauthredirecturi="https://vetmyidea.biz/";
         if (!this.loadBack) {
            oauthredirecturi="https://vetmyidea.biz/dashboard";
         }

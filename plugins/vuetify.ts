@@ -18,7 +18,7 @@ colors: {
     'secondary-darken-1': '#018786',
     error: '#B00020',
     info: '#2196F3',
-    success: '#4CAF50',
+    success: '#034d02',
     warning: '#FB8C00',
 },
 }
