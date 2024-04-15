@@ -85,7 +85,7 @@
                     </v-data-table>
                     <div class="mt-5" v-else>
                         <spinner :isLoading="loading" />  
-                        <div v-if="!loading">You have no reports</div>
+                        <div v-if="!loading" class="ml-2">You have no reports</div>
                     </div>
                     <p class="text-center mt-5">
                         You may create reports above the 3/day a limit. They will remain in "Delayed" status until additional reports become available

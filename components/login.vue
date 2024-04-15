@@ -1,33 +1,47 @@
 <template>
   <v-container class="pa-0" :class="{'mt-10':$vuetify.display.lg||$vuetify.display.xl||$vuetify.display.xxl}" >
     <v-row>
-      <v-col cols="12" lg="5">
+      <v-col cols="12" lg="4" class="d-none d-sm-flex" >
+          &nbsp;
+      </v-col>
+      <v-col cols="12" lg="4">
         <h2 class="mb-5 mt-10 text-center">Login</h2>
-        <v-card class="loginCard">
+        <p class="mt-5 text-center">Get up to 3 <b>free</b> reports a day</p>
+        <v-card class="mt-5 loginCard">
           <v-card-text>
         
             <!-- Google Login -->
-            <div id="g_id_signin"></div>
-            <v-divider class="mt-5 mb-5" ></v-divider>
-            <v-btn @click="login" class="login-btn">Login with Username/Password</v-btn>
+            <div id="g_id_signin" class="login-btn"></div>
+            
+            <!-- Linkedin Login -->
+            <v-btn @click="linkedIn" class="mt-5 login-btn">
+              <v-container class="pa-0" fluid>
+                <v-row class="pa-0">
+                   <v-col class="text-left" cols="1" ><v-icon :icon="mdiLinkedin" /></v-col>
+                   <v-col cols="10" class="text-center pl-8">Sign in with LinkedIn</v-col>
+                   <v-col cols="1">&nbsp;</v-col>
+                </v-row>
+              </v-container>
+            </v-btn>
+
+            <!-- Username Password -->
+            <v-btn @click="login" class="mt-5 login-btn">
+              <v-container class="pa-0" fluid>
+                <v-row class="pa-0">
+                   <v-col class="text-left" cols="1" ><v-icon :icon="mdiLock" /></v-col>
+                   <v-col cols="10" class="text-center pl-8">Sign in with Username/Password</v-col>
+                   <v-col cols="1">&nbsp;</v-col>
+                </v-row>
+              </v-container>
+            </v-btn>
          
       
           </v-card-text>
         </v-card>
-        <p class="loginCard mt-7 text-center">By creating an account or logging in, you agree to our <NuxtLink to="/privacy">Privacy Policy</NuxtLink> and <NuxtLink to="/terms">Terms of Service</NuxtLink></p>
+        <p class="loginCard mt-7 text-center">By creating an account or logging in, you agree to our<br /><NuxtLink to="/privacy">Privacy Policy</NuxtLink> and <NuxtLink to="/terms">Terms of Service</NuxtLink></p>
       </v-col>
-      <v-col cols="12" lg="2" class="d-md-none d-lg-block">
-         &nbsp;
-      </v-col>
-      <v-col cols="12" lg="5">
-        <div :class="{'mt-15':$vuetify.display.lg||$vuetify.display.xl||$vuetify.display.xxl}">
-          <h3>Create An Account</h3>
-          <p class="mt-5">
-          &bull; Get Your Free Report<br />
-          &bull; Create Additional Free Reports (up to 3/day)<br />
-          &bull; Optionally Share Your Reports<br />
-          </p>
-        </div>
+      <v-col cols="12" lg="4" class="d-none d-sm-flex" >
+          &nbsp;
       </v-col>
     </v-row>
     <v-row v-if="loadBack">
@@ -41,7 +55,7 @@
 </template>
 
 <script setup>
-  import { mdiArrowLeft } from '@mdi/js'
+  import { mdiArrowLeft,mdiLinkedin,mdiLock } from '@mdi/js'
 </script>
 
 <script>
@@ -71,18 +85,22 @@ export default {
     },
     oauthredirecturi() {
       return useRuntimeConfig().public.oauthRedirect
+    },
+    linkedinclientid() {
+      return useRuntimeConfig().public.linkedinClient
     }
   },
   mounted() {
 
-    if (this.isStateValid(this.$route.query.state)) {
+    let type = this.isStateValid(this.$route.query.state);
+    if (type.valid) {
         localStorage.removeItem('pestate');
 
         if (this.$route.query.error_description && this.$route.query.error_description=="Please verify your email before continuing.") {
             this.$store.state.successText = "Please verify your email address and then log in again";
         } 
         else {
-          fetch("/api/login/oauth/", {
+          fetch("/api/login/"+(type.login==="oauth"?"oauth/":"linkedin/"), {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ code: this.$route.query.code, typ:this.loadBack?"w":"d" }),
@@ -168,7 +186,10 @@ export default {
                     return false;
                 }
 
-                return (pestate.value === state && Date.now() - (new Date(pestate.expiry).getTime()) < 600000);
+                return {
+                  valid: pestate.value === state && Date.now() - (new Date(pestate.expiry).getTime()) < 600000,
+                  type: pestate.type
+                };
             } 
             catch (e) {
                 return false;
@@ -176,6 +197,34 @@ export default {
         }
         return false;
     },
+
+    linkedIn() {
+        // Handle login with username and password
+        // Configuration 
+        let oauthredirecturi="https://vetmyidea.biz/";
+        if (!this.loadBack) {
+           oauthredirecturi="https://vetmyidea.biz/dashboard";
+        }
+ 
+        const clientId = this.linkedinclientid;
+        const scopes = encodeURIComponent(this.oauthscopes);
+        const redirectUri = encodeURIComponent(oauthredirecturi);
+        const responseType = 'code'; 
+        const state = Math.random().toString(36).substring(2, 15); 
+
+        localStorage.setItem("pestate", JSON.stringify({
+            value: state,
+            expiry: new Date().getTime() + 600000,
+            type: "linkedin"
+        }));
+
+        // Construct the OAuth2 URL
+        const oauth2Url = `https://www.linkedin.com/oauth/v2/authorization?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes}&state=${state}`;
+
+        // Redirect the user to the OAuth2 URL
+        window.location.href = oauth2Url;
+    },
+
     login() {
         // Handle login with username and password
         // Configuration
@@ -193,7 +242,8 @@ export default {
 
         localStorage.setItem("pestate", JSON.stringify({
             value: state,
-            expiry: new Date().getTime() + 600000
+            expiry: new Date().getTime() + 600000,
+            type: "oauth"
         }));
 
         // Construct the OAuth2 URL
@@ -208,6 +258,7 @@ export default {
 
 <style scoped>
    .login-btn {
+      display:block;
       text-transform: none;
       font-family:inherit;
       letter-spacing: normal;

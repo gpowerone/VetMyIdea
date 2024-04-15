@@ -2,10 +2,10 @@
        <v-container class="fluid pa-0">
              <v-row>
                 <v-col cols="12">
-
-  
+                    <h3 class="mt-5">Select ways your business is different from the competition</h3>
+                    
                     <v-selection-control-group v-model="uncommonFeature"> 
-                        <v-checkbox label="My product/service has a unique or uncommon feature that will draw in customers"></v-checkbox>
+                        <v-checkbox label="My product/service has a unique or uncommon feature that will attract customers"></v-checkbox>
                     </v-selection-control-group>   
                     
                     <div v-if="uncommonFeature===true">

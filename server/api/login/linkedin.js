@@ -5,20 +5,11 @@ export default defineEventHandler(async (event) => {
     try {
         const { code,typ } = await readBody(event);
 
-        let redirecturi="http://localhost:3000";
-
-        /*
-        let redirecturi="https://vetmyidea.biz/";
+        let redirectUri="https://vetmyidea.biz/";
         if (typ=="d") {
-            redirecturi="https://vetmyidea.biz/dashboard";
+            redirectUri="https://vetmyidea.biz/dashboard";
         }
-        */
-
-        const config = useRuntimeConfig();
-        const clientId = config.public.linkedinClientId;
-        const clientSecret = config.linkedinSecret;
-        const redirectUri = redirecturi;
-
+      
         // Requesting LinkedIn access token using the code
         const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
             method: 'POST',
@@ -29,8 +20,8 @@ export default defineEventHandler(async (event) => {
                 grant_type: 'authorization_code',
                 code: code,
                 redirect_uri: redirectUri,
-                client_id: clientId,
-                client_secret: clientSecret
+                client_id: useRuntimeConfig().public.linkedinClient,
+                client_secret: useRuntimeConfig().linkedinSecret
             })
         });
 
@@ -40,7 +31,7 @@ export default defineEventHandler(async (event) => {
         const accessToken = tokenData.access_token;
 
         // Fetching user profile with the access token
-        const profileResponse = await fetch('https://api.linkedin.com/v2/me', {
+        const profileResponse = await fetch('https://api.linkedin.com/v2/userinfo', {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -50,8 +41,7 @@ export default defineEventHandler(async (event) => {
 
         const profile = await profileResponse.json();
 
-        // Assuming 'id', 'localizedFirstName' are available in the LinkedIn response
-        let session = await sessiontools.createSession(profile.id, 'linkedin', profile.localizedFirstName);
+        let session = await sessiontools.createSession(profile.sub, 'linkedin', profile.given_name);
 
         setCookie(event, "vms", session.Token);
 

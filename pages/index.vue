@@ -11,7 +11,7 @@
 
 
             <div class="panel mt-5" :class="{'centered':$vuetify.display.md||$vuetify.display.lg||$vuetify.display.xl||$vuetify.display.xxl,'mt-10':$vuetify.display.lg||$vuetify.display.xl||$vuetify.display.xxl}" v-if="panelOpt==0">
-               <h3 class="text-center">Start Here</h3>
+               <h3>What will you sell?</h3>
                <monetize v-on:advancePanel="advancePanel" />
             </div>
              

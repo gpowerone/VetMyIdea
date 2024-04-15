@@ -16,6 +16,8 @@ function build_report(report_string) {
         report = JSON.parse(report_string);
     }
 
+    report.summary.url=window.location;
+
     if (report.hasOwnProperty("novel")) {
         buildTab(buildNovelReport());
     }
@@ -72,34 +74,48 @@ function buildBreakdown(report) {
     let breakdown =   
     "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>" +
         "<div class='section'>"+
-          "<h3>Score Breakdown</h3>";
+          "<h3 style='margin-bottom:3px;'>Score Breakdown</h3>";
+    
+    breakdown += "<p style='margin-top:0px;'>See the <a href='https://vetmyidea.biz/scoring' target='_blank' rel='noopener noreferer'>Scoring Guide</a> for more information about how scores are calculated</p>";
 
+    breakdown+="<p style='margin-top:50px;margin-bottom:0px;'><b>Base Score:</b> 50</p><p style='margin-top:3px;'>Each report starts at 50 and can go up to 100 or as low as 0</p>";
 
-
-    breakdown+="<p><b>Base Score:</b> 50</p><p>Each report starts at 50 and can go up to 100 or as low as 0</p>";
+    breakdown+="<hr />";
 
     if (!report.summary.hadUniqueFeature && report.competitors.length>3) {
         
-        breakdown+="<p style='margin-top:25px;'><b>Insufficient/Ineffective Differentiation:</b> "+scoreStyle(-30)+"</p>";
-        breakdown+="<p>The specified differentiation strategies were evaluated to be insufficient or none were provided. Without effective differentiation, there is nothing to make your product/service stand out from the competition."+ 
+        breakdown+="<p style='margin-top:25px;margin-bottom:0px;'><b>Insufficient/Ineffective Differentiation:</b> "+scoreStyle(-30)+"</p>";
+        breakdown+="<p style='margin-top;3px;'>The specified differentiation strategies were evaluated to be insufficient or none were provided. Without effective differentiation, there is nothing to make your product/service stand out from the competition."+ 
         "<p>You can score higher by picking a new differentiator and re-running the report.</p>";
 
     }
 
     if (report.expectedGrowth.score!==0) {
-        breakdown+="<p style='margin-top:25px;'><b>Potential Growth:</b> "+scoreStyle(report.expectedGrowth.score)+"</p>";
+        breakdown+="<p style='margin-top:25px;margin-bottom:0px;'><b>Potential Growth:</b> "+scoreStyle(report.expectedGrowth.score)+"</p>";
+        if (report.expectedGrowth.score==-50) {
+            breakdown+="<p style='margin-top;3px;'>Due to very poor growth in this industry, we've assigned a 50 point penalty</p>"
+        }
+        if (report.expectedGrowth.score==-25) {
+            breakdown+="<p style='margin-top;3px;'>Due to poor growth in this industry, we've assigned a 25 point penalty</p>"
+        }
+        if (report.expectedGrowth.score==5) {
+            breakdown+="<p style='margin-top;3px;'>Due to good growth in this industry, we've awarded 5 points</p>"
+        }
+        if (report.expectedGrowth.score==20) {
+            breakdown+="<p style='margin-top;3px;'>Due to very good growth in this industry, we've awarded 20 points</p>"
+        }
     }
     if (report.uniqueFeature && report.uniqueFeature.score!==0) {
-        breakdown+="<p style='margin-top:25px;'><b>Unique Feature:</b> "+scoreStyle(report.uniqueFeature.score)+"</p>";
+        breakdown+="<p style='margin-top:25px;margin-bottom:0px;'><b>Unique Feature:</b> "+scoreStyle(report.uniqueFeature.score)+"</p>";
     }
     if (report.cost && report.cost.score!==0) {
-        breakdown+="<p style='margin-top:25px;'><b>Reduced Cost:</b> "+scoreStyle(report.cost.score)+"</p>";
+        breakdown+="<p style='margin-top:25px;margin-bottom:0px;'><b>Reduced Cost:</b> "+scoreStyle(report.cost.score)+"</p>";
     }
     if (report.marketing && report.marketing.score!==0) {
-        breakdown+="<p style='margin-top:25px;'><b>Marketing Strategy:</b> "+scoreStyle(report.marketing.score)+"</p>";
+        breakdown+="<p style='margin-top:25px;margin-bottom:0px;'><b>Marketing Strategy:</b> "+scoreStyle(report.marketing.score)+"</p>";
     }
     if (report.regulatoryRisk.score!==0) {
-        breakdown+="<p style='margin-top:25px;'><b>Regulatory Risk:</b> "+scoreStyle(report.regulatoryRisk.score)+"</p>";
+        breakdown+="<p style='margin-top:25px;margin-bottom:0px;'><b>Regulatory Risk:</b> "+scoreStyle(report.regulatoryRisk.score)+"</p>";
     }
    
     breakdown += "<hr />";
@@ -397,7 +413,7 @@ function generateSocials(report) {
         return ""; 
     }
     else {
-        return  '<!--<script type="IN/Share" data-url="'+report.summary.url+'"></script>//-->' +
+        return  '<!--<div style="display:inline-block:!important;"><script type="IN/Share" data-url="'+report.summary.url+'"></script></div>//-->' +
                 '<div id="fb-root"></div>'+
                 '<div class="fb-share-button"'+ 
                 'data-href="'+report.summary.url+'"'+
