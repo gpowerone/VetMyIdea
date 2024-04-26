@@ -4,7 +4,6 @@
         <v-row>
             <v-col cols="12">
                 <v-text-field v-model="product" bg-color="white" class="field" :class="{'fielderror': !isProductTypeValid()}" label="Describe the product or service (<100 chars)" outlined dense></v-text-field>
-                <div class="text-right inset mt-1">Note: franchise businesses and free products/services are not supported</div>
             </v-col>
         </v-row>
         <v-row>
@@ -14,7 +13,7 @@
         </v-row>
     </v-container>
 
-    <div class="mt-3">
+    <div class="mt-3 text-right">
         <v-btn @click="handleAdvance" class="next-btn" :disabled="optionsHandled()">
                 <v-icon :icon="mdiArrowRight"></v-icon>
         </v-btn>

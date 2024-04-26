@@ -36,7 +36,11 @@ export default defineEventHandler(async (event) => {
                     await Report.create({
                         ReportID: report_id,
                         UserID: session.UserID,
+                        BusinessType: data.BizType,
+                        IsFranchise: data.IsFranchise,
+                        IsPlatform: data.IsPlatform,
                         ProductType: data.ProductType,
+                        Money: data.Money,
                         Score: null,
                         Flagged: false,
                         TargetLocation: data.TargetLocation,

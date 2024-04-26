@@ -16,8 +16,6 @@ function build_report(report_string) {
         report = JSON.parse(report_string);
     }
 
-    report.summary.url=window.location;
-
     if (report.hasOwnProperty("novel")) {
         buildTab(buildNovelReport());
     }
@@ -93,34 +91,45 @@ function buildBreakdown(report) {
     if (report.expectedGrowth.score!==0) {
         breakdown+="<p style='margin-top:25px;margin-bottom:0px;'><b>Potential Growth:</b> "+scoreStyle(report.expectedGrowth.score)+"</p>";
         if (report.expectedGrowth.score==-50) {
-            breakdown+="<p style='margin-top;3px;'>Due to very poor growth in this industry, we've assigned a 50 point penalty</p>"
+            breakdown+="<p style='margin-top:3px;'>Due to very poor growth in this industry, we've assigned a 50 point penalty</p>"
         }
         if (report.expectedGrowth.score==-25) {
-            breakdown+="<p style='margin-top;3px;'>Due to poor growth in this industry, we've assigned a 25 point penalty</p>"
+            breakdown+="<p style='margin-top:3px;'>Due to poor growth in this industry, we've assigned a 25 point penalty</p>"
         }
         if (report.expectedGrowth.score==5) {
-            breakdown+="<p style='margin-top;3px;'>Due to good growth in this industry, we've awarded 5 points</p>"
+            breakdown+="<p style='margin-top:3px;'>Due to good growth in this industry, we've awarded 5 points</p>"
         }
         if (report.expectedGrowth.score==20) {
-            breakdown+="<p style='margin-top;3px;'>Due to very good growth in this industry, we've awarded 20 points</p>"
+            breakdown+="<p style='margin-top:3px;'>Due to very good growth in this industry, we've awarded 20 points</p>"
         }
     }
     if (report.uniqueFeature && report.uniqueFeature.score!==0) {
         breakdown+="<p style='margin-top:25px;margin-bottom:0px;'><b>Unique Feature:</b> "+scoreStyle(report.uniqueFeature.score)+"</p>";
+        breakdown+="<p style='margin-top:3px;'>A score of 30 in this category means the unique feature will potentially be very popular among customers. 10 means potentially somewhat popular. 0 means not popular. Each risk present reduces the score by 10 points.</p>";
     }
     if (report.cost && report.cost.score!==0) {
         breakdown+="<p style='margin-top:25px;margin-bottom:0px;'><b>Reduced Cost:</b> "+scoreStyle(report.cost.score)+"</p>";
+        breakdown+="<p style='margin-top:3px;'>A score of 30 in this category means the cost reduction strategy will potentially be very effective. 10 means potentially somewhat effective. 0 means not effective. Each risk present reduces the score by 10 points.</p>";
     }
     if (report.marketing && report.marketing.score!==0) {
         breakdown+="<p style='margin-top:25px;margin-bottom:0px;'><b>Marketing Strategy:</b> "+scoreStyle(report.marketing.score)+"</p>";
+        breakdown+="<p style='margin-top:3px;'>A score of 30 in this category means the marketing strategy will potentially be very effective. 10 means potentially somewhat effective. 0 means not effective. Each risk present reduces the score by 10 points.</p>";
     }
     if (report.regulatoryRisk.score!==0) {
         breakdown+="<p style='margin-top:25px;margin-bottom:0px;'><b>Regulatory Risk:</b> "+scoreStyle(report.regulatoryRisk.score)+"</p>";
+        breakdown+="<p style='margin-top:3px;'>A score of 0 means low risk. -5 means medium risk. -15 means high risk.</p>";
     }
    
     breakdown += "<hr />";
     breakdown+="<p><b>Total Score:</b> "+report.summary.score+"</p>";
-
+    breakdown+= "<p style='margin-top:40px;margin-bottom:0px;'>";
+    breakdown+= "<b>Favorability Score</b></p>"
+    breakdown+= "<p style='margin-top:3px;'>&gt;=85 - Highly Favorable<br />";
+    breakdown+= "65-84 - Favorable<br />";
+    breakdown+= "36-64 - Fair<br />";
+    breakdown+= "16-35 - Unfavorable<br />";
+    breakdown+= "&lt;=15 - Highly Unfavorable";
+    breakdown+= "</p>";
 
     breakdown += "</div></section>";
 
@@ -144,11 +153,10 @@ function buildCosts(report) {
             "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>" +
                 "<div class='section'>";
         
-        if (report.cost) {
-            contents+="<h3>Reduced Cost "+scoreStyle(report.cost.score)+"</h3>";
-            contents+="<p><b>Plan</b>: "+report.cost.evaluatedString+"</p>"
-            contents+="<p>"+report.cost.benefits+"</p>";
-        }
+        contents+="<h3>Reduced Cost "+scoreStyle(report.cost.score)+"</h3>";
+        contents+="<p><b>Plan</b>: "+report.cost.evaluatedString+"</p>"
+        contents+="<p>"+report.cost.benefits+"</p>";
+        contents+="<h3 style='margin-top:30px;'>Further Insight</h3><p>Competitive analysis could further clarify the effectivness of your cost-reduction strategy. Additional research could help shed light on costs you weren't thinking of.</p>";
 
         contents += "</div></section>";
 
@@ -176,11 +184,11 @@ function buildMarketing(report) {
             "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>" +
                 "<div class='section'>";
         
-        if (report.marketing) {
-            contents+="<h3>Marketing Strategy "+scoreStyle(report.marketing.score)+"</h3>";
-            contents+="<p><b>Plan</b>: "+report.marketing.evaluatedString+"</p>"
-            contents+="<p>"+report.marketing.benefits+"</p>";
-        }
+        contents+="<h3>Marketing Strategy "+scoreStyle(report.marketing.score)+"</h3>";
+        contents+="<p><b>Plan</b>: "+report.marketing.evaluatedString+"</p>"
+        contents+="<p>"+report.marketing.benefits+"</p>";
+        contents+="<h3 style='margin-top:30px;'>Further Insight</h3><p>Target audience research and channel analysis could help confirm the effectiveness of your marketing strategy.</p>";
+
 
         contents += "</div></section>";
 
@@ -211,6 +219,7 @@ function buildNonViableReport(strategy,explanation) {
         "<p>&quot;"+explanation+"&quot;</p>"+
         "<p><b>Warning</b>: <em>You should independently verify the correctness of these arguments</em></p>"+
         "<p>Potentially non-viable ideas are not scored</p>"+
+        "<p style='margin-top:3rem;'>Is this an error? Please <a href='https://vetmyidea.biz/contact' target='_blank' ref='noopener noreferer'>contact us</a>. Be sure to include the link to this report.</p>"+
       "</div>"+
       "</section>"; 
 
@@ -258,6 +267,9 @@ function buildRisks(report) {
     "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'>" +
         "<div class='section'><h3>Regulatory Risk: "+sanitize(report.regulatoryRisk.risk.toUpperCase())+" "+scoreStyle(report.regulatoryRisk.score)+"</h3>"+
         "<p>"+sanitize(report.regulatoryRisk.explanation)+"</p>";
+    
+    contents+="<h3 style='margin-top:30px;'>Further Insight</h3><p>Contact a legal professional for advice about legal or regulatory issues.</p>";
+
 
     contents += "</div></section>";
 
@@ -303,12 +315,19 @@ function buildSummary(report) {
 
     contents += "<h3 class='productTitle summaryHeader' style='margin-top:1.5rem;'>Product/Service &amp; Targeted Location</h3><p><em>"+this.sanitize(report.summary.title)+"</em></p>";
     
-    contents += "<h3 style='margin-top:4.5rem;' class='summaryHeader'>How To Use This Report</h3>"+
+    contents += "<h3 style='margin-top:3.5rem;' class='summaryHeader'>How To Use This Report</h3>"+
         "<p><b>Understanding the Score</b><br />Click on the <a href='#' onclick='selectTab(1)'>score breakdown tab</a> to get further details about how the score was calculated and what it means</p>"+
         "<p><b>Detailed Analysis</b><br />Click each tab at the top of the report (desktop) or scroll down (mobile) to get detailed input on different aspects of your idea</p>"+
         "<p><b>Re-running the Report</b><br />If you'd like to change your answers, you can re-run this report by clicking the Edit (pencil) button on the My Reports dashboard. [Note: you cannot change the product/service or the location - you'll need to run a new report]</p>"+
-        "<p><b>Additional Research</b><br />You may wish to do further research on your idea. Our partners can assist you with this.</p>"+
-        "<p><b>Moving Forward</b><br />Should you decide to move forward, our partners can help you get your business off the ground.</p>"
+        "<p><b>Additional Research</b><br />You may want to consider additional research to:<br /><br />"+
+        "1. Validate the market size, growth, and saturation<br />"+
+        "2. Identify the target audience<br />"+
+        "3. Survey potential customers<br />"+
+        "4. Investigate potential legal and compliance issues"+
+        "</p>"+
+        "<p><b>Moving Forward</b><br />Our partners (to the right) can help you get your business off the ground. Please check them out!</p>"
+
+    contents += "<p style='margin-top:3rem;'>See an error on this report? Please <a href='https://vetmyidea.biz/contact' target='_blank' ref='noopener noreferer'>contact us</a>. Be sure to include the link to this report.</p>"
 
     contents += "</div>"
 
@@ -341,7 +360,7 @@ function buildGrowthCompetitors(growth, competitors) {
     let growth_result={
         name: "Growth",
         contents: "<section id='tab"+tab_id+"' style='display:none;float:left;width:78vw;'><div class='section'><h3>Growth Potential: "+sanitize(growth.growth.toUpperCase()) + " "+scoreStyle(growth.score)+"</h3>"+
-            "<p style='margin-bottom:30px;'>"+sanitize(growth.explanation)+"</p>"+competition+"</div></section>",
+            "<p style='margin-bottom:30px;'>"+sanitize(growth.explanation)+"</p>"+competition+"<h3 style='margin-top:30px;'>Further Insight</h3><p>Further research on market size, growth, and saturation could help confirm potential growth.</p></div></section>",
         id: tab_id,
         width:"110px",
         svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" style="vertical-align:middle;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" /></svg>'
@@ -362,6 +381,8 @@ function buildUniqueFeature(report) {
         contents+="<h3>Unique Feature "+scoreStyle(report.uniqueFeature.score)+"</h3>";
         contents+="<p><b>Plan</b>: "+report.uniqueFeature.evaluatedString+"</p>"
         contents+="<p>"+report.uniqueFeature.benefits+"</p>";
+        contents+="<h3 style='margin-top:30px;'>Further Insight</h3>";
+        contents+="<p>Identifying the target audience and surveying your potential customers could help confirm the effectiveness of this feature, as well as provide more specific insights about what would serve your customers the best.</p>";
         
 
         contents += "</div></section>";
@@ -387,17 +408,22 @@ function buildUniqueFeature(report) {
 function doAffiliateCode() {
     this.report_tab_contents+= "<section id='tab"+tab_id+"' style='float:right;text-center;width:19vw;'>"+
                                     "<div style='margin-top:10px;padding:15px;'>"+
-                                        "<div style='text-align:center;'><br /><br />Need a website for your business?<br />" +
+                                        "<div style='text-align:center;'>Ready to start your business?<br /><br />"+
+                                        "<a href=\"https://www.jdoqocy.com/click-101139235-15539830\" target=\"_top\">"+
+                                        "<img src=\"/core/lzimage.png\" width=\"100\" height=\"100\"  alt=\"\" border=\"0\"/></a><br /><br />"+
+                                        "<a href=\"https://www.tkqlhce.com/click-101139235-15053485\" target=\"_top\">LLC - Start your business with confidence</a>"+
+                                        "<img src=\"https://www.awltovhc.com/image-101139235-15053485\" width=\"1\" height=\"1\" border=\"0\"/>"+
+                                        "<br /><hr /><br />Need a website for your business?<br />" +
                                         "<br /><span style='font-size:1.2em;'>Use <b>Gator Website Builder!</b></span><br /><br />" +
                                         "<br /></div><div style='padding-left:10%;padding-right:10%'>"+
-                                        "* Free domain!<br /><br />"+
-                                        "* Free SSL certificate for security!<br /><br />"+
-                                        "* Cloud hosting included<br /><br />"+
-                                        "* Blogging option included with all plans<br /><br />"+
-                                        "* Frustration-free drag-and-drop editor<br /><br />"+
+                                        "* Free domain!<br />"+
+                                        "* Free SSL certificate for security!<br />"+
+                                        "* Cloud hosting included<br />"+
+                                        "* Blogging option included with all plans<br />"+
+                                        "* Frustration-free drag-and-drop editor<br />"+
                                         "* No ads!<br /><br />"+
                                         "</div><div style='text-align:center;'><a href='https://partners.hostgator.com/zNVEE0'>Get Started Right Now!</a>"+
-                                        "<br /><br /><br /><br /><br /><br />"+
+                                        "<br /><br /><hr /><br />"+
                                         "Reports can cost up to 10 cents each to generate.<br /><br /><b>Donations</b> are appreciated!<br /><br />" +
                                         "<form action=\"https://www.paypal.com/donate\" method=\"post\" target=\"_top\">"+
                                         "<input type=\"hidden\" name=\"hosted_button_id\" value=\"X9UB4CNBABHYQ\" />"+
@@ -413,10 +439,10 @@ function generateSocials(report) {
         return ""; 
     }
     else {
-        return  '<!--<div style="display:inline-block:!important;"><script type="IN/Share" data-url="'+report.summary.url+'"></script></div>//-->' +
+        return  '<!--<div style="display:inline-block:!important;"><script type="IN/Share" data-url="'+window.location.href+'"></script></div>//-->' +
                 '<div id="fb-root"></div>'+
                 '<div class="fb-share-button"'+ 
-                'data-href="'+report.summary.url+'"'+
+                'data-href="'+window.location.href+'"'+
                 'data-layout="button_count">'+
                 '</div>'+
                 '<a class="twitter-share-button" href="https://twitter.com/intent/tweet">Tweet</a>'

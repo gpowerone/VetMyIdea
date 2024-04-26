@@ -1,5 +1,7 @@
 <template>
     <v-container class="pa-0 mt-7 wizard" :class="{'wizard-mobile': !($vuetify.display.lg||$vuetify.display.xl||$vuetify.display.xxl)}">
+      <v-row>
+        <v-col cols="12">
         <h2>Scoring Guide</h2>
         <p style='margin-bottom:35px;'><em>Effective: 4/16/24</em></p>
 
@@ -111,6 +113,8 @@
         </p>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
+        </v-col>
+      </v-row>
     </v-container>
 </template>
 

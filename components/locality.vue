@@ -1,37 +1,26 @@
  <template>
 
-    <h2 class="mt-7">Location</h2>
-    <v-select
-        v-model="locality"
-        :items="localityOptions"
-        label="Where will you target your business?"
-        outlined
-        class="mt-7 field field-select"
-    ></v-select>
+    <h3 class="mt-7 mb-3">Where will your business serve customers?</h3>
+
+    <v-radio-group v-model="locality">
+        <v-radio value="national" label="All of the United States"></v-radio>
+        <v-radio value="regional" @click="fillStateOptions" label="Specific State"></v-radio>
+        <v-radio value="local" label="Specific City or Town"></v-radio>
+    </v-radio-group>
 
     <v-select
-        v-if="locality!==null&&locality!=='International'"
-        v-model="country"
-        :items="countryOptions"
-        label="Which country?"
-        @update:modelValue="fillStateOptions"
-        outlined
-        class="mt-3 field field-select"
-    ></v-select>
-
-    <v-select
-        v-if="locality!==null&&locality!=='International'&&locality!=='National'"
+        v-if="locality!==null&&locality!=='national'"
         v-model="state"
         :items="stateOptions"
-        label="Which region/state/province?"
+        label="Which state?"
          @update:modelValue="fillCityOptions"
         outlined
-        :disabled="country===null||stateOptions.length===0"
+        :disabled="stateOptions.length===0"
         class="mt-3 field field-select"
     ></v-select>
 
-        <v-select
-        v-if="locality!==null&&locality!=='International'&&locality!=='National'&&locality!=='Regional'"
+    <v-select
+        v-if="locality!==null&&locality==='local'"
         v-model="city"
         :items="cityOptions"
         label="In which city/town (or the closest one in the list)?"
@@ -61,22 +50,16 @@ import csc  from 'countrycitystatejson';
 import { ref, watch, onMounted } from 'vue'
 import { mdiArrowRight, mdiArrowLeft } from '@mdi/js'
 
-let locality=ref(null);
-let country=ref(null);
 let city=ref(null);
 let state=ref(null);
-let countryOptions=ref([]);
+let locality=ref(null);
 let stateOptions=ref([]);
 let cityOptions=ref([]);
-let localityOptions = ref(['International','National','Regional','Local']);
 
 let emit = defineEmits(['advancePanel','backPanel']);
 
 watch(locality, async (newValue) => {
     localStorage.setItem("locality", newValue)
-});
-watch(country, async (newValue) => {
-    localStorage.setItem("country", newValue)
 });
 watch(city, async (newValue) => {
     localStorage.setItem("city", newValue)
@@ -87,9 +70,8 @@ watch(state, async (newValue) => {
 
 function fillCityOptions() {
     city.value=null;
-    if (country.value!==null && state.value!==null) {
-        let ccode = csc.getCountries().filter(p=>p.name===country.value)[0].shortName;
-        cityOptions.value = csc.getCities(ccode,state.value);
+    if (state.value!==null) {
+        cityOptions.value = csc.getCities("US",state.value);
     }
 }
 
@@ -97,10 +79,7 @@ function fillStateOptions() {
     state.value=null;
     city.value=null;
     cityOptions.value=[];
-    if (country.value!==null) {
-        let code = csc.getCountries().filter(p=>p.name===country.value)[0].shortName;
-        stateOptions.value = csc.getStatesByShort(code).filter(p=>p.length>2);
-    }
+    stateOptions.value = csc.getStatesByShort("US").filter(p=>p.length>2);
 }
 
 function handleAdvance() {
@@ -113,13 +92,13 @@ function handleBack() {
 
 function optionsHandled() {
     if (locality.value!==null) {
-        if (locality.value==='National' && country.value===null) {
+        if (locality.value==='national') {
+            return false;
+        }
+        if (locality.value==='regional' && state.value===null) {
             return true;
         }
-        if (locality.value==='Regional' && state.value===null) {
-            return true;
-        }
-        if (locality.value==='Local' && city.value===null) {
+        if (locality.value==='local' && city.value===null) {
             return true;
         }
         return false;
@@ -128,18 +107,16 @@ function optionsHandled() {
 }
 
 onMounted(()=>{
-    countryOptions.value=csc.getCountries().map(p=>p.name).sort();
 
     let stored_locality = localStorage.getItem("locality");
     if (stored_locality!==null) {
          locality.value=stored_locality;
     }
-    let stored_country = localStorage.getItem("country");
-    if (stored_country!==null) {
-         country.value=stored_country;
-         fillStateOptions();
-    }
  
+    if (locality.value!==null && locality.value!=='national') {
+        fillStateOptions();
+    }
+
     let stored_state = localStorage.getItem("state");
     if (stored_state!==null) {
          state.value=stored_state;

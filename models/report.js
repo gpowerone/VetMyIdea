@@ -24,6 +24,10 @@ Report.init({
         allowNull: false,
         type: DataTypes.UUID,
     },
+    BusinessType: {
+        allowNull: true,
+        type: DataTypes.STRING(24),
+    },
     ProductType: {
         allowNull: false,
         type: DataTypes.STRING(255),
@@ -33,6 +37,10 @@ Report.init({
                 msg: "Product type must be between 1 and 255 characters"
             }
         }
+    },
+    Money: {
+        allowNull: true,
+        type: DataTypes.FLOAT,
     },
     Score: {
         allowNull: true,
@@ -45,6 +53,14 @@ Report.init({
     Flagged: {
         allowNull: false,
         default: false,
+        type: DataTypes.BOOLEAN
+    },
+    IsFranchise: {
+        allowNull: true,
+        type: DataTypes.BOOLEAN
+    },
+    IsPlatform: {
+        allowNull: true,
         type: DataTypes.BOOLEAN
     },
     IsDebug: {

@@ -1,14 +1,39 @@
 <template>
     <div>
-        <h2 class="mt-7">Report Summary</h2>
+        <h2 class="mt-7">Summary</h2>
         <hr class="mt-3" />
         <v-container class="pa-0 mt-5" fluid>
+
+
+
             <v-row class="pa-0">
                 <v-col cols="3" class="pb-0">
-                    <b>Product or Service:</b>
+                    <b>Business:</b>
                 </v-col>
                 <v-col class="pb-0">
-                    {{product}}
+                    {{businesstype}}
+                </v-col>
+            </v-row>
+
+            <v-row class="pa-0">
+                <v-col cols="3" class="pb-0">
+                    <b>
+                        <span v-if="(businesstype!=='contractor'&&franchise==='false')||(businesstype==='contractor'&&platform==='false')">Product or Service</span>
+                        <span v-if="(businesstype!=='contractor'&&franchise==='true')">
+                            Franchising
+                        </span>
+                         <span v-if="(businesstype==='contractor'&&platform==='true')">
+                            Using Platform
+                        </span>:</b>
+                </v-col>
+                <v-col class="pb-0">
+                    <span v-if="(businesstype!=='contractor'&&franchise==='false')||(businesstype==='contractor'&&platform==='false')">{{product}}</span>
+                    <span v-if="(businesstype!=='contractor'&&franchise==='true')">
+                        {{franchisee}}
+                    </span>
+                        <span v-if="(businesstype==='contractor'&&platform==='true')">
+                        {{platformee}}
+                    </span> 
                 </v-col>
             </v-row>
             <v-row class="pa-0">
@@ -19,22 +44,29 @@
                     {{targetedLocation}}
                 </v-col>
             </v-row>
+
+            <v-row class="pa-0">
+                <v-col cols="3" class="pb-0 pt-2">
+                    <b>Money to Invest:</b>
+                </v-col>
+                <v-col class="pb-0 pt-2">
+                    ${{money}}
+                </v-col>
+            </v-row>
+
             <v-row class="pa-0" v-if="(costsEntry!==null&&costsEntry.length>0)||(marketingEntry!==null&&marketingEntry.length>0)||(uniqueFeaturesEntry!==null&&uniqueFeaturesEntry.length>0)">
                 <v-col cols="12" class="pb-0 pt-10">
-                    <div>
-                        <b>Differentiation:</b>
-                    </div>
-                        
+              
+                    <div class="mt-5" v-if="marketingEntry!==null">
+                        <em>Marketing strategy:</em><br /> {{marketingEntry}} 
+                    </div>    
+
                     <div class="mt-5" v-if="costsEntry!==null">
                         <em>Cost strategy:</em><br /> {{costsEntry}} 
                     </div>   
 
-                    <div class="mt-5" v-if="marketingEntry!==null">
-                        <em>Marketing strategy:</em><br /> {{marketingEntry}} 
-                    </div>     
-
                      <div class="mt-5" v-if="uniqueFeaturesEntry!==null && uniqueFeaturesEntry.length>0">
-                        <em>Feature with the greatest customer draw:</em><br /> {{uniqueFeaturesEntry}}
+                        <em>How will your business stand out:</em><br /> {{uniqueFeaturesEntry}}
                      </div>
                 </v-col>
             </v-row>
@@ -87,6 +119,12 @@ export default {
   },
   data() {
     return {
+        businesstype: null,
+        money: null,
+        franchise: 'false',
+        platform: 'false',
+        franchisee: null,
+        platformee: null,
         costsEntry: null,
         marketingEntry: null,
         uniqueFeaturesEntry: null,
@@ -96,7 +134,7 @@ export default {
     }
   },
   mounted() {
-  
+
     let stored_costs_e  = localStorage.getItem("costsEntry");
     if (stored_costs_e!==null) {
         this.costsEntry=stored_costs_e;
@@ -114,8 +152,8 @@ export default {
         
     let stored_locality = localStorage.getItem("locality");
     if (stored_locality!==null) {
-        if (stored_locality==="International") {
-            this.targetedLocation="All Locations";
+        if (stored_locality==="national") {
+            this.targetedLocation="United States";
         }    
         else {
             
@@ -128,16 +166,40 @@ export default {
             if (stored_state!==null) {
                 this.targetedLocation+=stored_state+", "
             }
-            let stored_country = localStorage.getItem("country");
-            if (stored_country!==null) {
-                this.targetedLocation+=stored_country;
-            }
+            this.targetedLocation+="United States";
         }
     }
 
     let stored_product = localStorage.getItem("product");
     if (stored_product!==null) {
         this.product=stored_product;
+    }
+
+    let stored_businesstype = localStorage.getItem("businesstype");
+    if (stored_businesstype!==null) {
+        this.businesstype=stored_businesstype;
+    }
+
+    let stored_platform = localStorage.getItem("platform");
+    if (stored_platform!==null) {
+        this.platform=stored_platform;
+    }
+    let stored_platformee = localStorage.getItem("platformee");
+    if (stored_platformee!==null) {
+        this.platformee=stored_platformee;
+    }
+    let stored_franchise = localStorage.getItem("franchise");
+    if (stored_franchise!==null) {
+        this.franchise=stored_franchise;
+    }
+    let stored_franchisee = localStorage.getItem("franchisee");
+    if (stored_franchisee!==null) {
+        this.franchisee=stored_franchisee;
+    }
+
+    let stored_money = localStorage.getItem("money");
+    if (stored_money!==null) {
+        this.money=stored_money;
     }
     
     this.render()
@@ -157,6 +219,10 @@ export default {
                         costsEntry: this.costsEntry,
                         marketingEntry: this.marketingEntry,
                         uniqueFeaturesEntry: this.uniqueFeaturesEntry,
+                        money: this.money,
+                        biztype: this.businesstype,
+                        platformee: this.platformee,
+                        franchisee: this.franchisee,
                         targetedLocation: this.targetedLocation,
                         product: this.product,
                         token: token

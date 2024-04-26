@@ -46,6 +46,14 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
   }
 
+  # Define custom error response
+  custom_error_response {
+    error_code         = 404
+    response_page_path = "/404.html"
+    response_code      = 404
+    error_caching_min_ttl = 300
+  }
+
   viewer_certificate {
     acm_certificate_arn = data.aws_acm_certificate.reports_vet_my_idea_certificate.arn
     ssl_support_method  = "sni-only"

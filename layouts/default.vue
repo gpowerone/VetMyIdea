@@ -27,7 +27,7 @@
 
         <v-main class="relative">     
 
-            <v-alert class="top_pos" role="alert" color="error" icon="$error" :text="errorText" title="Error" v-model="errorText" closable></v-alert>
+            <v-alert class="top_pos" role="alert" color="error" :icon="mdiAlertCircle" :text="errorText" title="Error" v-model="errorText" closable></v-alert>
             <v-alert class="top_pos" role="alert" color="success" icon="$success" :text="successText" title="Success"  v-model="successText" closable></v-alert>
 
             <v-navigation-drawer role="menu" v-model="drawer" temporary clipped location="right" class="navdrawer" :class="{'navdrawer-xs': $vuetify.display.xs}">
@@ -62,7 +62,7 @@
 </template>    
 
 <script setup>
-import { mdiHome, mdiLogout, mdiFileDocumentMultiple, mdiFileChartOutline, mdiChartLineVariant, mdiYoutube, mdiTwitter, mdiLinkedin } from '@mdi/js'
+import { mdiHome, mdiLogout, mdiFileDocumentMultiple, mdiFileChartOutline, mdiChartLineVariant, mdiYoutube, mdiTwitter, mdiLinkedin, mdiAlertCircle } from '@mdi/js'
 </script>
 
 <script>

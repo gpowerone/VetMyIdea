@@ -183,6 +183,11 @@ export default defineComponent({
       localStorage.setItem('lgstate',state);
 
       this.fetchEntry(this.$route.query.ReportID);
+    },
+    beforeUnmount() {
+        var state = localStorage.getItem('lgstate');
+        localStorage.clear();
+        localStorage.setItem('lgstate',state);
     }
 })
 </script>

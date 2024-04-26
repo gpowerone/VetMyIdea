@@ -46,11 +46,11 @@ export default defineEventHandler(async (event) => {
                 });
             
                 if (report!==null) {
-
-                    requestData.product = report.ProductType;
-                    requestData.targetedLocation = report.TargetLocation;
     
-                    let data = tools.verifyReportInput(requestData);
+                    let data = tools.verifyReportEdit({
+                        IsValid: true,
+                        FillFields: [],
+                    },requestData);
                     if (data.IsValid) {
 
                         await ReportField.destroy({

@@ -8,12 +8,22 @@ import sequelize from '../models/index.js'
 
 export default {
 
-    productType: "",
-    targetLocation: "",
-    score: 50,
-    reportText: "",
-    competitorsNum: 0,
-    hadUniqueFeature: false,
+    reportdata: {
+        productType: "",
+        targetLocation: "",
+        bizType: "",
+        isPlatform: false,
+        isFranchise: false,
+        competitors:[],
+        growth:{stoplight:3,text:null},
+        regulatoryrisk:{stoplight:3,text:null},
+        evaluee:{stoplight:3,clarity:null,legality:null},
+        marketing:{stoplight:3,text:null},
+        cost:{stoplight:3,text:null},
+        feature:{stoplight:3,text:null},
+        finances:{stoplight:3,text:null},
+        created: Date.now()
+    },
 
     deductUser: async function(userID) {
 
@@ -46,7 +56,7 @@ export default {
     },
 
     evaluateCompetitors: async function() {
-        let results = await Gpt.chatGPT("You are an expert on '"+this.productType+"' in "+this.targetLocation + " including national or regional businesses that sell or offer '"+this.productType+"'. "+
+        let results = await Gpt.chatGPT("You are an expert on '"+this.productType+"' in "+this.targetLocation + ". "+
         "You only return an array as an answer. "+
         "You do not return an array with more than 10 entries. If there are more than 10 entries, you pick the 10 largest ones to the best of your knowledge. ",
         ["What are all the businesses you know of that sell or offer '"+this.productType+"' in "+this.targetLocation+", including national or regional chains that sell or offer '"+ this.productType+"'. "+
@@ -55,8 +65,7 @@ export default {
         try {
             let parsedResults = JSON.parse(results[0].trim());
             if (parsedResults.length>0) { 
-                this.reportText+='"competitors": '+results[0].trim()+',';
-                this.competitorsNum=results[0].split(',').length;
+                this.reportdata.competitors = parsedResults;
                 return true;
             }
         }
@@ -69,7 +78,7 @@ export default {
 
     evaluateGrowth: async function() {
         try {
-            let growth = await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + " including national or regional businesses that sell or offer "+this.productType+". "+
+            let growth = await Gpt.chatGPT("You are an expert on "+this.productType+" in "+this.targetLocation + ". "+
             "You write as if you are providing direct consultation on a business idea. " +
             "You do not use metaphors or similes. "+
             "You don't refer to any part of the prompt in written explanations. "+
@@ -82,22 +91,12 @@ export default {
         
             let parsed=JSON.parse(growth[0].trim());
 
-            parsed.score=0;
-            if (parsed.growth.trim().toLowerCase()=='very good') {
-                parsed.score=20;
+            this.reportdata.growth.text=parsed.explanation;
+    
+            if (parsed.growth.trim().toLowerCase()=='poor' || parsed.growth.trim().toLowerCase()=='very poor') {
+                this.reportdata.growth.stoplight=1;
             }
-            else if (parsed.growth.trim().toLowerCase()=='good') {
-                parsed.score=5;
-            }
-            else if (parsed.growth.trim().toLowerCase()=='poor') {
-                parsed.score=-25;
-            }
-            else if (parsed.growth.trim().toLowerCase()=='very poor') {
-                parsed.score=-50;
-            }      
-
-            this.score+=parsed.score;
-            this.reportText+='"expectedGrowth": '+JSON.stringify(parsed)+',';
+       
         }
         catch(e) {
             console.log(e);
@@ -118,16 +117,15 @@ export default {
 
             let parsed=JSON.parse(risk[0]);
 
-            parsed.score=0;
+            this.reportdata.regulatoryrisk.text=parsed.explanation;
+        
             if (parsed.risk.trim().toLowerCase()=='medium') {
-                parsed.score=-5;
+                this.reportdata.regulatoryrisk.stoplight=2;
             }
             if (parsed.risk.trim().toLowerCase()=='high') {
-                parsed.score=-15;
+                this.reportdata.regulatoryrisk.stoplight=1;
             }
 
-            this.score+=parsed.score;
-            this.reportText+='"regulatoryRisk": '+JSON.stringify(parsed)+',';
         }
         catch(e) {
             console.log(e);
@@ -140,20 +138,16 @@ export default {
     
         try {
 
-            this.reportText+='"'+demarcator+'": {'
-
+      
             let possibility = await this.evaluatePossibility(possibilityStatement);
             if (possibility.answer=='no') {
 
                 let ridiciulousness = await this.evaluateRidiculousness(field.FieldValue);
                 if (ridiciulousness.score<8) {
 
-                
                     let legality = await this.evaluateLegality(targetStatement+" "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'");
                     if (legality.answer=='no') {    
                 
-                        let score=0; 
-
                         let uniqueness=null;
                         if (evalUniqueness) {
                             uniqueness = await this.evaluateBenefitUniqueness(field.FieldValue);
@@ -167,41 +161,21 @@ export default {
         
                             let benefits = await this.evaluateBenefit("'"+field.FieldValue+"'", benefitStatement);
                             explanation+=benefits.explanation;
-
-                            if (benefits.answer>=9) {
-                                score+=30;
-                            }
-                            else if (benefits.answer==7) {
-                                score+=10;                     
-                            }
                 
-                            let evaluateRisk=true;
-                            if (score>0) {
-                                let specificity = await this.evaluateSpecificity("'"+field.FieldValue+"'",efficacyStatement);
-                                if (specificity.score<=3) {
-                                    evaluateRisk=false;
-                                    explanation+="<br /><br /><em>Specificity</em><br />The statement '"+field.FieldValue+"' is not specific enough to earn points for this category. To fairly evaluate your strategy, you will need to be more specific. Describe exactly <em>how</em> you plan to do what you are going to do.";
-                                    score=0;
-                                }
-                                else {    
-                                    this.hadUniqueFeature=true;                            
-                                }
+                       
+                            let risk = await this.evaluateRisk(targetStatement+" "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'")
+
+                            let risk_total = -1*risk.answer*10;
+                            if (risk_total<-30) {
+                                risk_total=-30;
                             }
 
-                            if (evaluateRisk) {
-                                let risk = await this.evaluateRisk(targetStatement+" "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'")
+                            score+=risk_total;
 
-                                let risk_total = -1*risk.answer*10;
-                                if (risk_total<-30) {
-                                    risk_total=-30;
-                                }
-
-                                score+=risk_total;
-
-                                if (risk_total<0 && risk.explanation!==null) {
-                                    explanation+="<br /><br /><em>Potential Risks</em><br />"+risk.explanation;   
-                                }
+                            if (risk_total<0 && risk.explanation!==null) {
+                                explanation+="<br /><br /><em>Potential Risks</em><br />"+risk.explanation;   
                             }
+                            
             
                         }
                         else {
@@ -256,6 +230,7 @@ export default {
                 "You do not refer to yourself. ",
                 ["If I told you I was selling a '"+evaluateString+"' as a product or service, how clear is it what I am selling? "+
                 "Give your answer as a score from 1 to 10, with 1 being least clear and 10 being most clear. "+
+                "An example score of 1 would be 'a thing', an example score of two would be 'a wizard', an example score of 5 would be 'a wizard figurine' and an example score of 10 would be 'a steel 3/4 screw'." +
                 "Return your answer as an object: {\"score\":\"1 to 10\",\"explanation\":\"explanation if score<=2 else null\"}"],"gpt-4-turbo-preview");
 
             return JSON.parse(result[0].trim());
@@ -276,7 +251,7 @@ export default {
                 "You do not use metaphors or similes. "+
                 "You don't refer to any part of the prompt in written explanations. "+
                 "You do not refer to yourself. ",
-                ["To the best of your knowledge as of today, is it illegal to "+evaluateString+"? "+
+                ["Is it illegal to '"+evaluateString+"'? "+
                 "Give your answer as an object of {\"answer\":\"yes|no\", \"explanation\":\"if answer==yes then explanation else null\"}"],"gpt-4-turbo-preview");
 
             return JSON.parse(result[0].trim());
@@ -418,23 +393,6 @@ export default {
         }
    },
 
-   evaluateSpecificity: async function(evaluateString,action) {
-        try {
-           let result = await Gpt.chatGPT(
-               "You are an omniscient god. " +
-               "You do not give scores of 4. If you would give a score of 4, you analyze further and give a 3 or 5 instead ",
-               ["How does '"+evaluateString+"' about '"+action+"' of '"+this.productType+"' score on a scale of 'explicitness about what it is or what is being done' from 1 to 10, "+
-               "where 1 is equivalent to 'I'll do it' and 10 is equivalent to 'I'll rework every homework problem until I get an A'. "+
-               "Give your answer as an object: {\"score\":\"1 to 10\"}"],"gpt-4-turbo-preview");
-
-           return JSON.parse(result[0].trim());
-        }
-        catch(e) {
-           console.log(e);
-           return null;
-        }
-   },
-
     evaluateFields: async function(field) {
 
         if (field.FieldType == "Unique Feature") {
@@ -478,6 +436,7 @@ export default {
         await t1.commit();
     },
     processReport: async function(reportId) {
+
         try {
             const t1 = await sequelize.transaction();
             let report = await Reports.findOne({
@@ -505,58 +464,62 @@ export default {
             // Set debug mode to get GPT output
             Gpt.setDebug(report.IsDebug);
 
-            this.productType=report.ProductType;
-            this.targetLocation=report.TargetLocation;
+            this.reportdata.productType=report.ProductType;
+            this.reportdata.targetLocation=report.TargetLocation;
+            this.reportdata.isPlatform=report.IsPlatform;
+            this.reportdata.isFranchise=report.IsFranchise;
+
+            if (report.BusinessType==="online") {
+                this.reportdata.bizType="Online Business";
+            }
+            else if (report.Businesstype==="contractor") {
+                this.reportdata.bizType="Independent Contractor";
+            }
+            else {
+                this.reportdata.bizType="Brick and Mortar Store";
+            }
           
-            this.reportText='{';
+            if (this.reportdata.isPlatform===false&&this.reportdata.isFranchise===false) {
 
-            if (await this.evaluateCompetitors()) {
+                await this.evaluateCompetitors();
+                if (Gpt.flagged) {
+                    return await this.flagReport(report, t1);
+                }    
 
-                let viability=false;
+                if (this.reportdata.competitors.length>0) {
 
-                let clarity = await this.evaluateClarity(this.productType);
-                if (clarity.score>2) {
+                    let clarity = await this.evaluateClarity(this.productType);
+                    if (Gpt.flagged) {
+                        return await this.flagReport(report, t1);
+                    }
+                    if (clarity.score<=2) {
+                        this.reportdata.evaluee.clarity=clarity.explanation;
+                        this.reportdata.evaluee.stoplight=this.stoplight(2,this.reportdata.evaluee.stoplight);    
+                    }
 
                     let productLegality = await this.evaluateLegality("sell "+this.productType+" in "+this.targetLocation);
+                    if (Gpt.flagged) {
+                        return await this.flagReport(report, t1);
+                    }
                     if (productLegality.answer=='no') {
+                        this.reportdata.evaluee.legality=legality.explanation;
+                        this.reportdata.evaluee.stoplight=this.stoplight(1,this.reportdata.evaluee.stoplight);                       
+                    }
 
-                        viability=true;
-
-                        let fields = await ReportFields.findAll({
-                            where: {
+                    let fields = await ReportFields.findAll({
+                        where: {
                             ReportID: reportId
-                            }
-                        }) 
-                        
-                        for (const field of fields) {
-                            if (viability) {
-                                let new_viability = await this.evaluateFields(field);
-                                if (Gpt.flagged) {
-                                    return await this.flagReport(report, t1);
-                                }
-                                if (!new_viability) {
-                                    viability=false;
-                                    this.reportText+='"viable":"no", ';
-                                }
-                            }
                         }
+                    }) 
+                    
+                    for (const field of fields) {
+                    
+                        await this.evaluateFields(field);
+                        if (Gpt.flagged) {
+                            return await this.flagReport(report, t1);
+                        } 
                     }
-                    else {
-                        this.reportText+='"viable":"no", "explanation":"'+productLegality.explanation+"', ";
-                    }
-                }
-                else {
-                    this.reportText+='"viable":"no", "explanation":"'+clarity.explanation+"', ";
-                }
-
-                if (viability) {
-                    this.reportText+='"viable":"yes", ';
-                    report.IsViable=true;
-
-                    if (this.competitorsNum>3 && !this.hadUniqueFeature) {
-                        this.score-=30;
-                    }
-
+                    
                     await this.evaluateGrowth();
                     if (Gpt.flagged) {
                         return await this.flagReport(report, t1);
@@ -566,59 +529,16 @@ export default {
                     if (Gpt.flagged) {
                         return await this.flagReport(report, t1);
                     }
-
-                    if (this.score<0) this.score=0;
-                    if (this.score>100) this.score=100;
                 }
-                else {
-                    this.score=0;
-                    report.IsViable=false;
-                }
-                
-                report.Score=this.score;
-
-                // summary
-                this.reportText+='"summary": {'
-                this.reportText+='"score":'+report.Score+',';
-                this.reportText+='"product":"'+report.ProductType+'",';
-                this.reportText+='"hadUniqueFeature":'+this.hadUniqueFeature+',';
-
-                if (report.Score>=85) {
-                    this.reportText+='"scoremeaning":"Highly Favorable",'
-                }
-                else if (report.Score>=65) {
-                    this.reportText+='"scoremeaning":"Favorable",'
-                }
-                else if (report.Score>35) {
-                    this.reportText+='"scoremeaning":"Fair",'
-                }
-                else if (report.Score>15) {
-                    this.reportText+='"scoremeaning":"Unfavorable",'
-                }
-                else {
-                    this.reportText+='"scoremeaning":"Highly Unfavorable",'
-                }
-                
-                this.reportText+='"title":"'+report.ProductType+' business in '+report.TargetLocation+'"';
-
-                this.reportText+='}, "created":'+Date.now()+'}';    
-                
-
-            }
-            else {
-                if (Gpt.flagged) {
-                    return await this.flagReport(report, t1);
-                }    
-                this.reportText+='"novel":"true", "created":'+Date.now()+'}';
             }
 
-           await Page.createPublicPage(report.ProductType+" business in "+report.TargetLocation, Page.generatePublicPageURL(report.ProductType, report.ReportID),  this.reportText);
+             await Page.createPublicPage(report.ProductType+" business in "+report.TargetLocation, Page.generatePublicPageURL(report.ProductType, report.ReportID),  JSON.stringify(this.reportdata));
 
-           report.IsProcessing=false;
-           report.IsReady=true;
+             report.IsProcessing=false;
+             report.IsReady=true;
 
-           await report.save({transaction: t1});
-           await t1.commit();
+             await report.save({transaction: t1});
+             await t1.commit();
 
         } catch (error) {
             console.log(error);
@@ -626,5 +546,11 @@ export default {
             return [];
         }
 
+    },
+    stoplight: function(newv,oldv) {
+        if (newv<oldv) {
+            return newv;
+        }
+        return oldv;
     }
 }

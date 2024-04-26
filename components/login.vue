@@ -1,10 +1,10 @@
 <template>
   <v-container class="pa-0" :class="{'mt-10':$vuetify.display.lg||$vuetify.display.xl||$vuetify.display.xxl}" >
     <v-row>
-      <v-col cols="12" lg="4" class="d-none d-sm-flex" >
+      <v-col cols="12" :lg="smlcol" class="d-none d-sm-flex" >
           &nbsp;
       </v-col>
-      <v-col cols="12" lg="4">
+      <v-col cols="12" :lg="bigcol"  >
         <h2 class="mb-5 mt-10 text-center">Login</h2>
         <p class="mt-5 text-center">Get up to 3 <b>free</b> reports a day</p>
         <v-card class="mt-5 loginCard">
@@ -40,7 +40,7 @@
         </v-card>
         <p class="loginCard mt-7 text-center">By creating an account or logging in, you agree to our<br /><NuxtLink to="/privacy">Privacy Policy</NuxtLink> and <NuxtLink to="/terms">Terms of Service</NuxtLink></p>
       </v-col>
-      <v-col cols="12" lg="4" class="d-none d-sm-flex" >
+      <v-col cols="12" :lg="smlcol" class="d-none d-sm-flex" >
           &nbsp;
       </v-col>
     </v-row>
@@ -88,6 +88,12 @@ export default {
     },
     linkedinclientid() {
       return useRuntimeConfig().public.linkedinClient
+    },
+    smlcol() {
+       return this.loadBack?2:4;
+    },
+    bigcol() {
+       return this.loadBack?8:4;
     }
   },
   mounted() {
@@ -100,7 +106,7 @@ export default {
             this.$store.state.successText = "Please verify your email address and then log in again";
         } 
         else {
-          fetch("/api/login/"+(type.login==="oauth"?"oauth/":"linkedin/"), {
+          fetch("/api/login/"+(type.type==="oauth"?"oauth/":"linkedin/"), {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ code: this.$route.query.code, typ:this.loadBack?"w":"d" }),
@@ -262,6 +268,9 @@ export default {
       text-transform: none;
       font-family:inherit;
       letter-spacing: normal;
+      background:#FFF;
+      color: #000;
+      padding-top:5px;
       width:100%;
    }
 </style>
