@@ -22,6 +22,9 @@ export default {
         cost:{stoplight:3,text:null},
         feature:{stoplight:3,text:null},
         finances:{stoplight:3,text:null},
+        requirements:null,
+        registerbusiness:null,
+        tipstricks:null,
         created: Date.now()
     },
 
@@ -134,11 +137,10 @@ export default {
 
     },
 
-    evaluateField: async function(demarcator,targetStatement,conjunction,benefitStatement,possibilityStatement,efficacyStatement,evalUniqueness,field) {
+    evaluateField: async function(targetStatement,conjunction,benefitStatement,possibilityStatement,evalUniqueness,field,rd) {
     
         try {
 
-      
             let possibility = await this.evaluatePossibility(possibilityStatement);
             if (possibility.answer=='no') {
 
@@ -148,6 +150,8 @@ export default {
                     let legality = await this.evaluateLegality(targetStatement+" "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'");
                     if (legality.answer=='no') {    
                 
+                        let stoplight=3;
+
                         let uniqueness=null;
                         if (evalUniqueness) {
                             uniqueness = await this.evaluateBenefitUniqueness(field.FieldValue);
@@ -160,54 +164,46 @@ export default {
                         if (uniqueness.answer=='no') {
         
                             let benefits = await this.evaluateBenefit("'"+field.FieldValue+"'", benefitStatement);
-                            explanation+=benefits.explanation;
-                
-                       
-                            let risk = await this.evaluateRisk(targetStatement+" "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'")
-
-                            let risk_total = -1*risk.answer*10;
-                            if (risk_total<-30) {
-                                risk_total=-30;
+                            if (benefits.answer<=5) {
+                                stoplight=2;
+                                explanation+="<br /><br /><em>Potential Benefit</em><br />";  
                             }
 
-                            score+=risk_total;
+                            explanation+=benefits.explanation;
+                
+                            let risk = await this.evaluateRisk(targetStatement+" "+this.productType+" in "+this.targetLocation+" "+conjunction+" '"+field.FieldValue+"'")
 
-                            if (risk_total<0 && risk.explanation!==null) {
+                            if (risk.explanation!==null) {
+                                stoplight=2;
                                 explanation+="<br /><br /><em>Potential Risks</em><br />"+risk.explanation;   
                             }
                             
-            
                         }
                         else {
-                            if (uniqueness.answer=='yes') {
-                                if (evalUniqueness) {
-                                    explanation+="<em>Uniqueness</em><br />This feature may not be unique among features for this product<br /><br />"+uniqueness.explanation;
-                                }
-                                else {
-                                    explanation+="<em>Drawback</em><br />One or more drawbacks to this strategy may exist<br /><br />"+uniqueness.explanation;
-                                }
+                            
+                            stoplight=2;
+                            if (evalUniqueness) {
+                                explanation+="<em>Uniqueness</em><br />This feature is common and may not stand out<br /><br />"+uniqueness.explanation;
                             }
+                            else {
+                                explanation+="<em>Drawback</em><br />One or more drawbacks to this strategy may exist<br /><br />"+uniqueness.explanation;
+                            }
+                            
                         }
-
-                        this.reportText+='"benefits":"'+explanation+'",';
-
-                        this.score+=score;
-                        this.reportText+='"score":'+score+',"evaluatedString":"'+field.FieldValue+'","viable":"yes"},';
                         
-                        return true;
+                        return { stoplight: stoplight, text: explanation, input: field.FieldValue };
                     }            
 
                     else {
-                        this.reportText+='"viable":{"evaluatedString":"'+field.FieldValue+'","explanation":"'+legality.explanation+'"}},';
+                        return { stoplight:1, text: legality.explanation, input: field.FieldValue };
                     } 
-                
                 }
                 else {
-                    this.reportText+='"viable":{"evaluatedString":"'+field.FieldValue+'","explanation":"'+ridiciulousness.explanation+'"}},';
+                    return { stoplight:1, text: ridiciulousness.explanation, input: field.FieldValue };
                 }
             }
             else {
-                this.reportText+='"viable":{"evaluatedString":"'+field.FieldValue+'","explanation":"'+possibility.explanation+'"}},';
+                return { stoplight:1, text: possibility.explanation, input: field.FieldValue };
             }
         }
         catch(e) {
@@ -393,38 +389,119 @@ export default {
         }
    },
 
-    evaluateFields: async function(field) {
+   evaluateFinance: async function(money,evaluateString) {
+
+        try {
+            let result = await Gpt.chatGPT(
+                "You are an expert on '"+evaluateString+"'"+
+                "You write as if you are providing direct consultation on a business idea. " +
+                "You do not use metaphors or similes. "+
+                "You don't refer to any part of the prompt in written explanations. "+
+                "You do not refer to yourself. "+
+                ["A person has '"+money+" dollars' and wants to become a 'Lularoe platform contractor'. Does this person have enough money to start up the business plus six months of anticipated expenses. Give your answer as a JSON object: {'answer':'yes|maybe|no','explanation':'explanation'}"],"gpt-4-turbo-preview");
+        
+            let json = JSON.parse(result[0].trim());
+
+            if (json.answer=='yes') {
+                this.reportdata.finances.stoplight=3;
+            }
+            if (json.answer=='maybe') {
+                this.reportdata.finances.stoplight=2;
+            }
+            if (json.answer=='no') {
+                this.reportdata.finances.stoplight=1;
+            }
+            this.reportdata.finances.text=json.explanation;
+            this.reportdata.finances.input=evaluateString;
+        }
+        catch(e) {
+            console.log(e);
+            return null;
+        }
+        
+   },
+
+   registerBusiness: async function(evaluateString) {
+        try {
+            let result = await Gpt.chatGPT(
+                "You are an expert on '"+evaluateString+"'"+
+                "You write as if you are providing direct consultation on a business idea. " +
+                "You do not use metaphors or similes. "+
+                "You don't refer to any part of the prompt in written explanations. "+
+                "You do not refer to yourself. "+
+                ["What are some options on registering a business as a '"+evaluateString+"'? Provide the pros and cons of registering a business"],"gpt-4-turbo-preview");
+
+            return result[0].trim();
+        }
+        catch(e) {
+            console.log(e);
+            return null;
+        }
+   },
+
+   tipsTricks: async function(evaluateString) {
+        try {
+            let result = await Gpt.chatGPT(
+                "You are an expert on '"+evaluateString+"'"+
+                "You write as if you are providing direct consultation on a business idea. " +
+                "You do not use metaphors or similes. "+
+                "You don't refer to any part of the prompt in written explanations. "+
+                "You do not refer to yourself. "+
+                ["What are some tips and tricks to be effective at '"+evaluateString+"'?"],"gpt-4-turbo-preview");
+
+            return result[0].trim();
+        }
+        catch(e) {
+            console.log(e);
+            return null;
+        }
+   },
+
+   requirements: async function(evaluateString) {
+        try {
+            let result = await Gpt.chatGPT(
+                "You are an expert on '"+evaluateString+"'"+
+                "You write as if you are providing direct consultation on a business idea. " +
+                "You do not use metaphors or similes. "+
+                "You don't refer to any part of the prompt in written explanations. "+
+                "You do not refer to yourself. "+
+                ["What are the requirements to become a '"+evaluateString+"'"],"gpt-4-turbo-preview");
+
+            return result[0].trim();
+        }
+        catch(e) {
+            console.log(e);
+            return null;
+        }
+   },
+
+
+   evaluateFields: async function(field) {
 
         if (field.FieldType == "Unique Feature") {
-           return await this.evaluateField(
-                "uniqueFeature",
+           this.reportdata.feature = await this.evaluateField(
                 "introduce a feature for",
                 "that",
                 "appeal to users of "+this.productType+" in "+this.targetLocation+"? Base your answer off of how much many users will want to use the feature based upon your knowledge of how popular the feature is. ",
                 "the following feature for "+this.productType+" - "+field.FieldValue,
-                null,
                 true,
                 field);
         }
         if (field.FieldType == "Cost") {
-            return await this.evaluateField(
-                "cost",
+            this.reportdata.cost = await this.evaluateField(
                 "reduce costs",
                 "by",
                 "reduce costs for "+this.productType+" in "+this.targetLocation,
                 "following method to reduce costs for "+this.productType+" - "+field.FieldValue,
-                "reducing costs of",
                 false,
                 field);
         }
         if (field.FieldType == "Marketing") {
-            return await this.evaluateField(
-                "marketing",
+            this.reportdata.marketing = await this.evaluateField(
                 "market",
                 "by",
                 "market "+this.productType+" in "+this.targetLocation,
                 "following method to market "+this.productType+" - "+field.FieldValue,
-                "marketing",
                 false,
                 field);
         }
@@ -520,6 +597,11 @@ export default {
                         } 
                     }
                     
+                    await this.evaluateFinance(report.Money,this.reportdata.productType);
+                    if (Gpt.flagged) {
+                        return await this.flagReport(report, t1);
+                    }
+
                     await this.evaluateGrowth();
                     if (Gpt.flagged) {
                         return await this.flagReport(report, t1);
@@ -531,11 +613,46 @@ export default {
                     }
                 }
             }
+            else {
 
-             await Page.createPublicPage(report.ProductType+" business in "+report.TargetLocation, Page.generatePublicPageURL(report.ProductType, report.ReportID),  JSON.stringify(this.reportdata));
+                let evaluateString=this.reportdata.bizType;
+                if (this.reportdata.isPlatform) {
+                    evaluateString=this.reportdata.productType+" Platform "+evaluateString;
+                }
+                if (this.reportdata.isFranchise) {
+                    evaluateString=this.reportdata.productType+" Franchise "+evaluateString;
+                }
 
-             report.IsProcessing=false;
-             report.IsReady=true;
+                // Both
+                this.reportdata.requirements = await this.requirements(evaluateString);
+                if (Gpt.flagged) {
+                    return await this.flagReport(report, t1);
+                }
+
+                await this.evaluateFinance(report.Money, evaluateString);
+                if (Gpt.flagged) {
+                    return await this.flagReport(report, t1);
+                }
+             
+                // Platform
+                if (this.reportdata.isPlatform) {
+                    this.reportdata.registerbusiness = await this.registerBusiness(evaluateString);
+                    if (Gpt.flagged) {
+                        return await this.flagReport(report, t1);
+                    }
+
+                    this.reportdata.tipstricks = await this.tipsTricks(evaluateString);
+                    if (Gpt.flagged) {
+                        return await this.flagReport(report, t1);
+                    }
+
+                }
+            }
+
+            await Page.createPublicPage(report.ProductType+" business in "+report.TargetLocation, Page.generatePublicPageURL(report.ProductType, report.ReportID),  JSON.stringify(this.reportdata));
+
+            report.IsProcessing=false;
+            report.IsReady=true;
 
              await report.save({transaction: t1});
              await t1.commit();

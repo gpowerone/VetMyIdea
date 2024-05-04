@@ -27,8 +27,8 @@ export default {
             "<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>"+
             "<link href='https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap' rel='stylesheet'>"+
             "<link href='https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css' rel='stylesheet'></link>"+
-            "<link href='./core/report_builder.css' rel='stylesheet' />"+
-            "<script src='./core/report_builder.js' type='text/javascript'></script>"+
+            "<link href='./core/report_builder_2.css' rel='stylesheet' />"+
+            "<script src='./core/report_builder_v2.js' type='text/javascript'></script>"+
             "<script src='https://platform.linkedin.com/in.js' type='text/javascript'>lang: en_US</script>"+
             "<script src='https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/scripts/verify.min.js'></script>"+
             "<script async src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7307219219068554' crossorigin='anonymous'></script>"+
