@@ -113,9 +113,9 @@ onMounted(()=>{
          locality.value=stored_locality;
     }
  
-    if (locality.value!==null && locality.value!=='national') {
-        fillStateOptions();
-    }
+
+    fillStateOptions();
+
 
     let stored_state = localStorage.getItem("state");
     if (stored_state!==null) {

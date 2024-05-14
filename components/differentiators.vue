@@ -3,30 +3,43 @@
              <v-row>
                 <v-col cols="12">
                   
-                    <div v-if="(businesstype!=='contractor'&&franchise==='false')||(businesstype==='contractor'&&platform==='false')">
-                        <h3 class="mt-5">Marketing Strategy</h3>
-                        <p class="mt-3">How do you plan to market this business?</p>
-                        <v-textarea bg-color="white"  class="mt-3 field" :class="{'fielderror': !marketingValid()}" v-model="marketingEntry" label="Briefly describe your marketing strategy (<300 chars)" outlined dense></v-textarea>
+                    <h3 class="mt-7 mb-3">How much money (in dollars) do you have (or you can reliably raise) to invest in this business? (required)</h3>
+                    <p class="mt-5">Include enough for initial startup, marketing, plus <b>the first 6 months of expenses</b></p>
+                    <v-text-field class="field mt-5" v-model="money" :class="{'fielderror': money!==null&&(parseFloat(money)==NaN||money==0)}"  style="width:150px;"  density="compact" label="$" />
 
-                        <hr class="mt-5" />
-                        
-                        <h3 class="mt-5">Cost Strategy</h3>
+                    <div v-if="(businesstype!=='contractor'&&franchise==='false')||(businesstype==='contractor'&&platform==='false')">
+
+                        <hr class="mt-10" />
+
+                        <h3 class="mt-10 mb-5">Business Strategy Evaluation (optional)</h3> 
+                 
+                        <v-selection-control-group v-model="marketingCheck"> 
+                            <v-checkbox label="I have a strategy to market my products"></v-checkbox>
+                        </v-selection-control-group>   
+
+                        <div v-if="marketingCheck===true">
+                            <v-textarea bg-color="white"  class="mt-3 field" :class="{'fielderror': !marketingValid()}" v-model="marketingEntry" label="Briefly describe (<300 chars)" outlined dense></v-textarea>
+                        </div>
 
                         <v-selection-control-group v-model="productionCosts"> 
                             <v-checkbox label="I have a strategy to price my products or services better than the competition"></v-checkbox>
                         </v-selection-control-group>   
                         
                         <div v-if="productionCosts===true">
-                            <v-textarea  bg-color="white"  class="field" :class="{'fielderror': !costsValid()}" v-model="costsEntry" label="How? (<300 chars)" outlined dense></v-textarea>
+                            <v-textarea  bg-color="white"  class="field" :class="{'fielderror': !costsValid()}" v-model="costsEntry" label="Briefly describe (<300 chars)" outlined dense></v-textarea>
                         </div>
 
-                        <hr />
+                        <v-selection-control-group v-model="featureCheck"> 
+                            <v-checkbox label="My product or service has a unique feature that stands out among the competition"></v-checkbox>
+                        </v-selection-control-group>   
 
-                    </div>
-                  
-                    <h3 class="mt-5">How will your business, product, or service best stand out among the competition?</h3>
-                    <v-textarea class="mt-3 field" bg-color="white"  :class="{'fielderror': !uniqueFeatureValid()}" v-model="uniqueFeaturesEntry"  label="How? (<300 chars)" outlined dense></v-textarea>
-                          
+                        <div v-if="featureCheck===true">
+                           <v-textarea class="mt-3 field" bg-color="white"  :class="{'fielderror': !uniqueFeatureValid()}" v-model="uniqueFeaturesEntry"  label="Briefly describe (<300 chars)" outlined dense></v-textarea>
+                        </div>
+          
+
+                    </div> 
+              
                 </v-col>
             </v-row>
           
@@ -54,13 +67,15 @@ import { mdiArrowRight, mdiArrowLeft } from '@mdi/js'
 import { ref, watch } from 'vue'
 
 let productionCosts = ref(false);
-let marketingStrategy = ref(false);
+let marketingCheck = ref(false);
+let featureCheck = ref(false);
 let franchise = ref("false");
 let platform = ref("false");
 let businesstype = ref("");
 let costsEntry = ref("");
 let marketingEntry = ref("");
 let uniqueFeaturesEntry = ref("");
+let money=ref(null);
 
 let emit = defineEmits(['advancePanel','backPanel']);
 const props = defineProps(['showButtons'])
@@ -88,6 +103,19 @@ watch(productionCosts, async (newValue, oldValue) => {
         localStorage.setItem("productionCosts", newValue)
     }
 });
+
+watch(marketingCheck, async (newValue, oldValue) => {
+    if (newValue!==oldValue) {
+        localStorage.setItem("marketingCheck", newValue)
+    }
+});
+
+watch(featureCheck, async (newValue, oldValue) => {
+    if (newValue!==oldValue) {
+        localStorage.setItem("featureCheck", newValue)
+    }
+});
+
 watch(costsEntry, async (newValue, oldValue) => {
     if (newValue!==oldValue && newValue.length<=300) {
         localStorage.setItem("costsEntry", newValue)
@@ -103,6 +131,10 @@ watch(uniqueFeaturesEntry, async (newValue, oldValue) => {
         localStorage.setItem("uniqueFeaturesEntry", newValue)
     }
 });
+watch(money, async (newValue) => {
+    localStorage.setItem("money", newValue)
+});
+
 
 function costsValid() {
   let costs = costsEntry.value.trim();
@@ -118,6 +150,13 @@ function marketingValid() {
         return false;
   }
   return true;
+}
+
+function moneyValid() {
+    if (money.value!==null&&parseFloat(money.value)!==NaN&&money.value>0&&money.value<1000000000000) {
+        return true;
+    }
+    return false;
 }
 
 function uniqueFeatureValid() {
@@ -138,7 +177,7 @@ function handleBack() {
 
 function optionsHandled() {
     
-   return !costsValid()||!marketingValid()||!uniqueFeatureValid();
+   return !costsValid()||!marketingValid()||!uniqueFeatureValid()||!moneyValid();
    
 }
 
@@ -156,6 +195,14 @@ onMounted(() => {
   if (stored_prod_costs!==null) {
       productionCosts.value=stored_prod_costs==="true";
   }
+  let stored_marketing_check = localStorage.getItem("marketingCheck");
+  if (stored_marketing_check!==null) {
+      marketingCheck.value=stored_marketing_check==="true";
+  }
+   let stored_feature_check = localStorage.getItem("featureCheck");
+  if (stored_feature_check!==null) {
+      featureCheck.value=stored_feature_check==="true";
+  }
   let stored_costs_e = localStorage.getItem("costsEntry");
   if (stored_costs_e!==null) {
       costsEntry.value=stored_costs_e;
@@ -172,6 +219,11 @@ onMounted(() => {
   if (stored_businesstype!==null) {
       businesstype.value=stored_businesstype;
   }
+
+    let stored_money = localStorage.getItem("money");
+    if (stored_money!==null) {
+         money.value=stored_money;
+    }
 })
 
 </script>

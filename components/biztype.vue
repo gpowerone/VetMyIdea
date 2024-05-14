@@ -3,7 +3,7 @@
     <v-container class="pa-0 mt-5">
         <v-row>
             <v-col cols="12">
-                <h3 class="mb-3">Which best describes the business you want to start?</h3>
+                <h3 class="mb-3">What type of business?</h3>
                 <v-radio-group v-model="businesstype">
                     <v-radio value="brickandmortar" label="Brick and Mortar Store"></v-radio>
                     <v-radio value="online" label="Online Only"></v-radio>
@@ -21,7 +21,7 @@
                     <v-radio value="true" label="Yes"></v-radio>
                 </v-radio-group>
             
-                <v-text-field v-if="franchise==='true'" v-model="franchisee" bg-color="white" class="mt-5 field" label="Type the name of the business you will franchise (e.g. McDonalds)" outlined dense></v-text-field>
+                <v-text-field v-if="franchise==='true'" v-model="franchisee" bg-color="white" class="mt-5 field" label="Name of the franchise (e.g. McDonalds)" outlined dense></v-text-field>
             </v-col>
         </v-row>
 
@@ -34,19 +34,20 @@
                     <v-radio value="true" label="Yes"></v-radio>
                 </v-radio-group>
 
-                 <v-text-field v-if="platform==='true'" v-model="platformeee" bg-color="white" class="mt-5 field" label="Type the name of the platform (e.g. Uber)" outlined dense></v-text-field>
+                 <v-text-field v-if="platform==='true'" v-model="platformee" bg-color="white" class="mt-5 field" label="Name of the platform (e.g. Uber)" outlined dense></v-text-field>
             </v-col>
         </v-row>
 
         <v-row v-if="businesstype!==null&&((businesstype!=='contractor'&&franchise==='false')||(businesstype==='contractor'&&platform==='false'))">
             <v-col cols="12">
-                <v-textarea v-model="product" bg-color="white" class="mt-5 field" :class="{'fielderror': product!==null&&product.length>0&&!isValueValid(product)}" label="Briefly describe the products or services your business will provide" outlined dense></v-textarea>
+                <h3 class="mb-3 mt-5">In a few words, describe the product you are selling</h3>
+                <v-text-field v-model="product" bg-color="white" class="mt-5 field" :class="{'phonewidth':$vuetify.display.xs,'fielderror': product!==null&&product.length>0&&!isValueValid(product)}" outlined dense></v-text-field>
             </v-col>
         </v-row>
         
     </v-container>
 
-    <div class="mt-5 text-right">
+    <div class="mt-5 text-left">
         <v-btn @click="handleAdvance" class="next-btn" :disabled="optionsHandled()">
                 <v-icon :icon="mdiArrowRight"></v-icon>
         </v-btn>
@@ -174,5 +175,8 @@ onMounted(() => {
     width:50px!important;
     height:50px!important;
     margin-left:-10px!important;
+}
+.phonewidth {
+    max-width:300px;
 }
 </style>

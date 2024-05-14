@@ -28,6 +28,10 @@ export default defineEventHandler(async (event) => {
                          uniqueFeaturesEntry: null,
                          costEntry: null,
                          marketingEntry: null,
+                         BusinessType: result.BusinessType,
+                         IsFranchise: result.IsFranchise,
+                         IsPlatform: result.IsPlatform,
+                         Money: result.Money
                     };
 
                     const fields = await ReportField.findAll({

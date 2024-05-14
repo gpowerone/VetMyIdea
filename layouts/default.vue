@@ -35,8 +35,6 @@
                     <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/"><v-icon :icon="mdiHome" />&nbsp;&nbsp;Home</NuxtLink></v-list-item> 
                     <v-divider />
                      <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/dashboard"><v-icon :icon="mdiFileDocumentMultiple" />&nbsp;&nbsp;My Reports</NuxtLink></v-list-item> 
-                     <v-divider />
-                      <v-list-item class="menuitem"><NuxtLink role="menuitem" to="/scoring"><v-icon :icon="mdiChartLineVariant" />&nbsp;&nbsp;Scoring</NuxtLink></v-list-item> 
                     <v-divider v-if="$store.state.isLoggedIn" />
                     <v-list-item v-if="$store.state.isLoggedIn" class="menuitem"><NuxtLink role="menuitem" class="cursor" @click="doLogout"><v-icon :icon="mdiLogout" />&nbsp;&nbsp;Logout</NuxtLink></v-list-item>
                 </v-list>

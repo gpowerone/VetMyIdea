@@ -61,19 +61,6 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <div v-if="item.Score!==null">
-                                        <div v-if="item.IsViable">
-                                            {{ item.Score }}
-                                        </div>
-                                        <div v-else>
-                                            N/A
-                                        </div>
-                                    </div>
-                                    <div v-else>
-                                        N/A
-                                    </div>
-                                </td>
-                                <td>
                                     {{ new Date(item.updatedAt).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric", hour:"numeric", minute:"numeric" })  }}
                                 </td>
                                 <td>
@@ -114,7 +101,6 @@
         { title: 'Report', key: 'ProductType' },
         { title: 'Location', key: 'TargetLocation' },
         { title: 'Status', key: 'Status' },
-        { title: 'Score', key: 'Score' },
         { title: 'Updated', key: 'Updated' },
          { title: '', key: 'action2', sortable: false },
        

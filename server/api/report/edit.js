@@ -68,6 +68,7 @@ export default defineEventHandler(async (event) => {
                             })
                         })
 
+                        report.Money=data.Money;
                         report.IsReady=false;
                         report.Flagged=false;
                         await report.save();

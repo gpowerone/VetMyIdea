@@ -11,7 +11,7 @@
                     <b>Business:</b>
                 </v-col>
                 <v-col class="pb-0">
-                    {{businesstype}}
+                    {{presentbusinesstype}}
                 </v-col>
             </v-row>
 
@@ -113,6 +113,9 @@ import Spinner from '../components/spinner.vue';
 <script>
 export default {
   computed: {
+    presentbusinesstype() {
+        return this.businesstype=='brickandmortar'?"Brick and Mortar":(this.businesstype=='contractor'?"Independent Contractor":"Online");
+    },
     sitekey() {
       return useRuntimeConfig().public.recaptchaSitekey
     }

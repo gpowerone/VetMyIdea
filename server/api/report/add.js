@@ -41,7 +41,6 @@ export default defineEventHandler(async (event) => {
                         IsPlatform: data.IsPlatform,
                         ProductType: data.ProductType,
                         Money: data.Money,
-                        Score: null,
                         Flagged: false,
                         TargetLocation: data.TargetLocation,
                         IsProcessing: false,

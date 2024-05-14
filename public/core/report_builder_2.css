@@ -20,7 +20,6 @@ body.report {
     display:inline-block;
 }
 
-
 #report {
     padding:10px;
 }
@@ -60,6 +59,14 @@ footer.report a {
     font-size:2em;
 }
 
+.businesstitle {
+    margin-bottom:125px;
+}
+
+.highlight {
+    font-size:3em;
+}
+
 .run {
     margin-top:10px;
     margin-bottom:10px;
@@ -77,14 +84,16 @@ footer.report a {
 }
 
 .summaryLeft {
-    width:60%;
-    padding-right:5%;
+    width:25%;
+    padding-left:5%;
+    text-align:right;
 }
 
 .summaryRight {
-    width:34%;
+    width:67%;
+    padding-left:3%;
     float:right;
-    text-align:center;
+    text-align:left;
 }
 
 .tab {
@@ -166,18 +175,35 @@ div.section p {
        margin-top:10px;
    }
 
+   .businesstitle {
+       margin-bottom:50px;
+   }
+
    .summaryLeft {
       float:none;
       width:100%;
+      text-align:center;
+      padding:0%;
+      margin-bottom:30px;
+   }
+
+   .summaryLeft svg {
+      width:200px!important;
    }
 
    .summaryRight {
       float:none;
       width:100%;
+      padding:0%;
    }
 
    .productTitle, .uniqueFeatureHeader {
       margin-top:30px!important;
+   }
+
+   .highlight {
+      font-size:2em;
+      text-align:center!important;
    }
 
 }

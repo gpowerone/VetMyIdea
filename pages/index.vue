@@ -1,24 +1,31 @@
 <template>
     <v-container class="wizard"  fluid>
       <v-row>
-         <v-col cols="12" lg="3" xs="12" class="d-none d-sm-flex">&nbsp;</v-col>
-         <v-col cols="12" lg="6" xs="12" >
+         <v-col cols="12" lg="2" xs="0" class="d-none d-sm-none d-md-flex">&nbsp;</v-col>
+         <v-col cols="12" lg="8" xs="12" >
 
 
-            <div class="panel mt-5" :class="{'centered':$vuetify.display.md||$vuetify.display.lg||$vuetify.display.xl||$vuetify.display.xxl,'mt-10':$vuetify.display.lg||$vuetify.display.xl||$vuetify.display.xxl}" v-if="panelOpt==0">
-               <biztype v-on:advancePanel="advancePanel" />
+            <div class="panel"  v-if="panelOpt==0">
+               <h2 class="text-center mt-5">Have a business idea? Evaluate it for <b><em>free!</em></b></h2> 
+               <v-container class="mt-5 ml-5 mr-5 pa-0" :class="{'mt-15':$vuetify.display.lg||$vuetify.display.xl||$vuetify.display.xxl||$vuetify.display.md||$vuetify.display.sm}" fluid>
+                  <v-row>
+                     <v-col cols="12" sm="8" lg="8" xl="8" md="8" xxl="8" xs="12">
+                        <biztype v-on:advancePanel="advancePanel" />
+                     </v-col>
+                     <v-col cols="12" sm="4" lg="4" xl="4" md="4" xxl="4"  xs="12" class="text-center d-none d-sm-flex">
+                        <img src="/images/owl.png" class="owl" />
+                     </v-col>
+                  </v-row> 
+               </v-container>
             </div>
             <div class="panel" v-if="panelOpt==1"  >
                <locality v-on:advancePanel="advancePanel" v-on:backPanel="backPanel" />
             </div>
             <div class="panel" v-if="panelOpt==2"  >
-                <finance v-on:advancePanel="advancePanel" v-on:backPanel="backPanel" />
-            </div>
-            <div class="panel" v-if="panelOpt==3"  >
                 <differentiators v-on:advancePanel="advancePanel" v-on:backPanel="backPanel" :showButtons="true" />
             </div>
 
-            <div class="panel" v-if="panelOpt==4" >
+            <div class="panel" v-if="panelOpt==3" >
                <div v-if="store.state.isLoggedIn===true">
                   <summarycomp v-on:backPanel="backPanel" />
                </div>
@@ -28,7 +35,7 @@
             </div>
 
         </v-col>
-         <v-col cols="12" lg="3" xs="12" v-if="panelOpt==0" class="d-none d-sm-flex">&nbsp;</v-col>
+         <v-col cols="12" lg="2" xs="0" v-if="panelOpt==0" class="d-none d-sm-none d-md-flex">&nbsp;</v-col>
       </v-row>
       <v-row>
          <v-col cols="12">
@@ -54,7 +61,6 @@
 <script setup>
 import biztype from '../components/biztype.vue'
 import locality from '../components/locality.vue'
-import finance from '../components/finance.vue'
 import login from '../components/login.vue'
 import summarycomp from '../components/summary.vue'
 import { ref, watch, defineEmits } from 'vue'
@@ -103,5 +109,10 @@ onMounted(() => {
      font-size:1.2em;
      display: inline-block;
     text-align: left;
+  }
+  .owl {
+     width:200px;
+     height:240px;
+     display:block;
   }
 </style>

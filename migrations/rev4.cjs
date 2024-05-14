@@ -14,6 +14,8 @@ module.exports = {
             default: false
         });
 
+        await queryInterface.removeColumn('Reports', 'Score');
+
   
       },
     
@@ -22,6 +24,10 @@ module.exports = {
         await queryInterface.removeColumn('Reports', 'IsPlatform');
         await queryInterface.removeColumn('Reports', 'IsFranchise');
 
+        await queryInterface.addColumn('Reports', 'Score', {
+          allowNull: true,
+          type: Sequelize.SMALLINT
+        });
 
-      }
+    }
 };

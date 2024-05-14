@@ -29,7 +29,7 @@ resource "aws_ecs_task_definition" "vetmyidea" {
     environment = [
     {
       name  = "NUXT_PUBLIC_ENV_URL",
-      value = "https://www.vetmyidea.biz"
+      value = "https://vetmyidea.biz"
     },
     {
       name = "NUXT_DB_HOST"

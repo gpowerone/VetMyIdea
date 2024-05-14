@@ -66,7 +66,8 @@ export default defineComponent({
                 if (stored_unique_features_e!==null) {
                     this.uniqueFeaturesEntry=stored_unique_features_e;
                 }
-              
+                let money = localStorage.getItem("money");
+    
                 const token = window.grecaptcha.getResponse();
                 if (token.length>0) {
                     const response = await fetch('/api/report/edit/', {
@@ -79,6 +80,7 @@ export default defineComponent({
                             marketingEntry: this.marketingEntry,
                             costsEntry: this.costsEntry,
                             uniqueFeaturesEntry: this.uniqueFeaturesEntry,
+                            money: money,
                             token: token
                         }),
                     });
@@ -140,16 +142,34 @@ export default defineComponent({
                     this.productType = report.ProductType;
                     this.targetedLocation = report.TargetLocation;
 
+                    localStorage.setItem("businesstype",report.BusinessType);
+                    localStorage.setItem("money",report.Money);
+
+                    console.log(report);
+
+                    if (report.IsFranchise) {
+                        localStorage.setItem("franchise",'true');
+                    }
+                    else {
+                         localStorage.setItem("franchise",'false');
+                    }
+                    if (report.IsPlatform) {
+                        localStorage.setItem("platform",'true');
+                    }
+                    else {
+                         localStorage.setItem("platform",'false');
+                    }
+
                     if (report.uniqueFeaturesEntry!==null) {
                         localStorage.setItem("uniqueFeaturesEntry",report.uniqueFeaturesEntry);
-                        localStorage.setItem("uncommonFeature", "true");
+                        localStorage.setItem("featureCheck", "true");
                     }
                     if (report.costEntry!==null) {
                         localStorage.setItem("productionCosts","true");
                         localStorage.setItem("costsEntry",report.costEntry);
                     }
                     if (report.marketingEntry!==null) {
-                        localStorage.setItem("marketingStrategy","true");
+                        localStorage.setItem("marketingCheck","true");
                         localStorage.setItem("marketingEntry",report.marketingEntry);
                     }
 

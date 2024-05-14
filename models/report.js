@@ -42,10 +42,6 @@ Report.init({
         allowNull: true,
         type: DataTypes.FLOAT,
     },
-    Score: {
-        allowNull: true,
-        type: DataTypes.SMALLINT,
-    },
     TargetLocation: {
         allowNull: false,
         type: DataTypes.STRING(255),
