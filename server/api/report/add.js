@@ -50,15 +50,6 @@ export default defineEventHandler(async (event) => {
                         IsReady: false
                     });
 
-                    data.FillFields.forEach(async (item)=>{
-                        await ReportField.create({
-                            ReportFieldID: uuidv4(),
-                            ReportID: report_id,
-                            FieldType: item.FieldType,
-                            FieldValue: item.FieldValue
-                        })
-                    })
-
                     return { success: true };
                 }
                 else {

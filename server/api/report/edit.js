@@ -47,10 +47,10 @@ export default defineEventHandler(async (event) => {
             
                 if (report!==null) {
     
-                    let data = tools.verifyReportEdit({
+                    let data = {
                         IsValid: true,
-                        FillFields: [],
-                    },requestData);
+                        FillFields: []
+                    };
                     if (data.IsValid) {
 
                         await ReportField.destroy({

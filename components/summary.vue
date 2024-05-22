@@ -54,22 +54,6 @@
                 </v-col>
             </v-row>
 
-            <v-row class="pa-0" v-if="(costsEntry!==null&&costsEntry.length>0)||(marketingEntry!==null&&marketingEntry.length>0)||(uniqueFeaturesEntry!==null&&uniqueFeaturesEntry.length>0)">
-                <v-col cols="12" class="pb-0 pt-10">
-              
-                    <div class="mt-5" v-if="marketingEntry!==null">
-                        <em>Marketing strategy:</em><br /> {{marketingEntry}} 
-                    </div>    
-
-                    <div class="mt-5" v-if="costsEntry!==null">
-                        <em>Cost strategy:</em><br /> {{costsEntry}} 
-                    </div>   
-
-                     <div class="mt-5" v-if="uniqueFeaturesEntry!==null && uniqueFeaturesEntry.length>0">
-                        <em>How will your business stand out:</em><br /> {{uniqueFeaturesEntry}}
-                     </div>
-                </v-col>
-            </v-row>
         </v-container>
         <div class="mt-15 mb-5">
             <hr />
@@ -128,30 +112,12 @@ export default {
         platform: 'false',
         franchisee: null,
         platformee: null,
-        costsEntry: null,
-        marketingEntry: null,
-        uniqueFeaturesEntry: null,
         targetedLocation: null,
         product: null,
         isSubmitted:false,
     }
   },
   mounted() {
-
-    let stored_costs_e  = localStorage.getItem("costsEntry");
-    if (stored_costs_e!==null) {
-        this.costsEntry=stored_costs_e;
-    }
-
-    let stored_marketing_e  = localStorage.getItem("marketingEntry");
-    if (stored_marketing_e!==null) {
-        this.marketingEntry=stored_marketing_e;
-    }
-
-    let stored_unique_features_e  = localStorage.getItem("uniqueFeaturesEntry");
-    if (stored_unique_features_e!==null) {
-        this.uniqueFeaturesEntry=stored_unique_features_e;
-    }
         
     let stored_locality = localStorage.getItem("locality");
     if (stored_locality!==null) {
@@ -219,9 +185,6 @@ export default {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        costsEntry: this.costsEntry,
-                        marketingEntry: this.marketingEntry,
-                        uniqueFeaturesEntry: this.uniqueFeaturesEntry,
                         money: this.money,
                         biztype: this.businesstype,
                         platformee: this.platformee,

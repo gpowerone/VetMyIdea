@@ -50,56 +50,10 @@ export default {
                 if (requestData.targetedLocation && requestData.targetedLocation.trim().length>0 && requestData.targetedLocation.trim().length<200) {
                     data.TargetLocation=requestData.targetedLocation.trim(); 
                     data.IsValid=true;
-    
-                    data = this.verifyReportEdit(data,requestData);
                 }
             }
         }
     
-        return data;
-    },
-
-    verifyReportEdit: function(data,requestData) {
-        if (requestData.marketingEntry) {
-            if (requestData.marketingEntry.length>0 && requestData.marketingEntry.length<=300) {
-                data.FillFields.push({"FieldType": "Marketing", "FieldValue": requestData.marketingEntry.trim()});
-            }
-            else {
-                return {
-                    IsValid: false,
-                    FillFields: [],
-                    Error: "Marketing entry invalid"
-                }
-            }
-        }
-
-        if (requestData.costsEntry) {
-            if (requestData.costsEntry.length>0 && requestData.costsEntry.length<=300) {
-                data.FillFields.push({"FieldType": "Cost", "FieldValue": requestData.costsEntry.trim()});
-            }
-            else {
-                return {
-                    IsValid: false,
-                    FillFields: [],
-                    Error: "Cost entry invalid"
-                }
-            }
-        }
-
-
-        if (requestData.uniqueFeaturesEntry) {
-            if (requestData.uniqueFeaturesEntry.length>0 && requestData.uniqueFeaturesEntry.length<=300) {
-                data.FillFields.push({"FieldType": "Unique Feature", "FieldValue": requestData.uniqueFeaturesEntry.trim()});
-            }
-            else {
-                return {
-                    IsValid: false,
-                    FillFields: [],
-                    Error: "Unique feature entry invalid"
-                }
-            }
-        }
-
         return data;
     }
     
